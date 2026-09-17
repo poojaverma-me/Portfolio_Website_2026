@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Archivo, JetBrains_Mono, Playwrite_GB_S } from "next/font/google";
+import { Anton, Archivo, JetBrains_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { themeScript } from "@/lib/theme";
@@ -23,12 +23,6 @@ const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-// Upright monoline cursive, close to Apple's hand-lettered "hello" without the slant
-const hello = Playwrite_GB_S({
-  variable: "--font-hello",
-  display: "block",
-});
-
 export const metadata: Metadata = {
   title: "Pooja Verma · CS Student & Builder",
   description:
@@ -46,7 +40,7 @@ export default function RootLayout({
       data-theme="dark"
       data-intro="play"
       suppressHydrationWarning
-      className={`${anton.variable} ${archivo.variable} ${jetbrains.variable} ${hello.variable} h-full`}
+      className={`${anton.variable} ${archivo.variable} ${jetbrains.variable} h-full`}
     >
       <head>
         {/* applies the saved theme before first paint, see lib/theme.ts */}
