@@ -452,7 +452,7 @@ a.glass-card:hover,
 }
 
 /* ---------- hello intro ----------
-   A single handwritten hello (Playwrite GB S) with a pencil sound, over
+   A single handwritten hello (Playwrite GB S), Apple style, over
    drifting light. Visibility is decided before paint via data-intro on <html>. */
 
 html[data-intro="play"] {
