@@ -37,7 +37,7 @@ export const projects: Project[] = [
       { label: "Relevance gain", value: "+40%" },
       { label: "Repetitive questions", value: "-35%" },
     ],
-    links: { github: "https://github.com/sugaryeuphoria" },
+    links: { github: "https://github.com/poojaverma-me" },
     sections: [
       {
         id: "overview",
@@ -118,7 +118,7 @@ export const projects: Project[] = [
       { label: "Fundus images", value: "10k+" },
       { label: "Architectures tested", value: "7" },
     ],
-    links: { github: "https://github.com/sugaryeuphoria" },
+    links: { github: "https://github.com/poojaverma-me" },
     sections: [
       {
         id: "overview",
@@ -191,7 +191,7 @@ export const projects: Project[] = [
       { label: "Tickers tracked", value: "24" },
       { label: "Data pipeline", value: "Daily" },
     ],
-    links: { github: "https://github.com/sugaryeuphoria" },
+    links: { github: "https://github.com/poojaverma-me" },
     sections: [
       {
         id: "overview",
@@ -255,7 +255,7 @@ export const projects: Project[] = [
       { label: "Key exchange", value: "Kyber" },
       { label: "Deployment", value: "Docker" },
     ],
-    links: { github: "https://github.com/sugaryeuphoria" },
+    links: { github: "https://github.com/poojaverma-me" },
     sections: [
       {
         id: "overview",

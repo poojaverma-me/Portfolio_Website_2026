@@ -5,7 +5,7 @@ export const profile = {
   location: "Kamloops, BC",
   email: "pooja32verma@gmail.com",
   phone: "778-586-7091",
-  github: "https://github.com/sugaryeuphoria",
+  github: "https://github.com/poojaverma-me",
   linkedin: "https://www.linkedin.com/in/poojav3rma",
   leetcode: "https://leetcode.com/sugaryeuphoria/",
   headline: ["I don't just write code.", "I ship experiences."],
