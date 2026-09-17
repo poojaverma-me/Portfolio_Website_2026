@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ember-portfolio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "autoPort": true
+    },
+    {
+      "name": "ember-prod",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "start"],
+      "autoPort": true
+    },
+    {
+      "name": "acid-portfolio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "acid-portfolio", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}

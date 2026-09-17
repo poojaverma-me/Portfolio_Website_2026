@@ -1,0 +1,76 @@
+POOJA VERMA
+www.linkedin.com/in/poojav3rma | 778-586-7091 | https://github.com/sugaryeuphoria
+ https://leetcode.com/sugaryeuphoria/ | pooja32verma@gmail.com
+SKILLS 
+Technical Skills: Statistics, ML(regression/classification, regularization, hyperparameter tuning),
+JavaScript, TypeScript, React, C#, PowerApps, Python (pandas, NumPy, SciPy), MATLAB, Excel, Tableau, 
+Matplotlib, SQL(joining, grouping, filtering), Snowflake, Oracle, Matillion, Git, GitHub, BitBucket, GitHub Actions 
+(CI/CD), HTML/CSS/XML/JSON, APIs/REST.
+Soft Skills: Communication, Quick-Learner, stakeholder engagement, teamwork, adaptability.
+PROFESSIONAL EXPERIENCE
+Undergraduate Research Assistant May 2025 - July 2025
+Thompson Rivers University - Kamloops, BC 
+• Developed a Retrieval-Augmented Generation (RAG) system to deliver context-aware, pedagogy-aligned 
+responses to student queries.
+• Integrated semantic search and transformer-based retrieval, improving response relevance by 40%.
+• Scaled the system for 3,000+ students, reducing repetitive instructor questions by 35%.
+LLM Model Trainer – Freelancer November 2025 - Present 
+Outlier.AI – San Francisco, CA 
+• Trained and evaluated 100+ LLMs for accuracy, precision, fluency, correctness and F1 score across 
+diverse tasks.
+• Delivered corrective feedback on 100+ code issues to enhance model performance.
+Programmer Analyst Co-Op May 2024 - January 2025
+British Columbia Lottery Corporation – Kamloops, BC
+• Built scalable Salesforce solutions using Apex, LWC, and automation flows for 4,000+ retailers across 
+Canada, standardizing reporting and workflows.
+• Automated licensing workflows with Power Apps, Power BI, cutting manual tasks by 30% and supporting 
+digital transformation.
+• Built an employee check-in system for 1,000+ employees in collaboration with another co-op.
+Undergraduate Teaching Assistant January 2024-May 2024, February 2025 – April 2025
+Thompson Rivers University- Kamloops, BC 
+• Supported instruction in HTML, CSS, JavaScript, Java, Python, and data structures, emphasizing clean 
+code and logic.
+• Promoted best practices in documentation and version control for maintainable dashboards.
+RESEARCH AND PROJECTS
+Undergraduate Student Researcher- UREAP scholarship April 2025 – August 2025
+Thompson Rivers University – Kamloops, BC
+• Awarded $6,000 UREAP scholarship for training CNN models to process fundus images for automated 
+diabetic retinopathy detection, applying domain-specific preprocessing and evaluation.
+• Conducted literature reviews and applied transfer learning and hybrid architectures, showcasing analytical 
+and benchmarking skills.
+• Authored technical documentation ensuring data transparency and reproducibility. 
+CryptoSent: Sentiment-Driven Market Predictor March 2025
+• Developed a data-driven project to predict stock price movements using Python with Pandas, NumPy, and 
+SciPy for analysis.
+• Performed sentiment analysis on Twitter data using NLP techniques to evaluate public sentiment impact on 
+stock trends.
+• Managed and analysed datasets using SQL and Snowflake, and visualised insights with Matplotlib and 
+Power BI.
+Quantum Safe Password Generator and Manager February 2025 - April 2025
+• Built a quantum-safe password generator and manager using the Kyber algorithm, applying principles of 
+quantum cryptography for secure credential handling.
+• Automated encryption workflows and key management with Python and containerised the application using 
+Docker for secure, portable deployment.
+• Demonstrated strong problem-solving skills in designing cryptographically robust systems resistant to 
+quantum attacks.
+EDUCATION
+• Bachelor of Computing Science 2022 - Present
+ Thompson Rivers University – Kamloops 
+CLUBS AND LEADERSHIP
+• Co-Founder, Vice-President, Main Spokesperson 2024 - Present
+TRUSU Combat Robotics Club 
+• Member 2023 - Present
+TRUSU Computing Science Club
+VOLUNTEERING
+Event Registration Volunteer 2023 - 2025 
+TRU IDAYS – Thompson Rivers University 
+• Assisted with front desk registration by greeting guests, checking identification, and streamlining the check
+- in process.
+Event Registration Volunteer November 2024
+British Columbia Lottery Corporation Vendor Showcase 
+• Provided check-in support by verifying Vendors IDs, managing registration flow, and delivering a welcoming 
+first point of contact.
+Event Registration Volunteer June 2025
+365 Sports 5K Foam Fest – Kamloops, BC
+• Facilitated participant registration by overseeing ID verification, offering friendly greetings, and maintaining 
+an efficient check-in experienc

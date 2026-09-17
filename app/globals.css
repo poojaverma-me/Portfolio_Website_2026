@@ -1,26 +1,576 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Design system: macOS 27 "Golden Gate" Liquid Glass layout on Apple dark neutrals,
+  with the portfolio's own type (Anton, Archivo, JetBrains Mono) and a single accent
+  sampled from the light ring in the hero portrait.
+*/
+@theme {
+  /* backgrounds */
+  --color-base: #000000;
+  --color-surface: #1c1c1e;
+  --color-surface-2: #2c2c2e;
+
+  /* labels */
+  --color-label: #f5f5f7;
+  --color-label-2: rgb(235 235 245 / 0.64);
+  --color-label-3: rgb(235 235 245 / 0.34);
+
+  /* separators and fills */
+  --color-separator: rgb(84 84 88 / 0.55);
+  --color-fill: rgb(120 120 128 / 0.22);
+  --color-fill-2: rgb(120 120 128 / 0.32);
+
+  /* the only accent: the portrait's light ring. Everything else stays neutral. */
+  --color-accent: #f96b0b;
+  --color-accent-hover: #ff8a3d;
+  --color-accent-deep: #9a2600;
+
+  --font-display: var(--font-anton), "Arial Narrow", Impact, sans-serif;
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), Menlo, monospace;
+
+  --radius-window: 20px;
+  --radius-card: 18px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ---------- theme ----------
+   Dark is the default. <html data-theme="light"> swaps every token below;
+   components only ever read these variables. */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --on-accent: #1a0802;
+  --edge: rgb(0 0 0 / 0.6);
+  --edge-strong: rgb(0 0 0 / 0.75);
+  --shadow: rgb(0 0 0 / 0.4);
+  --shadow-strong: rgb(0 0 0 / 0.55);
+  --tile-top: color-mix(in srgb, var(--color-surface), white 20%);
+  --tile-bottom: color-mix(in srgb, var(--color-surface), white 6%);
+  --control-bg: color-mix(in srgb, color-mix(in srgb, var(--color-surface), white 18%) 50%, transparent);
+  --control-hover: rgb(80 80 86 / 0.6);
+  --window-bg: color-mix(in srgb, color-mix(in srgb, var(--color-surface) 80%, black) 82%, transparent);
+  --sidebar-bg: color-mix(in srgb, color-mix(in srgb, var(--color-surface), white 7%) 55%, transparent);
+  --cover-bg: linear-gradient(180deg, #1c1c1e, #111113);
+  --cover-glow: rgb(255 255 255 / 0.07);
+  --wallpaper-soft: rgb(255 255 255 / 0.035);
+  --scroll-thumb: rgb(255 255 255 / 0.22);
+  --scroll-thumb-hover: rgb(255 255 255 / 0.38);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-base: #f6f4f1;
+  --color-surface: #ffffff;
+  --color-surface-2: #efedea;
+  --color-label: #1d1d1f;
+  --color-label-2: rgb(29 29 31 / 0.68);
+  --color-label-3: rgb(29 29 31 / 0.4);
+  --color-separator: rgb(60 60 67 / 0.16);
+  --color-fill: rgb(120 110 100 / 0.1);
+  --color-fill-2: rgb(120 110 100 / 0.18);
+  /* deeper cut of the portrait orange so text stays readable on light */
+  --color-accent: #c24a06;
+  --color-accent-hover: #dc5a0e;
+
+  --on-accent: #ffffff;
+  --edge: rgb(40 25 10 / 0.1);
+  --edge-strong: rgb(40 25 10 / 0.12);
+  --shadow: rgb(60 35 15 / 0.08);
+  --shadow-strong: rgb(60 35 15 / 0.14);
+  --tile-top: #ffffff;
+  --tile-bottom: #ebe8e4;
+  --control-bg: rgb(255 255 255 / 0.7);
+  --control-hover: rgb(255 255 255 / 0.95);
+  --window-bg: rgb(255 255 255 / 0.88);
+  --sidebar-bg: rgb(242 239 235 / 0.7);
+  --cover-bg: linear-gradient(180deg, #f3f1ee, #e8e5e1);
+  --cover-glow: rgb(255 255 255 / 0.8);
+  --wallpaper-soft: rgb(249 107 11 / 0.05);
+  --scroll-thumb: rgb(0 0 0 / 0.2);
+  --scroll-thumb-hover: rgb(0 0 0 / 0.35);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-base);
+  color: var(--color-label);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgb(249 107 11 / 0.4);
+  color: var(--color-label);
+}
+
+/* macOS-style overlay scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scroll-thumb-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* macOS focus ring */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid rgb(249 107 11 / 0.6);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+@layer components {
+/* ---------- wallpaper ---------- */
+
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(55% 45% at 88% 6%, rgb(249 107 11 / 0.12), transparent 70%),
+    radial-gradient(60% 50% at 10% 60%, var(--wallpaper-soft), transparent 72%),
+    var(--color-base);
+}
+
+/* ---------- type scale ----------
+   Anton: condensed uppercase display. Archivo: body. JetBrains Mono: labels. */
+
+.large-title,
+.section-title,
+.display-num {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.95;
+}
+
+.large-title {
+  font-size: clamp(3rem, 7.5vw, 5.8rem);
+  text-wrap: balance;
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  text-wrap: balance;
+}
+
+.display-num {
+  line-height: 1;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.lead {
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  line-height: 1.65;
+  color: var(--color-label-2);
+}
+
+.headline {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.footnote {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-label-2);
+}
+
+/* ---------- Liquid Glass (macOS 27) ----------
+   darker outer edge + brighter specular highlight along the top */
+
+.glass {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03)),
+    color-mix(in srgb, var(--color-surface) 62%, transparent);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.24),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 0 0 1px var(--edge),
+    0 12px 40px var(--shadow);
+}
+
+.glass-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.075), rgb(255 255 255 / 0.02)),
+    color-mix(in srgb, var(--color-surface) 72%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    0 0 0 1px var(--edge-strong),
+    0 10px 30px var(--shadow);
+  transition:
+    transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+a.glass-card:hover,
+.glass-card.is-interactive:hover {
+  transform: translateY(-3px) scale(1.008);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    0 0 0 1px var(--edge-strong),
+    0 22px 50px var(--shadow-strong);
+}
+
+/* macOS window */
+.window {
+  border-radius: var(--radius-window);
+  background: var(--window-bg);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 0 0 1px var(--edge-strong),
+    0 30px 80px var(--shadow-strong);
+  overflow: clip;
+}
+
+.sidebar-material {
+  background: var(--sidebar-bg);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+}
+
+.hairline {
+  border-color: var(--color-separator);
+}
+
+.traffic-lights {
+  display: flex;
+  gap: 8px;
+}
+.traffic-lights span {
+  width: 12px;
+  height: 12px;
+  border-radius: 99px;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.35);
+}
+/* graphite, like an inactive macOS window */
+.traffic-lights span {
+  background: var(--color-fill-2);
+}
+
+/* ---------- controls ---------- */
+
+.btn-primary,
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 999px;
+  padding: 0.6875rem 1.375rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--on-accent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 0 0 1px var(--edge);
+}
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+}
+.btn-primary:active,
+.btn-glass:active {
+  transform: scale(0.97);
+}
+
+.btn-glass {
+  color: var(--color-label);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.04)),
+    var(--control-bg);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 0 0 1px var(--edge);
+}
+.btn-glass:hover {
+  background-color: var(--control-hover);
+}
+
+.btn-sm {
+  padding: 0.4375rem 0.9375rem;
+  font-size: 0.8125rem;
+}
+
+.link-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  color: var(--color-accent);
+  font-weight: 400;
+}
+.link-accent:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* capsule token (tags, tech stack) */
+.token {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-label-2);
+  background: var(--color-fill);
+}
+
+/* System Settings style icon tile, graphite by default */
+.app-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  color: var(--color-label);
+  background: linear-gradient(180deg, var(--tile-top), var(--tile-bottom));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 0 0 1px rgb(0 0 0 / 0.08),
+    0 2px 8px var(--shadow);
+}
+.app-icon.is-sm {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 7px;
+}
+.app-icon.is-lg {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 16px;
+}
+
+/* screenshot / cover placeholder */
+.cover-placeholder {
+  background:
+    radial-gradient(80% 90% at 50% 0%, var(--cover-glow), transparent 70%),
+    var(--cover-bg);
+}
+
+/* marquee */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* case study prose */
+.docs-prose p {
+  color: var(--color-label-2);
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1.1rem;
+  max-width: 66ch;
+}
+.docs-prose strong {
+  color: var(--color-label);
+  font-weight: 600;
+}
+.docs-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--color-label);
+  background: var(--color-fill);
+  border-radius: 6px;
+  padding: 0.1em 0.4em;
+}
+}
+
+/* ---------- hello intro ----------
+   Upright cursive lettering (Playwrite GB S, Klee One for Japanese), layered glass over
+   drifting light. Visibility is decided before paint via data-intro on <html>. */
+
+html[data-intro="play"] {
+  overflow: hidden;
+}
+html[data-intro="skip"] .intro-overlay {
+  display: none;
+}
+
+@layer components {
+  .intro-overlay {
+    background: var(--color-base);
+    --glass-body-top: rgb(255 255 255 / 0.78);
+    --glass-body-mid: rgb(255 255 255 / 0.36);
+    --glass-body-bottom: rgb(255 214 190 / 0.5);
+    --glass-rim: rgb(255 255 255 / 0.55);
+    --glass-depth: rgb(0 0 0 / 0.55);
+    --glass-glow: rgb(249 107 11 / 0.35);
+  }
+  [data-theme="light"] .intro-overlay {
+    --glass-body-top: rgb(29 29 31 / 0.72);
+    --glass-body-mid: rgb(29 29 31 / 0.32);
+    --glass-body-bottom: rgb(150 60 10 / 0.45);
+    --glass-rim: rgb(255 255 255 / 0.95);
+    --glass-depth: rgb(60 35 15 / 0.22);
+    --glass-glow: rgb(249 107 11 / 0.18);
+  }
+
+  /* Glass lettering: every layer sits in the same grid cell, so they align exactly. */
+  .glass-text {
+    display: grid;
+    font-family: var(--font-hello), "Snell Roundhand", cursive;
+    font-style: normal;
+    font-size: clamp(3.5rem, 15vw, 11rem);
+    font-weight: 400;
+    line-height: 1.5;
+    white-space: nowrap;
+    filter: drop-shadow(0 0 26px var(--glass-glow));
+  }
+  .glass-text.is-ja {
+    font-family: var(--font-hello-ja), "Hiragino Maru Gothic ProN", sans-serif;
+    font-weight: 600;
+    font-size: clamp(3rem, 12vw, 9rem);
+    line-height: 1.35;
+  }
+  .glass-text > span {
+    grid-area: 1 / 1;
+    padding: 0.1em 0.2em 0.25em;
+  }
+  /* edges: a light catch-line above each stroke and a soft shadow below.
+     text-shadow follows the outer glyph shape, so overlapping strokes in
+     joined letters don't draw internal seams the way a text stroke would */
+  .glass-depth {
+    color: transparent;
+    text-shadow:
+      0 -0.018em 0 var(--glass-rim),
+      0 0.035em 0.05em var(--glass-depth);
+  }
+  /* body: translucent frosted fill, the light behind shows through */
+  .glass-body {
+    color: transparent;
+    background:
+      radial-gradient(80% 60% at 40% 8%, rgb(255 255 255 / 0.55), transparent 70%),
+      linear-gradient(
+        180deg,
+        var(--glass-body-top) 0%,
+        var(--glass-body-mid) 58%,
+        var(--glass-body-bottom) 100%
+      );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .intro-light {
+    position: absolute;
+    inset: -20%;
+    filter: blur(90px);
+    opacity: 0.9;
+  }
+  .intro-blob {
+    position: absolute;
+    border-radius: 999px;
+    animation: intro-drift 9s ease-in-out infinite alternate;
+  }
+  .intro-blob-a {
+    width: 46vmax;
+    height: 46vmax;
+    left: 48%;
+    top: 46%;
+    background: rgb(249 107 11 / 0.55);
+  }
+  .intro-blob-b {
+    width: 38vmax;
+    height: 38vmax;
+    left: 12%;
+    top: 20%;
+    background: rgb(255 255 255 / 0.08);
+    animation-duration: 12s;
+    animation-direction: alternate-reverse;
+  }
+  .intro-blob-c {
+    width: 28vmax;
+    height: 28vmax;
+    left: 30%;
+    top: 55%;
+    background: rgb(255 138 61 / 0.3);
+    animation-duration: 10s;
+  }
+  [data-theme="light"] .intro-blob-b {
+    background: rgb(0 0 0 / 0.04);
+  }
+
+  @keyframes intro-drift {
+    from {
+      transform: translate(-6%, -4%) scale(1);
+    }
+    to {
+      transform: translate(6%, 5%) scale(1.12);
+    }
+  }
 }
