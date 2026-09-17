@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Archivo, JetBrains_Mono, Klee_One, Playwrite_GB_S } from "next/font/google";
+import { Anton, Archivo, JetBrains_Mono, Playwrite_GB_S } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { themeScript } from "@/lib/theme";
@@ -29,15 +29,6 @@ const hello = Playwrite_GB_S({
   display: "block",
 });
 
-// Pen-handwriting Japanese with matching stroke weight for こんにちは.
-// Not preloaded: the browser fetches only the kana it needs, only when the intro plays.
-const helloJa = Klee_One({
-  variable: "--font-hello-ja",
-  weight: "600",
-  display: "block",
-  preload: false,
-});
-
 export const metadata: Metadata = {
   title: "Pooja Verma · CS Student & Builder",
   description:
@@ -55,7 +46,7 @@ export default function RootLayout({
       data-theme="dark"
       data-intro="play"
       suppressHydrationWarning
-      className={`${anton.variable} ${archivo.variable} ${jetbrains.variable} ${hello.variable} ${helloJa.variable} h-full`}
+      className={`${anton.variable} ${archivo.variable} ${jetbrains.variable} ${hello.variable} h-full`}
     >
       <head>
         {/* applies the saved theme before first paint, see lib/theme.ts */}

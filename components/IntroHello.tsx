@@ -2,33 +2,34 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Volume2 } from "lucide-react";
 import { INTRO_SESSION_KEY } from "@/lib/intro";
 import { useIntro } from "@/lib/use-intro";
+import { createPencilSound, type PencilSound } from "@/lib/pencil-sound";
 
-// One greeting per language, never repeated
-const WORDS = [
-  { text: "hello", lang: "en" },
-  { text: "bonjour", lang: "fr" },
-  { text: "こんにちは", lang: "ja" },
-  { text: "hola", lang: "es" },
-  { text: "ciao", lang: "it" },
-  { text: "namaste", lang: "hi-Latn" },
-];
-
-const FIRST_HOLD = 1600; // ms the opening word is written and held
-const STEP = 950; // ms per following word
-const LAST_HOLD = 1200; // ms the closing "hello" stays before the reveal
+const WRITE = 2.0; // seconds to write "hello", the pencil sound runs for the same time
+const HOLD = 1.1; // seconds the finished word stays before the reveal
+const LEAD_IN = 0.35; // seconds of quiet before the pencil touches the paper
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function IntroHello() {
   const state = useIntro();
-  const [index, setIndex] = useState(0);
+  // bumping the take restarts the writing (used when sound is unlocked by a tap)
+  const [take, setTake] = useState(0);
+  const [soundBlocked, setSoundBlocked] = useState(false);
+  const sound = useRef<PencilSound | null>(null);
   const timers = useRef<number[]>([]);
 
-  const finish = useCallback(() => {
+  const clearTimers = () => {
     timers.current.forEach(clearTimeout);
     timers.current = [];
+  };
+
+  const finish = useCallback(() => {
+    clearTimers();
+    sound.current?.close();
+    sound.current = null;
     try {
       sessionStorage.setItem(INTRO_SESSION_KEY, "1");
     } catch {
@@ -37,30 +38,51 @@ export default function IntroHello() {
     document.documentElement.dataset.intro = "done";
   }, []);
 
+  /** Write "hello" from the start, with the pencil sound if audio is allowed. */
+  const write = useCallback(
+    (withSound: boolean) => {
+      clearTimers();
+      setTake((n) => n + 1);
+      if (withSound) {
+        timers.current.push(
+          window.setTimeout(() => sound.current?.play(WRITE), LEAD_IN * 1000),
+        );
+      }
+      timers.current.push(window.setTimeout(finish, (LEAD_IN + WRITE + HOLD) * 1000));
+    },
+    [finish],
+  );
+
   useEffect(() => {
     if (state !== "play") return;
 
-    let t = FIRST_HOLD;
-    for (let i = 1; i < WORDS.length; i++) {
-      timers.current.push(window.setTimeout(() => setIndex(i), t));
-      t += STEP;
-    }
-    timers.current.push(window.setTimeout(finish, t - STEP + LAST_HOLD));
+    sound.current = createPencilSound();
+    let cancelled = false;
+    (async () => {
+      const allowed = (await sound.current?.unlock()) ?? false;
+      if (cancelled) return;
+      if (!allowed && sound.current) setSoundBlocked(true);
+      write(allowed);
+    })();
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") finish();
     };
     window.addEventListener("keydown", onKey);
-    const pending = timers.current;
     return () => {
-      pending.forEach(clearTimeout);
+      cancelled = true;
+      clearTimers();
       window.removeEventListener("keydown", onKey);
     };
     // runs once for the initial state; finish() flips state to "done"
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const word = WORDS[index];
+  const enableSound = async () => {
+    if (!(await sound.current?.unlock())) return;
+    setSoundBlocked(false);
+    write(true); // replay from the first stroke so sound and ink stay in sync
+  };
 
   return (
     <AnimatePresence>
@@ -71,46 +93,41 @@ export default function IntroHello() {
           exit={{ opacity: 0, filter: "blur(12px)", scale: 1.04 }}
           transition={{ duration: 0.9, ease }}
         >
-          {/* drifting light behind the glass */}
+          {/* soft drifting light */}
           <div className="intro-light" aria-hidden>
             <span className="intro-blob intro-blob-a" />
             <span className="intro-blob intro-blob-b" />
             <span className="intro-blob intro-blob-c" />
           </div>
 
-          <div className="relative grid place-items-center px-6" aria-hidden>
-            <AnimatePresence mode="popLayout">
+          <div className="relative px-6" aria-hidden>
+            {take > 0 && (
               <motion.span
-                key={index}
-                lang={word.lang}
-                className="col-start-1 row-start-1 block"
-                // written on left to right, then dissolved as the next word starts
-                initial={{ opacity: 0, clipPath: "inset(-30% 100% -30% -15%)", filter: "blur(4px)" }}
-                animate={{
-                  opacity: 1,
-                  clipPath: "inset(-30% -15% -30% -15%)",
-                  filter: "blur(0px)",
-                  transition: { duration: 0.9, ease: [0.45, 0, 0.25, 1] },
-                }}
-                exit={{
-                  opacity: 0,
-                  filter: "blur(14px)",
-                  scale: 1.04,
-                  transition: { duration: 0.5, ease },
-                }}
+                key={take}
+                className="hello-text"
+                // ink appears behind a soft edge that travels left to right
+                initial={{ "--reveal": "-12%" } as Record<string, string>}
+                animate={{ "--reveal": "112%" } as Record<string, string>}
+                transition={{ delay: LEAD_IN, duration: WRITE, ease: [0.33, 0.1, 0.45, 1] }}
               >
-                {/* stacked layers: edge light and shadow, then the see-through body */}
-                <span className={`glass-text ${word.lang === "ja" ? "is-ja" : ""}`}>
-                  <span className="glass-depth">{word.text}</span>
-                  <span className="glass-body">{word.text}</span>
-                </span>
+                hello
               </motion.span>
-            </AnimatePresence>
+            )}
           </div>
 
           <p className="sr-only" role="status">
             Loading Pooja Verma&apos;s portfolio
           </p>
+
+          {soundBlocked && (
+            <button
+              type="button"
+              onClick={enableSound}
+              className="btn-glass btn-sm absolute bottom-6 left-6 !text-[0.8125rem]"
+            >
+              <Volume2 size={14} /> Tap for sound
+            </button>
+          )}
           <button
             type="button"
             onClick={finish}
