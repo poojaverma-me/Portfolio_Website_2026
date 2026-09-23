@@ -22,7 +22,7 @@ const stats: { value: number; suffix: string; prefix?: string; label: string }[]
   { value: 3000, suffix: "+", label: "Students using my RAG system" },
   { value: 4000, suffix: "+", label: "Retailers on my Salesforce builds" },
   { value: 100, suffix: "+", label: "LLMs trained and evaluated" },
-  { value: 6000, suffix: "", prefix: "$", label: "UREAP research award" },
+  { value: 8500, suffix: "", prefix: "$", label: "Won across two research grants" },
 ];
 
 function SectionHeader({

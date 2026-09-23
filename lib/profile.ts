@@ -10,7 +10,7 @@ export const profile = {
   leetcode: "https://leetcode.com/sugaryeuphoria/",
   headline: ["I don't just write code.", "I ship experiences."],
   intro:
-    "Computing science student at Thompson Rivers University working across full-stack development, applied AI, and data. My work has served 3,000+ students, 4,000+ retailers, and 1,000+ employees, and it is built to keep working after I hand it off.",
+    "Computing science student at Thompson Rivers University working across full-stack development, applied AI, and data. I shipped a PDF rendering engine for a construction estimating platform, trained models for post-wildfire recovery research, and built systems that serve 3,000+ students and 4,000+ retailers.",
   skills: [
     "Python",
     "TypeScript",
@@ -19,15 +19,22 @@ export const profile = {
     "C#",
     "SQL",
     "Snowflake",
+    "Oracle",
+    "Matillion",
     "Machine Learning",
+    "scikit-learn",
+    "XGBoost",
+    "LightGBM",
+    "SHAP",
     "pandas",
     "NumPy",
+    "SciPy",
+    "Matplotlib",
     "MATLAB",
     "Tableau",
     "Power BI",
     "Power Apps",
     "Salesforce",
-    "Docker",
     "Git",
     "GitHub Actions",
     "REST APIs",
@@ -45,13 +52,26 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
+    company: "PataBid",
+    role: "Junior Research Intern, Mitacs BSI",
+    period: "Jan 2026 – Sep 2026",
+    location: "Okotoks, AB",
+    points: [
+      "Owned end to end development of a new PDF rendering engine for the company's construction estimating platform, delivering every milestone of the 8-month Mitacs-funded placement ahead of schedule.",
+      "Integrated the Nutrient (PSPDFKit) SDK into an existing JavaScript codebase and worked directly with the vendor to diagnose defects and drive fixes.",
+      "Authored the scripts and data pipelines that trained an AI model behind automated stamp and take-off detection inside the estimating workflow.",
+      "Reported progress to the CTO, maintained the technical documentation, and resolved merge conflicts and regressions so new work shipped without breaking what already ran.",
+    ],
+    tags: ["JavaScript", "PDF Rendering", "PSPDFKit", "Data Pipelines"],
+  },
+  {
     company: "Outlier.AI",
     role: "LLM Model Trainer (Freelance)",
     period: "Nov 2025 – Present",
     location: "San Francisco, CA (Remote)",
     points: [
       "Trained and evaluated 100+ LLMs for accuracy, precision, fluency, correctness, and F1 score across diverse tasks.",
-      "Delivered corrective feedback on 100+ code issues to improve model performance.",
+      "Delivered corrective feedback on 100+ code issues, raising model performance on the tasks I reviewed.",
     ],
     tags: ["LLMs", "Model Evaluation", "Python"],
   },
@@ -75,7 +95,7 @@ export const experience: Experience[] = [
     points: [
       "Built scalable Salesforce solutions with Apex, LWC, and automation flows for 4,000+ retailers across Canada, standardizing reporting and workflows.",
       "Automated licensing workflows with Power Apps and Power BI, cutting manual tasks by 30% and supporting digital transformation.",
-      "Built an employee check-in system for 1,000+ employees in collaboration with another co-op.",
+      "Built an employee check-in system now used by 1,000+ employees, pairing with another co-op student through the build.",
     ],
     tags: ["Salesforce", "Apex", "LWC", "Power Apps", "Power BI"],
   },
@@ -85,8 +105,8 @@ export const experience: Experience[] = [
     period: "Jan – May 2024 · Feb – Apr 2025",
     location: "Kamloops, BC",
     points: [
-      "Supported instruction in HTML, CSS, JavaScript, Java, Python, and data structures, emphasizing clean code and logic.",
-      "Promoted best practices in documentation and version control for maintainable work.",
+      "Taught lab sections in HTML, CSS, JavaScript, Java, Python, and data structures, holding students to clean code and clear logic.",
+      "Coached students on documentation and version control so their work stayed readable and maintainable.",
     ],
     tags: ["Teaching", "JavaScript", "Python", "Java"],
   },
@@ -102,13 +122,22 @@ export type ResearchItem = {
 
 export const research: ResearchItem[] = [
   {
+    title: "AI-Driven Post-Wildfire Ecosystem Recovery",
+    venue:
+      "TRU Student Sustainability Research Grant ($2,500) · Supervised by Dr. Ghazanfar Latif",
+    year: "2026",
+    status: "In progress",
+    summary:
+      "Won a competitive $2,500 grant to build a machine learning framework for vegetation recovery and reforestation planning across the Thompson-Okanagan. Merged six environmental datasets into a reproducible 2,600 record master set with 32 engineered features over six BEC zones, benchmarked five classifiers with SMOTE oversampling and Optuna tuning, and landed on LightGBM at 0.707 weighted F1. SHAP named burn severity the dominant predictor. Shipped a native species recommender, wrote the paper in LaTeX, and presented it at the TRU Sustainability Conference.",
+  },
+  {
     title:
       "Automated Diabetic Retinopathy Detection from Fundus Images using CNNs",
     venue: "UREAP Research Award ($6,000) · Thompson Rivers University",
     year: "2025",
     status: "Completed",
     summary:
-      "Awarded a $6,000 UREAP scholarship to train CNN models on fundus images with domain-specific preprocessing, transfer learning, and hybrid architectures. Authored technical documentation ensuring data transparency and reproducibility.",
+      "Won a $6,000 UREAP scholarship to train CNN models that flag diabetic retinopathy in fundus images. Applied domain-specific preprocessing, reviewed the literature, benchmarked transfer learning against hybrid architectures, and documented the work so another student could reproduce it.",
   },
   {
     title: "Pedagogy-Aligned RAG for Student Support at Scale",
