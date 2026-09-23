@@ -1,7 +1,6 @@
 import {
   BookOpen,
   HeartHandshake,
-  MapPin,
   Users,
 } from "lucide-react";
 import Hero from "@/components/Hero";
@@ -9,10 +8,10 @@ import WhatIDo from "@/components/WhatIDo";
 import Reveal from "@/components/Reveal";
 import ScrollMorphHero from "@/components/ui/scroll-morph-hero";
 import CountUp from "@/components/CountUp";
+import ExperienceTimeline from "@/components/ExperienceTimeline";
 import Testimonials from "@/components/Testimonials";
 import { projectCovers } from "@/lib/projectCovers";
 import {
-  experience,
   leadership,
   profile,
   research,
@@ -113,49 +112,7 @@ export default function Home() {
             </>
           }
         />
-        <Reveal delay={0.05}>
-          <ul className="glass-card mt-12 overflow-hidden">
-            {experience.map((e, i) => (
-              <li
-                key={`${e.company}-${e.role}`}
-                className={`flex gap-4 p-6 sm:gap-5 ${i > 0 ? "border-t hairline" : ""}`}
-              >
-                <span className="app-icon text-[1.0625rem] font-semibold" aria-hidden>
-                  {e.company.charAt(0)}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                    <h3 className="headline">{e.role}</h3>
-                    <span className="footnote tabular-nums">{e.period}</span>
-                  </div>
-                  <p className="footnote mt-1 flex flex-wrap items-center gap-x-2">
-                    <span className="text-label">{e.company}</span>
-                    <span className="inline-flex items-center gap-1">
-                      <MapPin size={12} /> {e.location}
-                    </span>
-                  </p>
-                  <ul className="mt-4 flex flex-col gap-2">
-                    {e.points.map((pt) => (
-                      <li
-                        key={pt}
-                        className="relative pl-4 text-[0.9375rem] leading-[1.47] text-label-2 before:absolute before:left-0 before:top-[0.62em] before:h-[5px] before:w-[5px] before:rounded-full before:bg-label-3"
-                      >
-                        {pt}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {e.tags.map((t) => (
-                      <span key={t} className="token">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+        <ExperienceTimeline />
       </section>
 
       {/* research */}
