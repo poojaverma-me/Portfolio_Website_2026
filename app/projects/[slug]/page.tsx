@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ArrowUpRight, ChevronLeft, ChevronRight, CircleCheck } from "lucide-react";
 import { getProject, projects } from "@/lib/projects";
 import { categoryIcon } from "@/lib/categories";
-import DocsIndex from "@/components/DocsIndex";
 import ScreenshotPlaceholder from "@/components/ScreenshotPlaceholder";
 import Reveal from "@/components/Reveal";
 
@@ -32,6 +31,17 @@ function Prose({ text }: { text: string }) {
   return <p dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
+function MetaItem({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="eyebrow">{label}</p>
+      <p className="mt-2 text-[1.0625rem] font-semibold leading-snug text-label">
+        {children}
+      </p>
+    </div>
+  );
+}
+
 export default async function ProjectPage({
   params,
 }: {
@@ -47,183 +57,161 @@ export default async function ProjectPage({
   const Icon = categoryIcon[project.category];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-28 sm:px-6">
-      <Link href="/projects" className="link-accent text-[1.0625rem]">
-        <ChevronLeft size={18} strokeWidth={2.25} /> All projects
+    <div className="mx-auto max-w-4xl px-6 pb-24 pt-32 sm:pt-36">
+      <Link href="/projects" className="link-accent text-[0.9375rem]">
+        <ChevronLeft size={17} strokeWidth={2.25} /> Back to projects
       </Link>
 
-      {/* the case study is a macOS window */}
-      <div className="window mt-5">
-        {/* unified toolbar */}
-        <div className="case-toolbar glass sticky top-[96px] z-20 flex h-12 items-center border-b hairline !rounded-none px-4 !shadow-none">
-          <div className="traffic-lights" aria-hidden>
-            <span />
-            <span />
-            <span />
-          </div>
-          <p className="absolute inset-x-[72px] flex items-center justify-center gap-2 truncate sm:inset-x-28 text-[0.8125rem] font-semibold">
-            <span
-              className="app-icon !h-5 !w-5 !rounded-[5px]"
-              aria-hidden
-            >
-              <Icon size={11} strokeWidth={2.5} />
-            </span>
-            <span className="truncate">{project.title}</span>
-          </p>
-          <span className="ml-auto hidden text-[0.75rem] text-label-2 sm:block">
-            Case study
+      {/* title block */}
+      <header className="mt-8">
+        <p className="eyebrow flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="app-icon !h-6 !w-6 !rounded-[7px]" aria-hidden>
+            <Icon size={13} strokeWidth={2.5} />
           </span>
-        </div>
+          <span>{project.category}</span>
+          <span aria-hidden>·</span>
+          <span>{project.status}</span>
+          <span aria-hidden>·</span>
+          <span>{project.year}</span>
+        </p>
 
-        <div className="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[250px_minmax(0,1fr)]">
-          {/* sidebar runs to the window edge (macOS 27) */}
-          <aside className="sidebar-material sticky top-[144px] z-10 min-w-0 border-b hairline px-3 py-2.5 lg:static lg:z-auto lg:border-b-0 lg:border-r lg:p-3 lg:py-5">
-            <DocsIndex
-              sections={project.sections.map((s) => ({ id: s.id, title: s.title }))}
-            />
-          </aside>
+        <h1 className="large-title mt-5 !text-[clamp(2.75rem,8vw,5rem)]">
+          {project.title}
+        </h1>
+        <p className="lead mt-5 max-w-2xl">{project.tagline}</p>
 
-          <article className="min-w-0 px-6 py-10 sm:px-10 lg:px-14 lg:py-14">
-            {/* header */}
-            <header>
-              <div className="flex items-center gap-4">
-                <span className="app-icon is-lg">
-                  <Icon size={30} strokeWidth={1.75} />
+        {/* headline numbers */}
+        <dl className="mt-12 grid gap-x-8 gap-y-8 sm:grid-cols-3">
+          {project.metrics.map((m) => (
+            <div key={m.label} className="border-l-2 border-accent pl-4">
+              <dd className="display-num text-[2.125rem] leading-none text-label tabular-nums">
+                {m.value}
+              </dd>
+              <dt className="mt-2 text-[0.9375rem] text-label-2">{m.label}</dt>
+            </div>
+          ))}
+        </dl>
+
+        {/* the facts */}
+        <div className="mt-12 grid gap-x-8 gap-y-7 border-t hairline pt-8 sm:grid-cols-2 lg:grid-cols-3">
+          <MetaItem label="Timeline">{project.timeline}</MetaItem>
+          <MetaItem label="Role">{project.role}</MetaItem>
+          <MetaItem label="Team">{project.team}</MetaItem>
+          <MetaItem label="Status">
+            <span className="flex items-center gap-1.5">
+              <CircleCheck size={15} className="text-accent" />
+              {project.status}
+            </span>
+          </MetaItem>
+          <div className="sm:col-span-2 lg:col-span-1">
+            <p className="eyebrow">Stack</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {project.stack.map((s) => (
+                <span key={s} className="token">
+                  {s}
                 </span>
-                <div>
-                  <p className="text-[0.9375rem] font-semibold">
-                    {project.category}
-                  </p>
-                  <p className="footnote flex items-center gap-1.5">
-                    <CircleCheck size={13} />
-                    {project.status} · {project.year}
-                  </p>
-                </div>
-              </div>
-
-              <h1 className="large-title mt-6 !text-[clamp(2.75rem,6vw,4.5rem)]">
-                {project.title}
-              </h1>
-              <p className="lead mt-4 max-w-2xl">{project.tagline}</p>
-
-              <div className="mt-6 flex flex-wrap gap-1.5">
-                {project.stack.map((s) => (
-                  <span key={s} className="token">
-                    {s}
-                  </span>
-                ))}
-              </div>
-
-              {(project.links.live || project.links.github) && (
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  {project.links.live && (
-                    <a
-                      href={project.links.live}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-primary"
-                    >
-                      Visit live site
-                    </a>
-                  )}
-                  {project.links.github && (
-                    <a
-                      href={project.links.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-glass"
-                    >
-                      View source <ArrowUpRight size={16} className="text-label-2" />
-                    </a>
-                  )}
-                </div>
-              )}
-
-              {/* metrics */}
-              <dl className="mt-10 grid overflow-hidden rounded-2xl bg-fill sm:grid-cols-3">
-                {project.metrics.map((m, i) => (
-                  <div
-                    key={m.label}
-                    className={`px-5 py-5 hairline ${i > 0 ? "border-t sm:border-t-0 sm:border-l" : ""}`}
+              ))}
+            </div>
+          </div>
+          {(project.links.live || project.links.github) && (
+            <div>
+              <p className="eyebrow">Source</p>
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                {project.links.live && (
+                  <a
+                    href={project.links.live}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="link-accent text-[1.0625rem] font-semibold"
                   >
-                    <dt className="footnote">{m.label}</dt>
-                    <dd className="display-num mt-2 text-[2rem] text-accent tabular-nums">
-                      {m.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </header>
-
-            {project.sections.map((section) => (
-              <Reveal key={section.id}>
-                <section
-                  id={section.id}
-                  className="mt-14 scroll-mt-[196px] border-t hairline pt-12 lg:scroll-mt-[156px]"
-                >
-                  <h2 className="section-title mb-6 !text-[clamp(2rem,3.5vw,2.75rem)]">
-                    {section.title}
-                  </h2>
-                  <div className="docs-prose">
-                    {section.body.map((b, i) => (
-                      <Prose key={i} text={b} />
-                    ))}
-                  </div>
-
-                  {section.bullets && (
-                    <ul className="mt-5 flex flex-col gap-3">
-                      {section.bullets.map((b) => (
-                        <li
-                          key={b}
-                          className="flex items-start gap-3 text-[1rem] leading-[1.5] text-label-2"
-                        >
-                          <CircleCheck
-                            size={18}
-                            strokeWidth={2}
-                            className="mt-0.5 flex-none text-accent"
-                          />
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {section.figures && (
-                    <div className="mt-8 grid gap-6">
-                      {section.figures.map((f) => (
-                        <ScreenshotPlaceholder
-                          key={f.caption}
-                          caption={f.caption}
-                          aspect={f.aspect === "wide" ? "wide" : f.aspect === "tall" ? "tall" : "video"}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </section>
-              </Reveal>
-            ))}
-
-            {/* previous / next */}
-            <nav
-              aria-label="More case studies"
-              className="mt-16 grid gap-3 border-t hairline pt-10 sm:grid-cols-2"
-            >
-              <Link href={`/projects/${prev.slug}`} className="glass-card group p-5">
-                <p className="footnote flex items-center gap-1">
-                  <ChevronLeft size={14} /> Previous
-                </p>
-                <p className="headline mt-1 group-hover:text-accent">{prev.title}</p>
-              </Link>
-              <Link href={`/projects/${next.slug}`} className="glass-card group p-5 text-right">
-                <p className="footnote flex items-center justify-end gap-1">
-                  Next <ChevronRight size={14} />
-                </p>
-                <p className="headline mt-1 group-hover:text-accent">{next.title}</p>
-              </Link>
-            </nav>
-          </article>
+                    Live site <ArrowUpRight size={16} />
+                  </a>
+                )}
+                {project.links.github && (
+                  <a
+                    href={project.links.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="link-accent text-[1.0625rem] font-semibold"
+                  >
+                    GitHub <ArrowUpRight size={16} />
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      </header>
+
+      {project.sections.map((section, i) => (
+        <Reveal key={section.id}>
+          <section id={section.id} className="mt-20 scroll-mt-28 border-t hairline pt-12">
+            <p className="section-marker">
+              <span aria-hidden>{"//"}</span> Section {String(i + 1).padStart(2, "0")}
+            </p>
+            <h2 className="section-title mt-4 !text-[clamp(1.875rem,4vw,2.5rem)]">
+              {section.title}
+            </h2>
+
+            <div className="docs-prose mt-6">
+              {section.body.map((b, i) => (
+                <Prose key={i} text={b} />
+              ))}
+            </div>
+
+            {section.bullets && (
+              <ul className="mt-7 flex flex-col gap-3 border-l hairline pl-5">
+                {section.bullets.map((b) => (
+                  <li
+                    key={b}
+                    className="flex items-start gap-3 text-[1rem] leading-[1.5] text-label-2"
+                  >
+                    <CircleCheck
+                      size={18}
+                      strokeWidth={2}
+                      className="mt-0.5 flex-none text-accent"
+                    />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {section.figures && (
+              <div className="mt-10 grid gap-8">
+                {section.figures.map((f) => (
+                  <ScreenshotPlaceholder
+                    key={f.caption}
+                    caption={f.caption}
+                    aspect={
+                      f.aspect === "wide" ? "wide" : f.aspect === "tall" ? "tall" : "video"
+                    }
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        </Reveal>
+      ))}
+
+      {/* previous / next */}
+      <nav
+        aria-label="More case studies"
+        className="mt-20 grid gap-3 border-t hairline pt-10 sm:grid-cols-2"
+      >
+        <Link href={`/projects/${prev.slug}`} className="glass-card group p-5">
+          <p className="footnote flex items-center gap-1">
+            <ChevronLeft size={14} /> Previous
+          </p>
+          <p className="headline mt-1 group-hover:text-accent">{prev.title}</p>
+        </Link>
+        <Link href={`/projects/${next.slug}`} className="glass-card group p-5 text-right">
+          <p className="footnote flex items-center justify-end gap-1">
+            Next <ChevronRight size={14} />
+          </p>
+          <p className="headline mt-1 group-hover:text-accent">{next.title}</p>
+        </Link>
+      </nav>
     </div>
   );
 }

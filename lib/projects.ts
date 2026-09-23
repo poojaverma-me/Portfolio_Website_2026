@@ -14,6 +14,10 @@ export type Project = {
   category: "AI / ML" | "Data" | "Security" | "Full-Stack";
   year: string;
   status: "Shipped" | "In Progress" | "Research";
+  /** shown in the case study meta grid */
+  timeline: string;
+  role: string;
+  team: string;
   featured: boolean;
   stack: string[];
   metrics: { label: string; value: string }[];
@@ -30,6 +34,9 @@ export const projects: Project[] = [
     category: "AI / ML",
     year: "2025",
     status: "Shipped",
+    timeline: "Jan 2025 to Jun 2025",
+    role: "Full-stack and retrieval design",
+    team: "Solo, with 2 faculty advisors",
     featured: true,
     stack: ["Python", "Transformers", "Semantic Search", "Vector DB", "React"],
     metrics: [
@@ -111,6 +118,9 @@ export const projects: Project[] = [
     category: "AI / ML",
     year: "2025",
     status: "Research",
+    timeline: "May 2025 to Dec 2025",
+    role: "Research lead",
+    team: "Solo, UREAP supervised",
     featured: true,
     stack: ["Python", "CNNs", "Transfer Learning", "NumPy", "Matplotlib"],
     metrics: [
@@ -184,6 +194,9 @@ export const projects: Project[] = [
     category: "Data",
     year: "2025",
     status: "Shipped",
+    timeline: "Feb 2025 to May 2025",
+    role: "Data pipeline and analysis",
+    team: "Solo",
     featured: true,
     stack: ["Python", "pandas", "NumPy", "SciPy", "SQL", "Snowflake", "Power BI"],
     metrics: [
@@ -248,6 +261,9 @@ export const projects: Project[] = [
     category: "Security",
     year: "2025",
     status: "Shipped",
+    timeline: "Sep 2025 to Dec 2025",
+    role: "Security engineering",
+    team: "2 students",
     featured: false,
     stack: ["Python", "CRYSTALS-Kyber", "Docker", "Cryptography"],
     metrics: [
@@ -308,6 +324,9 @@ export const projects: Project[] = [
     category: "Full-Stack",
     year: "2024",
     status: "Shipped",
+    timeline: "Summer 2024, 4 months",
+    role: "Salesforce developer",
+    team: "Platform team of 5",
     featured: false,
     stack: ["Salesforce", "Apex", "LWC", "Power Apps", "Power BI"],
     metrics: [
@@ -357,6 +376,9 @@ export const projects: Project[] = [
     category: "Full-Stack",
     year: "2024",
     status: "Shipped",
+    timeline: "Summer 2024, 6 weeks",
+    role: "Full-stack build",
+    team: "Solo, with the operations lead",
     featured: false,
     stack: ["Power Apps", "Power Automate", "SQL"],
     metrics: [
