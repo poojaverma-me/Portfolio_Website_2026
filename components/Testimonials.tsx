@@ -12,6 +12,9 @@ const DRIFT = 0.32;
 const RESUME_AFTER = 2500;
 /** The list is laid out three times, and the row sits in the middle copy. */
 const COPIES = [0, 1, 2];
+/** One copy has to be wider than the screen, or the wrap becomes visible. */
+const BASE =
+  testimonials.length < 5 ? [...testimonials, ...testimonials] : testimonials;
 
 function initials(name: string) {
   return name
@@ -32,14 +35,15 @@ function TestimonialCard({ t }: { t: Testimonial }) {
       <blockquote className="mt-4 flex-1 text-[0.9375rem] leading-[1.6] text-label-2">
         {t.quote}
       </blockquote>
-      <figcaption className="mt-6 flex items-center gap-3 border-t hairline pt-4">
-        <span className="app-icon text-[0.8125rem] font-semibold" aria-hidden>
+      <figcaption className="mt-6 flex items-start gap-3 border-t hairline pt-4">
+        <span className="app-icon mt-0.5 text-[0.8125rem] font-semibold" aria-hidden>
           {initials(t.name)}
         </span>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="headline !text-[0.9375rem]">{t.name}</p>
           <p className="footnote">{t.role}</p>
         </div>
+        <p className="footnote mt-0.5 flex-none tabular-nums">{t.date}</p>
       </figcaption>
     </figure>
   );
@@ -59,7 +63,7 @@ export default function Testimonials() {
   const period = useCallback(() => {
     const el = scroller.current;
     const first = el?.children[0] as HTMLElement | undefined;
-    const twin = el?.children[testimonials.length] as HTMLElement | undefined;
+    const twin = el?.children[BASE.length] as HTMLElement | undefined;
     return first && twin ? twin.offsetLeft - first.offsetLeft : 0;
   }, []);
 
@@ -188,11 +192,12 @@ export default function Testimonials() {
           className="no-scrollbar flex gap-4 overflow-x-auto overscroll-x-contain py-3 [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] focus-visible:outline-none"
         >
           {COPIES.map((copy) =>
-            testimonials.map((t) => (
+            BASE.map((t, i) => (
               <li
-                key={`${copy}-${t.name}`}
+                key={`${copy}-${i}-${t.name}`}
                 className="flex-none first:ml-6 last:mr-6"
-                aria-hidden={copy === 0 ? undefined : true}
+                // only the first pass is read out; the rest are the same quotes again
+                aria-hidden={copy === 0 && i < testimonials.length ? undefined : true}
               >
                 <TestimonialCard t={t} />
               </li>
