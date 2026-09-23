@@ -143,7 +143,7 @@ const LAYOUT = {
   mobile: { radius: 1.05, apex: 0.02, spread: 104, sweepArc: 52, scale: 2, ring: 0.35, ringY: 0.16 },
   // A wide spread keeps cards entering from the right as others leave on the
   // left, so the sweep never empties one side of the screen.
-  desktop: { radius: 1.1, apex: 0.12, spread: 150, sweepArc: 45, scale: 1.8, ring: 0.42, ringY: 0 },
+  desktop: { radius: 1.1, apex: 0.12, spread: 150, sweepArc: 45, scale: 1.8, ring: 0.42, ringY: -0.05 },
 };
 
 // Tracks the wheel closely while still easing into place.
@@ -313,7 +313,7 @@ export default function ScrollMorphHero({
 
         <div className="flex h-full w-full flex-col items-center justify-center">
           {/* Intro text (fades out as the arc forms) */}
-          <div className="pointer-events-none absolute inset-x-0 top-[13%] z-0 flex flex-col items-center justify-center px-6 text-center sm:top-1/2 sm:-translate-y-1/2">
+          <div className="pointer-events-none absolute inset-x-0 top-[13%] z-0 flex flex-col items-center justify-center px-6 text-center sm:top-[45%] sm:-translate-y-1/2">
             <motion.p
               initial={{ opacity: 0 }}
               animate={introVisible ? { opacity: 1 - morph * 2 } : { opacity: 0 }}

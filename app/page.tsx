@@ -77,7 +77,7 @@ export default function Home() {
       <WhatIDo />
 
       {/* featured projects */}
-      <section className="mt-14 sm:mt-32" id="projects">
+      <section className="mt-8 sm:mt-12" id="projects">
         <ScrollMorphHero cards={projectCovers()} allHref="/projects" />
       </section>
 

@@ -35,7 +35,8 @@ const features = [
 ];
 
 // Scroll distance (px) each card travels; alternating depths read as layers.
-const CARD_DEPTH = [70, 150, 40, 120];
+// Kept small: a card that drifts far leaves a hole where its box still sits.
+const CARD_DEPTH = [34, 72, 18, 56];
 
 const LG_QUERY = "(min-width: 1024px)";
 
@@ -85,11 +86,11 @@ export default function WhatIDo() {
   const progress = reduce ? still : scrollYProgress;
 
   const bandX = useTransform(progress, [0, 1], reduce ? ["0%", "0%"] : ["6%", "-34%"]);
-  const headerY = useTransform(progress, [0, 1], reduce ? [0, 0] : [40, -40]);
+  const headerY = useTransform(progress, [0, 1], reduce ? [0, 0] : [26, -26]);
   const cardDepth = reduce || !large ? 0 : 1;
 
   return (
-    <section ref={ref} className="relative overflow-hidden pt-24 pb-10 sm:pt-32 sm:pb-24">
+    <section ref={ref} className="relative overflow-hidden pt-24 pb-6 sm:pt-32 sm:pb-8">
       {/* oversized outline band drifting behind the heading */}
       <motion.div
         aria-hidden
