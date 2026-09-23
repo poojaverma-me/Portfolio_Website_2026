@@ -2,10 +2,29 @@ import type { Metadata } from "next";
 import ProjectsGrid from "@/components/ProjectsGrid";
 import Reveal from "@/components/Reveal";
 
+const description =
+  "Case studies by Pooja Verma: full-stack builds, retrieval and CNN research, Salesforce platform work, and data systems, each written up with the problem, the architecture and the result.";
+
 export const metadata: Metadata = {
-  title: "Projects · Pooja Verma",
-  description:
-    "All projects by Pooja Verma: full-stack builds, ML research, products, and systems work.",
+  // the layout template appends the name, so the title stays short here
+  title: "Projects",
+  description,
+  keywords: [
+    "Pooja Verma projects",
+    "software engineering case studies",
+    "RAG system project",
+    "CNN research project",
+    "Salesforce automation project",
+    "full-stack portfolio projects",
+  ],
+  alternates: { canonical: "/projects" },
+  openGraph: {
+    type: "website",
+    title: "Projects · Pooja Verma",
+    description,
+    url: "/projects",
+  },
+  twitter: { card: "summary_large_image", title: "Projects · Pooja Verma", description },
 };
 
 export default function ProjectsPage() {

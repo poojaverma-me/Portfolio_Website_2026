@@ -1,0 +1,43 @@
+# Pooja Verma
+
+> Computing science student at Thompson Rivers University in Kamloops, BC,
+> working across full-stack development, applied AI and data. Open to
+> internships and research collaborations.
+
+## Who she is
+- Bachelor of Computing Science, Thompson Rivers University, 2022 to present.
+- Junior Research Intern (Mitacs BSI) at PataBid, Okotoks AB: owned a new PDF
+  rendering engine for a construction estimating platform, integrated the
+  Nutrient (PSPDFKit) SDK, and built the pipelines behind automated stamp and
+  take-off detection.
+- LLM model trainer at Outlier.AI: trained and evaluated 100+ models.
+- Undergraduate research assistant at TRU: built a retrieval-augmented
+  generation assistant used by 3,000+ students, improving answer relevance 40%.
+- Programmer analyst co-op at BC Lottery Corporation: Salesforce (Apex, LWC)
+  and Power Platform work for 4,000+ retailers; cut manual licensing work 30%.
+- Undergraduate teaching assistant at TRU for web development and data structures.
+
+## Research
+- AI-Driven Post-Wildfire Ecosystem Recovery, TRU Student Sustainability
+  Research Grant ($2,500), supervised by Dr. Ghazanfar Latif. LightGBM at 0.707
+  weighted F1 over six merged environmental datasets; presented at the TRU
+  Sustainability Conference.
+- Automated diabetic retinopathy detection from fundus images using CNNs,
+  UREAP Research Award ($6,000).
+
+## Skills
+Python, TypeScript, JavaScript, React, Next.js, C#, SQL, Snowflake, Oracle,
+Matillion, machine learning (scikit-learn, XGBoost, LightGBM, SHAP), pandas,
+NumPy, SciPy, Matplotlib, MATLAB, Tableau, Power BI, Power Apps, Salesforce,
+Git, GitHub Actions, REST APIs.
+
+## Pages
+- /: profile, experience, research, leadership and contact.
+- /projects: every case study.
+- /projects/[slug]: one case study, written as problem, method, results.
+
+## Contact
+- Email: pooja32verma@gmail.com
+- GitHub: https://github.com/poojaverma-me
+- LinkedIn: https://www.linkedin.com/in/poojav3rma
+- LeetCode: https://leetcode.com/sugaryeuphoria/

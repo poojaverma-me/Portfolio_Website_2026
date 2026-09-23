@@ -1,6 +1,6 @@
 import { ArrowUpRight, Code, Mail } from "lucide-react";
 import { profile } from "@/lib/profile";
-import DottedSurface from "@/components/ui/dotted-surface";
+import DottedSurface from "@/components/ui/dotted-surface-lazy";
 
 function GithubIcon({ size = 16 }: { size?: number }) {
   return (

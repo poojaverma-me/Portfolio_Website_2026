@@ -63,7 +63,7 @@ export default function ProjectsGrid() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <ProjectCard project={p} />
+            <ProjectCard project={p} headingLevel={2} />
           </motion.div>
         ))}
       </div>

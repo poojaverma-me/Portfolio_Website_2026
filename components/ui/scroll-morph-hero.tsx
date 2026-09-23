@@ -98,6 +98,7 @@ function FlipCard({
               alt=""
               draggable={false}
               decoding="async"
+              loading="lazy"
               className="h-full w-full object-cover"
             />
             {/* specular edge, like a Liquid Glass tile */}

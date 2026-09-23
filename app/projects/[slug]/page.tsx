@@ -25,9 +25,26 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return {};
+  const url = `/projects/${project.slug}`;
   return {
-    title: `${project.title} · Pooja Verma`,
+    title: project.title,
     description: project.tagline,
+    keywords: [project.title, project.category, ...project.stack, "Pooja Verma"],
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: `${project.title} · Pooja Verma`,
+      description: project.tagline,
+      url,
+      publishedTime: `${project.year}-01-01`,
+      authors: ["Pooja Verma"],
+      tags: project.stack,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} · Pooja Verma`,
+      description: project.tagline,
+    },
   };
 }
 

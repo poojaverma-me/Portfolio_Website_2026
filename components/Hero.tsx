@@ -66,8 +66,8 @@ export default function Hero() {
             alt="Pooja Verma, circled by an orange light trail"
             fill
             priority
-            unoptimized
-            sizes="52vw"
+            sizes="(max-width: 1024px) 0px, 52vw"
+            quality={82}
             className="hero-fade object-contain object-right"
           />
         </motion.div>

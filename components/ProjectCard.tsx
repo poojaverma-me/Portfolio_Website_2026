@@ -3,8 +3,16 @@ import { ChevronRight } from "lucide-react";
 import type { Project } from "@/lib/projects";
 import { categoryIcon } from "@/lib/categories";
 
-export default function ProjectCard({ project }: { project: Project }) {
+export default function ProjectCard({
+  project,
+  headingLevel = 3,
+}: {
+  project: Project;
+  /** 2 where the cards sit straight under the page title, 3 under a section heading. */
+  headingLevel?: 2 | 3;
+}) {
   const Icon = categoryIcon[project.category];
+  const Heading = headingLevel === 2 ? "h2" : "h3";
 
   return (
     <Link
@@ -29,9 +37,9 @@ export default function ProjectCard({ project }: { project: Project }) {
           <span className="font-normal text-label-3">·</span>
           <span className="font-normal text-label-2">{project.status}</span>
         </p>
-        <h3 className="headline mt-1.5 !text-[1.25rem]">
+        <Heading className="headline mt-1.5 !text-[1.25rem]">
           {project.title}
-        </h3>
+        </Heading>
         <p className="mt-2 flex-1 text-[0.9375rem] leading-[1.47] text-label-2">
           {project.tagline}
         </p>
