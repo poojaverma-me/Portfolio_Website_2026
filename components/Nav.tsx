@@ -15,10 +15,10 @@ const links = [
   { href: "/#research", label: "Research" },
 ];
 
-// Shiny "Get in touch" call to action, coloured by the theme accent
+// Shiny "Get in touch" call to action, coloured by the accent. It scrolls to
+// the contact card, where the address and the profile links live.
 const getInTouch = {
   label: "Get in touch",
-  href: `mailto:${profile.email}`,
   fillColor: "#0b0806",
   labelColor: "#ffffff",
   accentColor: "var(--color-accent)",
@@ -38,6 +38,8 @@ export default function Nav() {
   const pathname = usePathname();
 
   const highlighted = hovered ?? links.find((l) => isActive(pathname, l.href))?.href;
+  // a bare hash scrolls in place; from another route it has to carry the path
+  const contactHref = pathname === "/" ? "#contact" : "/#contact";
 
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3">
@@ -81,7 +83,7 @@ export default function Nav() {
         <div className="flex items-center gap-1">
           {/* wrapper owns visibility: the button's scoped styles set its display */}
           <span className="hidden sm:inline-flex">
-            <ShinyButton {...getInTouch} size="sm" />
+            <ShinyButton {...getInTouch} href={contactHref} size="sm" />
           </span>
           <button
             className="md:hidden flex h-10 w-10 items-center justify-center rounded-full text-label hover:bg-fill"
@@ -112,7 +114,13 @@ export default function Nav() {
             </Link>
           ))}
           <div className="mt-2">
-            <ShinyButton {...getInTouch} size="md" className="w-full" />
+            <ShinyButton
+              {...getInTouch}
+              href={contactHref}
+              onClick={() => setOpen(false)}
+              size="md"
+              className="w-full"
+            />
           </div>
         </motion.div>
       )}

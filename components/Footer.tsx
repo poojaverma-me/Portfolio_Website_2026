@@ -28,7 +28,10 @@ export default function Footer() {
   return (
     <footer className="mt-40">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="glass-card overflow-hidden px-8 py-14 sm:px-14 sm:py-20">
+        <div
+          id="contact"
+          className="glass-card scroll-mt-28 overflow-hidden px-8 py-14 sm:px-14 sm:py-20"
+        >
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0"
