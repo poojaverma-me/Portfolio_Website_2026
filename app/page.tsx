@@ -160,42 +160,71 @@ export default function Home() {
               <span className="text-label-2">Showing up in person.</span>
             </>
           }
-          lead="Club nights, conference desks and start lines. The work that does not fit on a resume line but says how I show up."
+          lead="Club nights, conference desks and start lines."
         />
-        <div className="mt-12 grid gap-4 md:grid-cols-2">
-          {volunteering.map((v, i) => (
-            <Reveal
-              key={`${v.org}-${v.role}`}
-              delay={(i % 2) * 0.08}
-              className={v.featured ? "md:col-span-2" : undefined}
-            >
-              <article className="glass-card is-interactive flex h-full flex-col p-6">
-                <div className="flex items-start gap-4">
-                  <span className="app-icon flex-none">
-                    {v.featured ? (
-                      <Users size={19} strokeWidth={2} />
-                    ) : (
-                      <HeartHandshake size={19} strokeWidth={2} />
-                    )}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <h3 className="headline">{v.role}</h3>
-                      <span className="footnote tabular-nums">{v.period}</span>
+
+        {(() => {
+          const club = volunteering.find((v) => v.featured);
+          const shifts = volunteering.filter((v) => !v.featured);
+          return (
+            <div className="mt-12 grid items-start gap-4 lg:grid-cols-2">
+              {club && (
+                <Reveal>
+                  <article className="glass-card is-interactive h-full p-6">
+                    <div className="flex items-start gap-4">
+                      <span className="app-icon flex-none">
+                        <Users size={19} strokeWidth={2} />
+                      </span>
+                      <div className="min-w-0">
+                        <h3 className="headline">{club.role}</h3>
+                        <p className="footnote mt-1 !text-label">{club.org}</p>
+                      </div>
                     </div>
-                    <p className="footnote mt-1 !text-label">{v.org}</p>
-                  </div>
-                </div>
-                <p className="mt-4 flex-1 text-[0.9375rem] leading-[1.47] text-label-2">
-                  {v.detail}
-                </p>
-                <div className="mt-5">
-                  <span className="token">{v.cause}</span>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+                    <p className="mt-4 text-[0.9375rem] leading-[1.47] text-label-2">
+                      {club.detail}
+                    </p>
+                    <p className="footnote mt-4 tabular-nums">
+                      {club.period} · {club.cause}
+                    </p>
+                  </article>
+                </Reveal>
+              )}
+
+              <Reveal delay={0.08}>
+                <ul className="glass-card overflow-hidden">
+                  {shifts.map((v, i) => (
+                    <li
+                      key={`${v.org}-${v.role}`}
+                      className={`flex items-baseline gap-4 px-5 py-4 ${
+                        i > 0 ? "border-t hairline" : ""
+                      }`}
+                    >
+                      <span
+                        className="app-icon !h-7 !w-7 !rounded-[8px] hidden flex-none self-center sm:inline-flex"
+                        aria-hidden
+                      >
+                        <HeartHandshake size={14} strokeWidth={2} />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[0.9375rem] font-medium leading-tight">
+                          {v.org}
+                        </p>
+                        <p className="footnote mt-0.5">
+                          {v.role} · {v.cause}
+                          {/* on a phone the date joins this line instead of squeezing the title */}
+                          <span className="sm:hidden"> · {v.period}</span>
+                        </p>
+                      </div>
+                      <span className="footnote hidden flex-none tabular-nums sm:block">
+                        {v.period}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            </div>
+          );
+        })()}
       </section>
 
       {/* testimonials, right before the contact card in the footer */}

@@ -155,8 +155,8 @@ export type VolunteerItem = {
   period: string;
   /** The cause each one sits under, in LinkedIn's own words */
   cause: string;
-  detail: string;
-  /** The one that is a build rather than a shift */
+  /** Only the club gets a line of its own; the rest read as a list */
+  detail?: string;
   featured?: boolean;
 };
 
@@ -167,47 +167,37 @@ export const volunteering: VolunteerItem[] = [
     period: "Jan 2024 – Present",
     cause: "Science and Technology",
     detail:
-      "Co-founded Thompson Rivers University's first combat robotics club after the idea came up in a text conversation, and stepped into the lead when the club hit leadership gaps. Coordinate remotely, guide the technical projects, delegate the work, and keep members building and competing together.",
+      "Co-founded TRU's first combat robotics club and stepped into the lead when it hit leadership gaps, guiding the technical projects and keeping members building and competing.",
     featured: true,
   },
   {
-    role: "Registration and Demographics Monitor",
+    role: "Registration and demographics",
     org: "TRU IDAYS · Thompson Rivers University",
     period: "2023 – 2025",
     cause: "Arts and Culture",
-    detail:
-      "Ran the welcome desk across three years of TRU's culture festival, then collected and analysed attendee demographics so the next one could be planned on evidence rather than guesswork.",
   },
   {
-    role: "Registration Volunteer",
+    role: "Registration",
     org: "Indigenous Vendor Showcase · BCLC",
     period: "Nov 2024",
     cause: "Economic Empowerment",
-    detail:
-      "Checked vendors and guests in at the showcase BCLC hosted with the City of Kamloops and Thompson Rivers University, connecting local Indigenous businesses with partners and buyers.",
   },
   {
-    role: "Registration Volunteer",
+    role: "Registration",
     org: "ICICET25 · Canadian Association for AI and Future Studies",
     period: "Aug 2025",
     cause: "Science and Technology",
-    detail:
-      "Supported the organisers through the conference, keeping registration moving so presenters and attendees could get on with the research.",
   },
   {
-    role: "Registration Volunteer",
+    role: "Registration",
     org: "5K Foam Fest · 365 Sports",
     period: "Jun 2025",
     cause: "Economic Empowerment",
-    detail:
-      "Welcomed runners at the start line, handed out race materials and answered questions so the morning stayed on schedule.",
   },
   {
-    role: "Web Designer",
+    role: "Web design",
     org: "Child Help Foundation",
     period: "Volunteer",
     cause: "Social Services",
-    detail:
-      "Built web pages for a children's charity working across India on healthcare, education and disaster relief.",
   },
 ];
