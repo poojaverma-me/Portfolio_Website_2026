@@ -17,7 +17,10 @@ function Entry({ item, index }: { item: Experience; index: number }) {
   const on = reduce || lit;
 
   return (
-    <li ref={ref} className="relative grid gap-x-10 gap-y-3 pb-14 lg:grid-cols-[210px_1fr]">
+    <li
+      ref={ref}
+      className="relative grid gap-x-10 gap-y-3 pb-14 lg:grid-cols-[210px_1fr]"
+    >
       {/* who and when */}
       <div className="pl-8 lg:pl-0 lg:pt-1 lg:text-right">
         <p className="section-marker">{String(index + 1).padStart(2, "0")}</p>
@@ -68,19 +71,24 @@ function Entry({ item, index }: { item: Experience; index: number }) {
           }`}
         >
           <h4 className="headline !text-[1.1875rem]">{item.role}</h4>
-          <ul className="mt-4 flex flex-col gap-2.5">
-            {item.points.map((pt) => (
-              <li
-                key={pt}
-                className="flex gap-2.5 text-[0.9375rem] leading-[1.5] text-label-2"
-              >
-                <span aria-hidden className="mt-[1px] flex-none font-mono text-accent">
-                  ›
-                </span>
-                {pt}
-              </li>
-            ))}
-          </ul>
+          {item.points && item.points.length > 0 && (
+            <ul className="mt-4 flex flex-col gap-2.5">
+              {item.points.map((pt) => (
+                <li
+                  key={pt}
+                  className="flex gap-2.5 text-[0.9375rem] leading-[1.5] text-label-2"
+                >
+                  <span
+                    aria-hidden
+                    className="mt-[1px] flex-none font-mono text-accent"
+                  >
+                    ›
+                  </span>
+                  {pt}
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="mt-5 flex flex-wrap gap-1.5">
             {item.tags.map((t) => (
               <span key={t} className="token">

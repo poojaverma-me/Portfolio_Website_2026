@@ -46,7 +46,8 @@ export type Experience = {
   role: string;
   period: string;
   location: string;
-  points: string[];
+  /** Some roles speak for themselves; those carry no bullets. */
+  points?: string[];
   tags: string[];
 };
 
@@ -55,7 +56,7 @@ export const experience: Experience[] = [
     company: "PataBid",
     role: "Junior Research Intern, Mitacs BSI",
     period: "Jan 2026 – Sep 2026",
-    location: "Okotoks, AB",
+    location: "Remote",
     points: [
       "Owned end to end development of a new PDF rendering engine for the company's construction estimating platform, delivering every milestone of the 8-month Mitacs-funded placement ahead of schedule.",
       "Integrated the Nutrient (PSPDFKit) SDK into an existing JavaScript codebase and worked directly with the vendor to diagnose defects and drive fixes.",
@@ -65,50 +66,98 @@ export const experience: Experience[] = [
     tags: ["JavaScript", "PDF Rendering", "PSPDFKit", "Data Pipelines"],
   },
   {
-    company: "Outlier.AI",
-    role: "LLM Model Trainer (Freelance)",
-    period: "Nov 2025 – Present",
+    company: "Thompson Rivers University",
+    role: "Undergraduate Student Researcher",
+    period: "Apr 2026 – Present",
+    location: "Kamloops, BC (Remote)",
+    points: [
+      "Building the machine learning framework behind the post-wildfire ecosystem recovery study, from assembling the environmental datasets to selecting and tuning the model.",
+    ],
+    tags: ["LightGBM", "SHAP", "Optuna", "Geospatial data"],
+  },
+  {
+    company: "Outlier",
+    role: "Generative AI Data Specialist, previously Tier-3 Programmer Analyst",
+    period: "Nov 2024 – Present",
     location: "San Francisco, CA (Remote)",
     points: [
-      "Trained and evaluated 100+ LLMs for accuracy, precision, fluency, correctness, and F1 score across diverse tasks.",
+      "Trained and evaluated 100+ large language models for accuracy, precision, fluency, correctness and F1 score across diverse tasks.",
       "Delivered corrective feedback on 100+ code issues, raising model performance on the tasks I reviewed.",
     ],
-    tags: ["LLMs", "Model Evaluation", "Python"],
+    tags: ["Generative AI", "LLM evaluation", "Python", "Data pipelines"],
+  },
+  {
+    company: "Thompson Rivers University",
+    role: "Research Coach",
+    period: "Jan 2026 – May 2026",
+    location: "Kamloops, BC (Hybrid)",
+    tags: ["Research methods", "Mentoring"],
+  },
+  {
+    company: "Thompson Rivers University",
+    role: "Undergraduate Student Researcher, UREAP",
+    period: "Apr 2025 – Nov 2025",
+    location: "Kamloops, BC (Hybrid)",
+    points: [
+      "Won a $6,000 UREAP award to train CNN models that flag diabetic retinopathy in fundus images, and benchmarked transfer learning against hybrid architectures.",
+      "Documented the preprocessing and evaluation so the study could be reproduced by the next student to pick it up.",
+    ],
+    tags: ["CNNs", "Transfer learning", "NumPy"],
   },
   {
     company: "Thompson Rivers University",
     role: "Undergraduate Research Assistant",
-    period: "May – Jul 2025",
-    location: "Kamloops, BC",
+    period: "May 2025 – Jul 2025",
+    location: "Kamloops, BC (Hybrid)",
     points: [
-      "Developed a Retrieval-Augmented Generation (RAG) system delivering context-aware, pedagogy-aligned responses to student queries.",
-      "Integrated semantic search and transformer-based retrieval, improving response relevance by 40%.",
-      "Scaled the system to 3,000+ students, reducing repetitive instructor questions by 35%.",
+      "Developed a Retrieval-Augmented Generation system delivering context-aware, pedagogy-aligned answers to student questions.",
+      "Integrated semantic search with transformer-based retrieval, improving response relevance by 40%.",
+      "Scaled the system to 3,000+ students, cutting repetitive instructor questions by 35%.",
     ],
-    tags: ["RAG", "Semantic Search", "Transformers"],
+    tags: ["RAG", "Semantic search", "Transformers"],
   },
   {
-    company: "British Columbia Lottery Corporation",
-    role: "Programmer Analyst Co-op",
-    period: "May 2024 – Jan 2025",
+    company: "Sylvan Learning",
+    role: "Mathematics Tutor",
+    period: "May 2025 – Jun 2026",
     location: "Kamloops, BC",
     points: [
-      "Built scalable Salesforce solutions with Apex, LWC, and automation flows for 4,000+ retailers across Canada, standardizing reporting and workflows.",
-      "Automated licensing workflows with Power Apps and Power BI, cutting manual tasks by 30% and supporting digital transformation.",
-      "Built an employee check-in system now used by 1,000+ employees, pairing with another co-op student through the build.",
+      "Tutored students in mathematics one to one, rebuilding the fundamentals under whatever topic they were stuck on.",
     ],
-    tags: ["Salesforce", "Apex", "LWC", "Power Apps", "Power BI"],
+    tags: ["Mathematics", "Problem solving"],
   },
   {
     company: "Thompson Rivers University",
     role: "Undergraduate Teaching Assistant",
-    period: "Jan – May 2024 · Feb – Apr 2025",
+    period: "Jan 2024 – Apr 2026, three terms",
     location: "Kamloops, BC",
     points: [
-      "Taught lab sections in HTML, CSS, JavaScript, Java, Python, and data structures, holding students to clean code and clear logic.",
+      "Taught lab sections in HTML, CSS, JavaScript, Java, Python and data structures, holding students to clean code and clear logic.",
       "Coached students on documentation and version control so their work stayed readable and maintainable.",
     ],
-    tags: ["Teaching", "JavaScript", "Python", "Java"],
+    tags: ["Teaching", "Java", "Python", "JavaScript"],
+  },
+  {
+    company: "British Columbia Lottery Corporation",
+    role: "Software Engineering Co-op",
+    period: "May 2024 – Jan 2025",
+    location: "Kamloops, BC (Hybrid)",
+    points: [
+      "Built scalable Salesforce solutions with Apex, LWC and automation flows for 4,000+ retailers across Canada, standardizing reporting and workflows.",
+      "Automated licensing workflows with Power Apps and Power BI, cutting manual tasks by 30%.",
+      "Built an employee check-in system now used by 1,000+ employees, pairing with another co-op student through the build.",
+    ],
+    tags: ["Salesforce", "Apex", "LWC", "SOQL", "Power Apps", "Power BI"],
+  },
+  {
+    company: "Shivam Echotech India",
+    role: "Administrative Assistant and Customer Care Representative",
+    period: "Aug 2018 – Dec 2023",
+    location: "Part-time",
+    points: [
+      "Handled customer care and data entry across five years of part-time work alongside school and university.",
+    ],
+    tags: ["Customer service", "Data entry"],
   },
 ];
 
