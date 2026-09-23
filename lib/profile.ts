@@ -149,50 +149,65 @@ export const research: ResearchItem[] = [
   },
 ];
 
-export type LeadershipItem = {
-  role: string;
-  org: string;
-  period: string;
-  detail: string;
-};
-
-export const leadership: LeadershipItem[] = [
-  {
-    role: "Co-Founder, Vice-President & Main Spokesperson",
-    org: "TRUSU Combat Robotics Club",
-    period: "2024 – Present",
-    detail:
-      "Co-founded the club and serve as its public voice: growing membership, running build nights, and representing the club at campus events.",
-  },
-  {
-    role: "Member",
-    org: "TRUSU Computing Science Club",
-    period: "2023 – Present",
-    detail:
-      "Active member of the campus computing community through talks, socials, and peer learning.",
-  },
-];
-
 export type VolunteerItem = {
   role: string;
   org: string;
   period: string;
+  /** The cause each one sits under, in LinkedIn's own words */
+  cause: string;
+  detail: string;
+  /** The one that is a build rather than a shift */
+  featured?: boolean;
 };
 
 export const volunteering: VolunteerItem[] = [
   {
-    role: "Event Registration Volunteer",
+    role: "Co-Founder and Vice-President",
+    org: "TRUSU Combat Robotics Club",
+    period: "Jan 2024 – Present",
+    cause: "Science and Technology",
+    detail:
+      "Co-founded Thompson Rivers University's first combat robotics club after the idea came up in a text conversation, and stepped into the lead when the club hit leadership gaps. Coordinate remotely, guide the technical projects, delegate the work, and keep members building and competing together.",
+    featured: true,
+  },
+  {
+    role: "Registration and Demographics Monitor",
     org: "TRU IDAYS · Thompson Rivers University",
     period: "2023 – 2025",
+    cause: "Arts and Culture",
+    detail:
+      "Ran the welcome desk across three years of TRU's culture festival, then collected and analysed attendee demographics so the next one could be planned on evidence rather than guesswork.",
   },
   {
-    role: "Event Registration Volunteer",
-    org: "BCLC Vendor Showcase",
+    role: "Registration Volunteer",
+    org: "Indigenous Vendor Showcase · BCLC",
     period: "Nov 2024",
+    cause: "Economic Empowerment",
+    detail:
+      "Checked vendors and guests in at the showcase BCLC hosted with the City of Kamloops and Thompson Rivers University, connecting local Indigenous businesses with partners and buyers.",
   },
   {
-    role: "Event Registration Volunteer",
-    org: "365 Sports 5K Foam Fest · Kamloops",
+    role: "Registration Volunteer",
+    org: "ICICET25 · Canadian Association for AI and Future Studies",
+    period: "Aug 2025",
+    cause: "Science and Technology",
+    detail:
+      "Supported the organisers through the conference, keeping registration moving so presenters and attendees could get on with the research.",
+  },
+  {
+    role: "Registration Volunteer",
+    org: "5K Foam Fest · 365 Sports",
     period: "Jun 2025",
+    cause: "Economic Empowerment",
+    detail:
+      "Welcomed runners at the start line, handed out race materials and answered questions so the morning stayed on schedule.",
+  },
+  {
+    role: "Web Designer",
+    org: "Child Help Foundation",
+    period: "Volunteer",
+    cause: "Social Services",
+    detail:
+      "Built web pages for a children's charity working across India on healthcare, education and disaster relief.",
   },
 ];
