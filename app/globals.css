@@ -35,11 +35,9 @@
 }
 
 /* ---------- theme ----------
-   Dark is the default. <html data-theme="light"> swaps every token below;
-   components only ever read these variables. */
+   One theme, dark. Components only ever read these variables. */
 
-:root,
-[data-theme="dark"] {
+:root {
   color-scheme: dark;
   --on-accent: #1a0802;
   --edge: rgb(0 0 0 / 0.6);
@@ -58,37 +56,23 @@
   --scroll-thumb-hover: rgb(255 255 255 / 0.38);
 }
 
-[data-theme="light"] {
-  color-scheme: light;
-
-  --color-base: #f6f4f1;
-  --color-surface: #ffffff;
-  --color-surface-2: #efedea;
-  --color-label: #1d1d1f;
-  --color-label-2: rgb(29 29 31 / 0.68);
-  --color-label-3: rgb(29 29 31 / 0.4);
-  --color-separator: rgb(60 60 67 / 0.16);
-  --color-fill: rgb(120 110 100 / 0.1);
-  --color-fill-2: rgb(120 110 100 / 0.18);
-  /* deeper cut of the portrait orange so text stays readable on light */
-  --color-accent: #c24a06;
-  --color-accent-hover: #dc5a0e;
-
-  --on-accent: #ffffff;
-  --edge: rgb(40 25 10 / 0.1);
-  --edge-strong: rgb(40 25 10 / 0.12);
-  --shadow: rgb(60 35 15 / 0.08);
-  --shadow-strong: rgb(60 35 15 / 0.14);
-  --tile-top: #ffffff;
-  --tile-bottom: #ebe8e4;
-  --control-bg: rgb(255 255 255 / 0.7);
-  --control-hover: rgb(255 255 255 / 0.95);
-  --window-bg: rgb(255 255 255 / 0.88);
-  --cover-bg: linear-gradient(180deg, #f3f1ee, #e8e5e1);
-  --cover-glow: rgb(255 255 255 / 0.8);
-  --wallpaper-soft: rgb(249 107 11 / 0.05);
-  --scroll-thumb: rgb(0 0 0 / 0.2);
-  --scroll-thumb-hover: rgb(0 0 0 / 0.35);
+/* the portrait ends on a hard horizontal cut, so dissolve its lower edge
+   into the page instead of stopping dead */
+.hero-fade {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 74%,
+    rgb(0 0 0 / 0.78) 85%,
+    rgb(0 0 0 / 0.3) 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black 74%,
+    rgb(0 0 0 / 0.78) 85%,
+    rgb(0 0 0 / 0.3) 94%,
+    transparent 100%
+  );
 }
 
 html {
@@ -569,17 +553,6 @@ html[data-intro="skip"] .intro-overlay {
     background: color-mix(in srgb, var(--color-accent) 22%, transparent);
   }
 
-  /* on a light page the ember would blow out, so it warms instead */
-  [data-theme="light"] .cursor-glow {
-    mix-blend-mode: multiply;
-    background: radial-gradient(
-      circle closest-side,
-      color-mix(in srgb, var(--color-accent) 13%, transparent) 0%,
-      color-mix(in srgb, var(--color-accent) 6%, transparent) 30%,
-      transparent 100%
-    );
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .cursor-fx {
       display: none;
@@ -671,10 +644,6 @@ html[data-intro="skip"] .intro-overlay {
     background: rgb(255 138 61 / 0.3);
     animation-duration: 10s;
   }
-  [data-theme="light"] .intro-blob-b {
-    background: rgb(0 0 0 / 0.04);
-  }
-
   @keyframes intro-drift {
     from {
       transform: translate(-6%, -4%) scale(1);

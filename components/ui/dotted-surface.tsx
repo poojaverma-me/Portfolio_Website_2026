@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/lib/use-theme";
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
@@ -16,7 +15,7 @@ const SEPARATION = 150;
 const AMOUNTX = 40;
 const AMOUNTY = 60;
 
-/** Read a CSS custom property from <html>, so the dots follow the theme tokens. */
+/** Read a CSS custom property from <html>, so the dots follow the design tokens. */
 function cssColor(name: string, fallback: string) {
   const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const color = new THREE.Color();
@@ -40,7 +39,6 @@ export function DottedSurface({
   vertexColors = true,
   ...props
 }: DottedSurfaceProps) {
-  const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,7 +49,7 @@ export function DottedSurface({
     const height = () => Math.max(container.clientHeight, 1);
 
     // Scene setup. Fog fades distant dots into the page background.
-    const baseColor = cssColor("--color-base", theme === "dark" ? "#000000" : "#f6f4f1");
+    const baseColor = cssColor("--color-base", "#000000");
     const scene = new THREE.Scene();
     scene.fog = new THREE.Fog(baseColor, 2000, 10000);
 
@@ -73,7 +71,7 @@ export function DottedSurface({
     // Dots: nearest rows take the accent colour, fading to the label colour
     // toward the horizon. THREE colours are 0 to 1, not 0 to 255.
     const near = cssColor("--color-accent", "#f96b0b");
-    const far = cssColor("--color-label", theme === "dark" ? "#f5f5f7" : "#1d1d1f");
+    const far = cssColor("--color-label", "#f5f5f7");
     const mixed = new THREE.Color();
 
     const positions: number[] = [];
@@ -167,7 +165,7 @@ export function DottedSurface({
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, [theme, size, opacity, sizeAttenuation, vertexColors]);
+  }, [size, opacity, sizeAttenuation, vertexColors]);
 
   return (
     <div

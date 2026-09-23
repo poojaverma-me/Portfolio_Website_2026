@@ -68,7 +68,7 @@ export default function Hero() {
             priority
             unoptimized
             sizes="52vw"
-            className="object-contain object-right [[data-theme=light]_&]:[mask-image:linear-gradient(to_bottom,black_90%,transparent)]"
+            className="hero-fade object-contain object-right"
           />
         </motion.div>
       </motion.div>

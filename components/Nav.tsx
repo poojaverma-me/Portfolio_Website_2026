@@ -6,7 +6,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { profile } from "@/lib/profile";
-import ThemeToggle from "@/components/ThemeToggle";
 import ShinyButton from "@/components/ui/shiny-button";
 
 const links = [
@@ -80,7 +79,6 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center gap-1">
-          <ThemeToggle />
           {/* wrapper owns visibility: the button's scoped styles set its display */}
           <span className="hidden sm:inline-flex">
             <ShinyButton {...getInTouch} size="sm" />

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Anton, Archivo, JetBrains_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { themeScript } from "@/lib/theme";
 import { introScript } from "@/lib/intro";
 import CursorGlow from "@/components/CursorGlow";
 import IntroHello from "@/components/IntroHello";
@@ -38,14 +37,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="dark"
       data-intro="play"
       suppressHydrationWarning
       className={`${anton.variable} ${archivo.variable} ${jetbrains.variable} h-full`}
     >
       <head>
-        {/* applies the saved theme before first paint, see lib/theme.ts */}
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {/* decides before first paint whether the hello intro plays, see lib/intro.ts */}
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
         <noscript>
