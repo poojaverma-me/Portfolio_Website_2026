@@ -89,7 +89,7 @@ export default function WhatIDo() {
   const cardDepth = reduce || !large ? 0 : 1;
 
   return (
-    <section ref={ref} className="relative overflow-hidden pt-32 pb-24">
+    <section ref={ref} className="relative overflow-hidden pt-24 pb-10 sm:pt-32 sm:pb-24">
       {/* oversized outline band drifting behind the heading */}
       <motion.div
         aria-hidden

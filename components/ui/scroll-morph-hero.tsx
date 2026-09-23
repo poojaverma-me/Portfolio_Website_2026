@@ -140,10 +140,10 @@ const SCROLL_DISTANCE = 900;
 // Stage geometry per breakpoint. apex is the arc's high point as a fraction of
 // stage height measured from the middle, so a small number sits it near centre.
 const LAYOUT = {
-  mobile: { radius: 1.05, apex: 0.02, spread: 104, sweepArc: 52, scale: 2, ring: 0.35 },
+  mobile: { radius: 1.05, apex: 0.02, spread: 104, sweepArc: 52, scale: 2, ring: 0.35, ringY: 0.16 },
   // A wide spread keeps cards entering from the right as others leave on the
   // left, so the sweep never empties one side of the screen.
-  desktop: { radius: 1.1, apex: 0.12, spread: 150, sweepArc: 45, scale: 1.8, ring: 0.42 },
+  desktop: { radius: 1.1, apex: 0.12, spread: 150, sweepArc: 45, scale: 1.8, ring: 0.42, ringY: 0 },
 };
 
 // Tracks the wheel closely while still easing into place.
@@ -313,7 +313,7 @@ export default function ScrollMorphHero({
 
         <div className="flex h-full w-full flex-col items-center justify-center">
           {/* Intro text (fades out as the arc forms) */}
-          <div className="pointer-events-none absolute top-1/2 z-0 flex -translate-y-1/2 flex-col items-center justify-center px-6 text-center">
+          <div className="pointer-events-none absolute inset-x-0 top-[13%] z-0 flex flex-col items-center justify-center px-6 text-center sm:top-1/2 sm:-translate-y-1/2">
             <motion.p
               initial={{ opacity: 0 }}
               animate={introVisible ? { opacity: 1 - morph * 2 } : { opacity: 0 }}
@@ -330,7 +330,7 @@ export default function ScrollMorphHero({
                   : { opacity: 0, filter: "blur(10px)" }
               }
               transition={{ duration: reduceMotion ? 0 : 1 }}
-              className="large-title"
+              className="large-title max-w-[34rem]"
             >
               Featured projects.
             </motion.h2>
@@ -347,7 +347,7 @@ export default function ScrollMorphHero({
           {/* Arc content (fades in once the arc forms) */}
           <motion.div
             style={reduceMotion ? undefined : { opacity: contentOpacity, y: contentY }}
-            className="pointer-events-none absolute top-[11%] z-10 flex flex-col items-center justify-center px-6 text-center sm:top-[14%]"
+            className="pointer-events-none absolute inset-x-0 top-[11%] z-10 flex flex-col items-center justify-center px-6 text-center sm:top-[14%]"
           >
             <p className="eyebrow mb-2">The archive</p>
             <h3 className="section-title mb-3 sm:mb-4">
@@ -392,7 +392,9 @@ export default function ScrollMorphHero({
                 const circleRad = (circleAngle * Math.PI) / 180;
                 const circlePos = {
                   x: Math.cos(circleRad) * circleRadius,
-                  y: Math.sin(circleRad) * circleRadius,
+                  y:
+                    Math.sin(circleRad) * circleRadius +
+                    containerSize.height * layout.ringY,
                   rotation: circleAngle + 90,
                 };
 
