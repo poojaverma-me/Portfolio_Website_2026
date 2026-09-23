@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowUpRight, Code, Mail } from "lucide-react";
 import { profile } from "@/lib/profile";
 import DottedSurface from "@/components/ui/dotted-surface";
@@ -73,26 +72,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Apple-style legal row */}
-        <div className="mt-12 flex flex-col gap-3 border-t hairline py-6 text-[0.75rem] text-label-2 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            {profile.location} · {profile.school} · {profile.phone}
-          </p>
-          <nav className="flex items-center gap-0" aria-label="Footer">
-            {[
-              { href: "/", label: "Home" },
-              { href: "/projects", label: "Projects" },
-              { href: "/#experience", label: "Experience" },
-              { href: "/#research", label: "Research" },
-            ].map((l, i) => (
-              <span key={l.href} className="flex items-center">
-                {i > 0 && <span className="mx-2 text-label-3">|</span>}
-                <Link href={l.href} className="hover:text-label hover:underline">
-                  {l.label}
-                </Link>
-              </span>
-            ))}
-          </nav>
+        <div className="mt-12 border-t hairline py-6 text-[0.75rem] text-label-2">
           <p>Copyright © 2026 Pooja Verma.</p>
         </div>
       </div>

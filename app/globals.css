@@ -435,6 +435,13 @@ a.glass-card:hover,
    A single hello drawn stroke by stroke as an SVG path, Apple style, over
    drifting light. Visibility is decided before paint via data-intro on <html>. */
 
+@media (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+}
+
 html[data-intro="play"] {
   overflow: hidden;
 }
@@ -448,20 +455,40 @@ html[data-intro="skip"] .intro-overlay {
   }
 
   /* simple handwritten hello; --reveal is animated so ink appears left to right */
-  /* soft ember around the pointer, positioned by transform for zero lag */
-  .cursor-glow {
+  /* ---------- pointer ----------
+     One element carries the ember, the reticle and the crosshair ticks, so a
+     single transform per pointermove moves the lot with no lag. */
+  .cursor-fx {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 45;
-    height: 420px;
-    width: 420px;
-    margin: -210px 0 0 -210px;
+    z-index: 60;
+    height: 0;
+    width: 0;
     opacity: 0;
     pointer-events: none;
+    will-change: transform;
+    transition: opacity 0.4s ease;
+  }
+
+  .cursor-fx > span {
+    position: absolute;
+    display: block;
+    transform: translate(-50%, -50%);
+    transition:
+      width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.22s ease,
+      background-color 0.22s ease,
+      border-color 0.22s ease;
+  }
+
+  .cursor-glow {
+    height: 420px;
+    width: 420px;
     border-radius: 9999px;
     mix-blend-mode: screen;
-    will-change: transform;
+    filter: blur(28px);
     background: radial-gradient(
       circle closest-side,
       color-mix(in srgb, var(--color-accent) 20%, transparent) 0%,
@@ -469,11 +496,80 @@ html[data-intro="skip"] .intro-overlay {
       color-mix(in srgb, var(--color-accent) 4%, transparent) 55%,
       transparent 100%
     );
-    filter: blur(28px);
-    transition: opacity 0.5s ease;
   }
 
-  /* on a light page the same glow would blow out, so it warms instead */
+  .cursor-ring {
+    height: 26px;
+    width: 26px;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 70%, transparent);
+  }
+
+  .cursor-dot {
+    height: 3px;
+    width: 3px;
+    border-radius: 9999px;
+    background: var(--color-accent);
+  }
+
+  /* crosshair ticks, sitting just outside the ring */
+  .cursor-tick {
+    background: color-mix(in srgb, var(--color-accent) 75%, transparent);
+  }
+  .cursor-tick-n,
+  .cursor-tick-s {
+    height: 6px;
+    width: 1px;
+  }
+  .cursor-tick-w,
+  .cursor-tick-e {
+    height: 1px;
+    width: 6px;
+  }
+  .cursor-tick-n {
+    margin-top: -18px;
+  }
+  .cursor-tick-s {
+    margin-top: 18px;
+  }
+  .cursor-tick-w {
+    margin-left: -18px;
+  }
+  .cursor-tick-e {
+    margin-left: 18px;
+  }
+
+  /* over something you can use: the reticle opens and fills */
+  .cursor-fx.is-locked .cursor-ring {
+    height: 44px;
+    width: 44px;
+    border-color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+  .cursor-fx.is-locked .cursor-dot {
+    opacity: 0;
+  }
+  .cursor-fx.is-locked .cursor-tick-n {
+    margin-top: -27px;
+  }
+  .cursor-fx.is-locked .cursor-tick-s {
+    margin-top: 27px;
+  }
+  .cursor-fx.is-locked .cursor-tick-w {
+    margin-left: -27px;
+  }
+  .cursor-fx.is-locked .cursor-tick-e {
+    margin-left: 27px;
+  }
+
+  /* pressed */
+  .cursor-fx.is-down .cursor-ring {
+    height: 18px;
+    width: 18px;
+    background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+
+  /* on a light page the ember would blow out, so it warms instead */
   [data-theme="light"] .cursor-glow {
     mix-blend-mode: multiply;
     background: radial-gradient(
@@ -485,7 +581,7 @@ html[data-intro="skip"] .intro-overlay {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cursor-glow {
+    .cursor-fx {
       display: none;
     }
   }

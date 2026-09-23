@@ -1,9 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
+import { Quote } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { testimonials, type Testimonial } from "@/lib/testimonials";
+
+/** Pixels the row drifts per frame while you are not touching it. */
+const DRIFT = 0.32;
+/** How long the drift waits after a touch scroll, in ms. */
+const RESUME_AFTER = 2500;
+/** The list is laid out three times, and the row sits in the middle copy. */
+const COPIES = [0, 1, 2];
 
 function initials(name: string) {
   return name
@@ -39,66 +47,133 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 
 export default function Testimonials() {
   const scroller = useRef<HTMLUListElement>(null);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
+  const reduceMotion = useReducedMotion() ?? false;
+  // Held while you hover, focus or scroll the row. A ref, not state, so it
+  // takes effect on the very next frame rather than after a re-render.
+  const held = useRef(false);
+  const idleTimer = useRef<number | null>(null);
+  const [onScreen, setOnScreen] = useState(false);
+  const placed = useRef(false);
 
-  const readEdges = useCallback(() => {
+  /** Distance between a card and its twin in the next copy. */
+  const period = useCallback(() => {
     const el = scroller.current;
-    if (!el) return;
-    setAtStart(el.scrollLeft <= 2);
-    setAtEnd(el.scrollLeft >= el.scrollWidth - el.clientWidth - 2);
+    const first = el?.children[0] as HTMLElement | undefined;
+    const twin = el?.children[testimonials.length] as HTMLElement | undefined;
+    return first && twin ? twin.offsetLeft - first.offsetLeft : 0;
   }, []);
 
+  const hold = useCallback(() => {
+    held.current = true;
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+  }, []);
+
+  const release = useCallback(() => {
+    held.current = false;
+  }, []);
+
+  /** For touch, where there is no pointer to leave: resume once you stop. */
+  const holdBriefly = useCallback(() => {
+    held.current = true;
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+    idleTimer.current = window.setTimeout(() => {
+      held.current = false;
+    }, RESUME_AFTER);
+  }, []);
+
+  // start in the middle copy, so the row can be scrolled either way
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    readEdges();
-    el.addEventListener("scroll", readEdges, { passive: true });
-    window.addEventListener("resize", readEdges);
-    return () => {
-      el.removeEventListener("scroll", readEdges);
-      window.removeEventListener("resize", readEdges);
-    };
-  }, [readEdges]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setOnScreen(entry.isIntersecting);
+        if (entry.isIntersecting && !placed.current && period()) {
+          el.scrollLeft = period();
+          placed.current = true;
+        }
+      },
+      { rootMargin: "120px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [period]);
 
-  const step = (direction: -1 | 1) => {
+  // the drift, paused whenever the row is yours
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el || reduceMotion || !onScreen) return;
+    let frame = 0;
+    const step = () => {
+      frame = requestAnimationFrame(step);
+      if (held.current) return;
+      const p = period();
+      el.scrollLeft += DRIFT;
+      if (p && el.scrollLeft >= p * 2) el.scrollLeft -= p;
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [reduceMotion, onScreen, period]);
+
+  /**
+   * Once your own scrolling has settled, slide back to the middle copy. The
+   * copies are identical, so the jump cannot be seen, and waiting for the
+   * scroll to stop keeps it from cutting a gesture short.
+   */
+  useEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const card = el.querySelector("li")?.getBoundingClientRect().width ?? 320;
-    el.scrollBy({ left: direction * (card + 16), behavior: "smooth" });
-  };
+    let settle = 0;
+    const onScroll = () => {
+      if (!held.current) return;
+      clearTimeout(settle);
+      settle = window.setTimeout(() => {
+        const p = period();
+        if (!p) return;
+        if (el.scrollLeft >= p * 2) el.scrollLeft -= p;
+        else if (el.scrollLeft < p * 0.5) el.scrollLeft += p;
+      }, 220);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(settle);
+      el.removeEventListener("scroll", onScroll);
+    };
+  }, [period]);
+
+  // native listeners rather than React's synthetic enter/leave, so the hold
+  // is bound straight to the element the pointer is actually over
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    el.addEventListener("pointerenter", hold);
+    el.addEventListener("pointerleave", release);
+    el.addEventListener("focusin", hold);
+    el.addEventListener("focusout", release);
+    return () => {
+      el.removeEventListener("pointerenter", hold);
+      el.removeEventListener("pointerleave", release);
+      el.removeEventListener("focusin", hold);
+      el.removeEventListener("focusout", release);
+    };
+  }, [hold, release]);
+
+  useEffect(
+    () => () => {
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+    },
+    [],
+  );
 
   return (
     <section className="scroll-mt-24 pt-32" id="testimonials">
       <div className="mx-auto max-w-6xl px-6">
         <Reveal>
           <p className="eyebrow">Testimonials</p>
-          <div className="flex items-end justify-between gap-6">
-            <h2 className="section-title mt-2 max-w-3xl">
-              Kind words.{" "}
-              <span className="text-label-2">From people I&apos;ve built with.</span>
-            </h2>
-            <div className="hidden flex-none gap-2 sm:flex">
-              <button
-                type="button"
-                onClick={() => step(-1)}
-                disabled={atStart}
-                aria-label="Previous testimonials"
-                className="btn-glass !h-10 !w-10 !p-0 disabled:pointer-events-none disabled:opacity-35"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                type="button"
-                onClick={() => step(1)}
-                disabled={atEnd}
-                aria-label="Next testimonials"
-                className="btn-glass !h-10 !w-10 !p-0 disabled:pointer-events-none disabled:opacity-35"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </div>
+          <h2 className="section-title mt-2 max-w-3xl">
+            Kind words.{" "}
+            <span className="text-label-2">From people I&apos;ve built with.</span>
+          </h2>
         </Reveal>
       </div>
 
@@ -106,14 +181,23 @@ export default function Testimonials() {
         <ul
           ref={scroller}
           tabIndex={0}
-          aria-label="Testimonials, scroll for more"
-          className="no-scrollbar flex gap-4 overflow-x-auto overscroll-x-contain py-3 [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)] focus-visible:outline-none"
+          aria-label="Testimonials, hover to stop and scroll"
+          onTouchStart={holdBriefly}
+          onTouchMove={holdBriefly}
+          onTouchEnd={holdBriefly}
+          className="no-scrollbar flex gap-4 overflow-x-auto overscroll-x-contain py-3 [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] focus-visible:outline-none"
         >
-          {testimonials.map((t) => (
-            <li key={t.name} className="flex-none first:ml-6 last:mr-6">
-              <TestimonialCard t={t} />
-            </li>
-          ))}
+          {COPIES.map((copy) =>
+            testimonials.map((t) => (
+              <li
+                key={`${copy}-${t.name}`}
+                className="flex-none first:ml-6 last:mr-6"
+                aria-hidden={copy === 0 ? undefined : true}
+              >
+                <TestimonialCard t={t} />
+              </li>
+            )),
+          )}
         </ul>
       </Reveal>
     </section>
