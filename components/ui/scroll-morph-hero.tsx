@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import {
+  AnimatePresence,
   motion,
   useInView,
   useMotionValue,
@@ -128,10 +129,25 @@ function FlipCard({
 }
 
 // --- Main ---
-// Page-scroll distance (px) the stage stays pinned for.
+// Timeline the animation runs on, in virtual units.
 const HOLD = 300; // circle sits still so the section title can be read
 const MORPH_END = HOLD + 600; // circle fully morphed into the arc
 const MAX_SCROLL = 1800; // end of the sweep, the page carries on after this
+// Page-scroll distance (px) the stage stays pinned for. Half the timeline, so
+// one flick of the wheel or thumb covers twice the motion it used to.
+const SCROLL_DISTANCE = 900;
+
+// Stage geometry per breakpoint. apex is the arc's high point as a fraction of
+// stage height measured from the middle, so a small number sits it near centre.
+const LAYOUT = {
+  mobile: { radius: 1.05, apex: 0.02, spread: 104, sweepArc: 52, scale: 2, ring: 0.35 },
+  // A wide spread keeps cards entering from the right as others leave on the
+  // left, so the sweep never empties one side of the screen.
+  desktop: { radius: 1.1, apex: 0.12, spread: 150, sweepArc: 45, scale: 1.8, ring: 0.42 },
+};
+
+// Tracks the wheel closely while still easing into place.
+const SPRING = { stiffness: 90, damping: 24, restDelta: 0.0005 } as const;
 
 const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t;
 
@@ -198,13 +214,11 @@ export default function ScrollMorphHero({
 
   // 1. Morph: circle (0) to bottom arc (1)
   const morphProgress = useTransform(virtualScroll, [HOLD, MORPH_END], [0, 1]);
-  const smoothMorph = useSpring(morphProgress, { stiffness: 40, damping: 20 });
+  const smoothMorph = useSpring(morphProgress, SPRING);
 
   // 2. Sweep along the arc after the morph
   const scrollRotate = useTransform(virtualScroll, [MORPH_END, MAX_SCROLL], [0, 1]);
-  const smoothScrollRotate = useSpring(scrollRotate, { stiffness: 40, damping: 20 });
-
-  const progress = useTransform(virtualScroll, [0, MAX_SCROLL], [0, 1]);
+  const smoothScrollRotate = useSpring(scrollRotate, SPRING);
 
   // --- Mouse Parallax ---
   const mouseX = useMotionValue(0);
@@ -261,11 +275,27 @@ export default function ScrollMorphHero({
 
   const introVisible = introPhase === "circle" && morph < 0.5;
 
+  // Which card sits on the apex: at rest the middle one, at the end of the sweep the last.
+  const apexIndex = Math.min(
+    total - 1,
+    Math.max(0, Math.round(((total - 1) * (1 + Math.min(Math.max(sweep, 0), 1))) / 2)),
+  );
+  const apexCard = cards[apexIndex];
+
+  // "View all projects" arrives with the arc, not before it
+  const ctaOpacity = useTransform(smoothScrollRotate, [0.3, 0.65], [0, 1]);
+  const ctaY = useTransform(smoothScrollRotate, [0.3, 0.65], [14, 0]);
+  const [ctaReady, setCtaReady] = useState(reduceMotion);
+  useEffect(() => {
+    if (reduceMotion) return;
+    return smoothScrollRotate.on("change", (v) => setCtaReady(v > 0.4));
+  }, [smoothScrollRotate, reduceMotion]);
+
   return (
     <div
       ref={trackRef}
       className="relative"
-      style={{ height: reduceMotion ? "100svh" : `calc(100svh + ${MAX_SCROLL}px)` }}
+      style={{ height: reduceMotion ? "100svh" : `calc(100svh + ${SCROLL_DISTANCE}px)` }}
     >
       <div
         ref={stageRef}
@@ -317,15 +347,20 @@ export default function ScrollMorphHero({
           {/* Arc content (fades in once the arc forms) */}
           <motion.div
             style={reduceMotion ? undefined : { opacity: contentOpacity, y: contentY }}
-            className="pointer-events-none absolute top-[14%] z-10 flex flex-col items-center justify-center px-6 text-center"
+            className="pointer-events-none absolute top-[11%] z-10 flex flex-col items-center justify-center px-6 text-center sm:top-[14%]"
           >
             <p className="eyebrow mb-2">The archive</p>
-            <h3 className="section-title mb-4">
+            <h3 className="section-title mb-3 sm:mb-4">
               Six builds. <span className="text-label-2">One archive.</span>
             </h3>
-            <p className="lead max-w-lg">
-              Hover a card to flip it and click through to its case study. Keep
-              scrolling to sweep the arc.
+            <p className="lead max-w-lg !text-[0.9375rem] sm:!text-[1.0625rem]">
+              <span className="sm:hidden">
+                Keep scrolling to sweep the arc, then tap a card for its case study.
+              </span>
+              <span className="hidden sm:inline">
+                Hover a card to flip it and click through to its case study. Keep
+                scrolling to sweep the arc.
+              </span>
             </p>
           </motion.div>
 
@@ -348,10 +383,11 @@ export default function ScrollMorphHero({
                 };
               } else {
                 const isMobile = containerSize.width < 768;
+                const layout = isMobile ? LAYOUT.mobile : LAYOUT.desktop;
                 const minDimension = Math.min(containerSize.width, containerSize.height);
 
                 // A. Circle position
-                const circleRadius = Math.min(minDimension * 0.35, 350);
+                const circleRadius = Math.min(minDimension * layout.ring, 380);
                 const circleAngle = (i / total) * 360;
                 const circleRad = (circleAngle * Math.PI) / 180;
                 const circlePos = {
@@ -362,17 +398,17 @@ export default function ScrollMorphHero({
 
                 // B. Bottom arc ("rainbow", convex up)
                 const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
-                const arcRadius = baseRadius * (isMobile ? 1.4 : 1.1);
-                const arcApexY = containerSize.height * (isMobile ? 0.35 : 0.25);
+                const arcRadius = baseRadius * layout.radius;
+                const arcApexY = containerSize.height * layout.apex;
                 const arcCenterY = arcApexY + arcRadius;
-                const spreadAngle = isMobile ? 100 : 130;
+                const spreadAngle = layout.spread;
                 const startAngle = -90 - spreadAngle / 2;
                 const step = spreadAngle / (total - 1);
 
-                // Sweep. Half the spread lands the last card exactly on the apex,
-                // the only spot guaranteed on screen at every viewport size.
+                // Sweep. Stops short of the full spread so cards still occupy
+                // both sides of the screen when the motion ends.
                 const sweepProgress = Math.min(Math.max(sweep, 0), 1);
-                const boundedRotation = -sweepProgress * (spreadAngle / 2);
+                const boundedRotation = -sweepProgress * layout.sweepArc;
 
                 const currentArcAngle = startAngle + i * step + boundedRotation;
                 const arcRad = (currentArcAngle * Math.PI) / 180;
@@ -380,7 +416,7 @@ export default function ScrollMorphHero({
                   x: Math.cos(arcRad) * arcRadius + parallaxValue,
                   y: Math.sin(arcRad) * arcRadius + arcCenterY,
                   rotation: currentArcAngle + 90,
-                  scale: isMobile ? 1.4 : 1.8,
+                  scale: layout.scale,
                 };
 
                 // C. Morph between the two
@@ -405,18 +441,51 @@ export default function ScrollMorphHero({
           </div>
         </div>
 
-        {/* progress + all projects */}
-        <div className="absolute inset-x-0 bottom-6 z-20 mx-auto flex max-w-6xl items-center gap-4 px-6">
-          <div className="h-1 flex-1 overflow-hidden rounded-full bg-fill-2">
+        {/* the apex card, named for touch where there is no hover to flip it */}
+        <motion.div
+          style={reduceMotion ? undefined : { opacity: contentOpacity }}
+          className="pointer-events-none absolute inset-x-0 top-[68%] z-10 flex justify-center px-6 sm:hidden"
+        >
+          <AnimatePresence mode="wait">
             <motion.div
-              className="h-full origin-left rounded-full bg-label"
-              style={{ scaleX: progress }}
-            />
-          </div>
-          <Link href={allHref} className="btn-glass btn-sm">
-            View all projects <ChevronRight size={15} className="-mr-1 text-label-2" />
+              key={apexCard.href}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: reduceMotion ? 0 : 0.28 }}
+            >
+              <Link
+                href={apexCard.href}
+                className="pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl px-4 py-2 text-center"
+              >
+                <span className="eyebrow">{apexCard.category}</span>
+                <span className="font-display text-[1.5rem] uppercase leading-[1.05] text-label">
+                  {apexCard.title}
+                </span>
+                <span className="flex items-center text-[0.8125rem] font-medium text-accent">
+                  Read case study <ChevronRight size={14} strokeWidth={2.5} />
+                </span>
+              </Link>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+
+        {/* all projects, fading in once the sweep is well under way */}
+        <motion.div
+          style={reduceMotion ? undefined : { opacity: ctaOpacity, y: ctaY }}
+          className="absolute inset-x-0 bottom-8 z-20 flex justify-center px-6 sm:bottom-10"
+        >
+          <Link
+            href={allHref}
+            tabIndex={ctaReady ? undefined : -1}
+            aria-hidden={ctaReady ? undefined : true}
+            className="btn-glass"
+            style={{ pointerEvents: ctaReady ? "auto" : "none" }}
+          >
+            View all projects <ChevronRight size={16} className="-mr-1 text-label-2" />
           </Link>
-        </div>
+        </motion.div>
+
       </div>
     </div>
   );

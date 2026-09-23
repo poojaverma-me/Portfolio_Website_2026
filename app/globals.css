@@ -468,6 +468,44 @@ html[data-intro="skip"] .intro-overlay {
   }
 
   /* simple handwritten hello; --reveal is animated so ink appears left to right */
+  /* The window toolbar carries its own chrome upward, so article text never
+     shows in the gap between the floating nav and the toolbar. */
+  .case-toolbar::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    height: 64px;
+    background: var(--window-bg);
+  }
+
+  /* content dissolves under the floating toolbar instead of sliding past it */
+  .top-scrim {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 40;
+    height: 96px;
+    pointer-events: none;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    background: linear-gradient(
+      180deg,
+      var(--color-base) 62%,
+      color-mix(in srgb, var(--color-base) 55%, transparent) 82%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(180deg, black 62%, transparent);
+    mask-image: linear-gradient(180deg, black 62%, transparent);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .hello-stroke {
     width: min(88vw, 46rem);
     height: auto;

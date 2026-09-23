@@ -54,6 +54,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <IntroHello />
         <div className="wallpaper" aria-hidden />
+        <div className="top-scrim" aria-hidden />
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />

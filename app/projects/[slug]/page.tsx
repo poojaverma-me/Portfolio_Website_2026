@@ -55,13 +55,13 @@ export default async function ProjectPage({
       {/* the case study is a macOS window */}
       <div className="window mt-5">
         {/* unified toolbar */}
-        <div className="glass sticky top-[76px] z-20 flex h-12 items-center border-b hairline !rounded-none px-4 !shadow-none">
+        <div className="case-toolbar glass sticky top-[96px] z-20 flex h-12 items-center border-b hairline !rounded-none px-4 !shadow-none">
           <div className="traffic-lights" aria-hidden>
             <span />
             <span />
             <span />
           </div>
-          <p className="absolute inset-x-28 flex items-center justify-center gap-2 truncate text-[0.8125rem] font-semibold">
+          <p className="absolute inset-x-[72px] flex items-center justify-center gap-2 truncate sm:inset-x-28 text-[0.8125rem] font-semibold">
             <span
               className="app-icon !h-5 !w-5 !rounded-[5px]"
               aria-hidden
@@ -75,9 +75,9 @@ export default async function ProjectPage({
           </span>
         </div>
 
-        <div className="grid lg:grid-cols-[250px_1fr]">
+        <div className="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[250px_minmax(0,1fr)]">
           {/* sidebar runs to the window edge (macOS 27) */}
-          <aside className="sidebar-material border-b hairline p-3 lg:border-b-0 lg:border-r lg:py-5">
+          <aside className="sidebar-material sticky top-[144px] z-10 min-w-0 border-b hairline px-3 py-2.5 lg:static lg:z-auto lg:border-b-0 lg:border-r lg:p-3 lg:py-5">
             <DocsIndex
               sections={project.sections.map((s) => ({ id: s.id, title: s.title }))}
             />
@@ -159,7 +159,7 @@ export default async function ProjectPage({
               <Reveal key={section.id}>
                 <section
                   id={section.id}
-                  className="mt-14 scroll-mt-[140px] border-t hairline pt-12"
+                  className="mt-14 scroll-mt-[196px] border-t hairline pt-12 lg:scroll-mt-[156px]"
                 >
                   <h2 className="section-title mb-6 !text-[clamp(2rem,3.5vw,2.75rem)]">
                     {section.title}
