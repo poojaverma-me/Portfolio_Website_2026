@@ -448,6 +448,48 @@ html[data-intro="skip"] .intro-overlay {
   }
 
   /* simple handwritten hello; --reveal is animated so ink appears left to right */
+  /* soft ember around the pointer, positioned by transform for zero lag */
+  .cursor-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 45;
+    height: 420px;
+    width: 420px;
+    margin: -210px 0 0 -210px;
+    opacity: 0;
+    pointer-events: none;
+    border-radius: 9999px;
+    mix-blend-mode: screen;
+    will-change: transform;
+    background: radial-gradient(
+      circle closest-side,
+      color-mix(in srgb, var(--color-accent) 20%, transparent) 0%,
+      color-mix(in srgb, var(--color-accent) 11%, transparent) 26%,
+      color-mix(in srgb, var(--color-accent) 4%, transparent) 55%,
+      transparent 100%
+    );
+    filter: blur(28px);
+    transition: opacity 0.5s ease;
+  }
+
+  /* on a light page the same glow would blow out, so it warms instead */
+  [data-theme="light"] .cursor-glow {
+    mix-blend-mode: multiply;
+    background: radial-gradient(
+      circle closest-side,
+      color-mix(in srgb, var(--color-accent) 13%, transparent) 0%,
+      color-mix(in srgb, var(--color-accent) 6%, transparent) 30%,
+      transparent 100%
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-glow {
+      display: none;
+    }
+  }
+
   /* content dissolves under the floating toolbar instead of sliding past it */
   .top-scrim {
     position: fixed;

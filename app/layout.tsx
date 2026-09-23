@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { themeScript } from "@/lib/theme";
 import { introScript } from "@/lib/intro";
+import CursorGlow from "@/components/CursorGlow";
 import IntroHello from "@/components/IntroHello";
 import "./globals.css";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <IntroHello />
         <div className="wallpaper" aria-hidden />
+        <CursorGlow />
         <div className="top-scrim" aria-hidden />
         <Nav />
         <main className="flex-1">{children}</main>
