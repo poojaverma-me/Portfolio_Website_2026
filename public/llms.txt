@@ -10,12 +10,20 @@
   rendering engine for a construction estimating platform, integrated the
   Nutrient (PSPDFKit) SDK, and built the pipelines behind automated stamp and
   take-off detection.
-- LLM model trainer at Outlier.AI: trained and evaluated 100+ models.
+- Generative AI Data Specialist at Outlier: designs coding benchmarks and
+  multi-turn reasoning prompts to fine-tune frontier LLMs through RLHF, and
+  red-teams reasoning chains for hallucination resistance and correctness.
+  Previously Tier-3 Programmer Analyst there, benchmarking and debugging 100+
+  code submissions.
 - Undergraduate research assistant at TRU: built a retrieval-augmented
   generation assistant used by 3,000+ students, improving answer relevance 40%.
 - Programmer analyst co-op at BC Lottery Corporation: Salesforce (Apex, LWC)
   and Power Platform work for 4,000+ retailers; cut manual licensing work 30%.
-- Undergraduate teaching assistant at TRU for web development and data structures.
+- Undergraduate teaching assistant at TRU across three terms, mentoring 150+
+  students in Python, Java, data structures and web development.
+- Research coach at TRU, mentoring undergraduate researchers on methodology,
+  experimental design and technical writing.
+- Mathematics tutor at Sylvan Learning for 25+ students.
 
 ## Research
 - AI-Driven Post-Wildfire Ecosystem Recovery, TRU Student Sustainability
@@ -26,10 +34,13 @@
   UREAP Research Award ($6,000).
 
 ## Skills
-Python, TypeScript, JavaScript, React, Next.js, C#, SQL, Snowflake, Oracle,
-Matillion, machine learning (scikit-learn, XGBoost, LightGBM, SHAP), pandas,
-NumPy, SciPy, Matplotlib, MATLAB, Tableau, Power BI, Power Apps, Salesforce,
-Git, GitHub Actions, REST APIs.
+Languages: Python, JavaScript, TypeScript, C#, Java, Apex, SQL, HTML/CSS, MATLAB.
+Machine learning: PyTorch, scikit-learn, XGBoost, LightGBM, SHAP, Optuna, SMOTE,
+RAG systems, RLHF, pandas, NumPy, SciPy.
+Web and enterprise: React, Node.js, Lightning Web Components, REST APIs,
+Salesforce, SOQL, Power Apps, Power BI.
+Cloud and tools: Snowflake, Oracle, Matillion, Git, GitHub Actions, BitBucket,
+Forgejo, LaTeX.
 
 ## Pages
 - /: profile, experience, research, leadership and contact.
