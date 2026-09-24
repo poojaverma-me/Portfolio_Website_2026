@@ -141,10 +141,28 @@ const SCROLL_DISTANCE = 900;
 // Stage geometry per breakpoint. apex is the arc's high point as a fraction of
 // stage height measured from the middle, so a small number sits it near centre.
 const LAYOUT = {
-  mobile: { radius: 1.05, apex: 0.02, spread: 104, sweepArc: 52, scale: 2, ring: 0.35, ringY: 0.16 },
+  mobile: {
+    radius: 1.05,
+    apex: 0.02,
+    spread: 104,
+    sweepArc: 52,
+    scale: 2.2,
+    ringScale: 1.1,
+    ring: 0.35,
+    ringY: 0.16,
+  },
   // A wide spread keeps cards entering from the right as others leave on the
   // left, so the sweep never empties one side of the screen.
-  desktop: { radius: 1.1, apex: 0.12, spread: 150, sweepArc: 45, scale: 1.8, ring: 0.42, ringY: -0.05 },
+  desktop: {
+    radius: 1.1,
+    apex: 0.12,
+    spread: 150,
+    sweepArc: 45,
+    scale: 2.5,
+    ringScale: 1.25,
+    ring: 0.42,
+    ringY: -0.05,
+  },
 };
 
 // Tracks the wheel closely while still easing into place.
@@ -427,7 +445,7 @@ export default function ScrollMorphHero({
                   x: lerp(circlePos.x, arcPos.x, morph),
                   y: lerp(circlePos.y, arcPos.y, morph),
                   rotation: lerp(circlePos.rotation, arcPos.rotation, morph),
-                  scale: lerp(1, arcPos.scale, morph),
+                  scale: lerp(layout.ringScale, arcPos.scale, morph),
                   opacity: 1,
                 };
               }
