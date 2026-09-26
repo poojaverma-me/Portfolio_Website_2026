@@ -102,11 +102,13 @@ export type VoyageOptions = {
   host: HTMLElement;
   boat: HTMLElement;
   onDone: () => void;
+  /** called instead of onDone when this device can't run the voyage */
+  onUnsupported?: () => void;
   /** development only: hold the scene at this many seconds */
   freezeAt?: number | null;
 };
 
-export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptions) {
+export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null }: VoyageOptions) {
   const glCanvas = document.createElement("canvas");
   glCanvas.setAttribute("aria-hidden", "true");
   Object.assign(glCanvas.style, {
@@ -126,6 +128,11 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
     if (done) return;
     done = true;
     onDone();
+  };
+  const unsupported = () => {
+    if (done) return;
+    done = true;
+    (onUnsupported ?? onDone)();
   };
 
   const cleanup = () => {
@@ -150,7 +157,7 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
     failIfMajorPerformanceCaveat: true,
   });
   if (!gl || !canRenderHalfFloat(gl)) {
-    finish();
+    unsupported();
     return cleanup;
   }
 
@@ -570,7 +577,7 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
         return;
       }
       if (!programsLinked(gl, programs)) {
-        finish();
+        unsupported();
         return;
       }
       ready = true;

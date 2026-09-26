@@ -12,7 +12,7 @@ import {
   personSchema,
 } from "@/lib/site";
 import CursorGlow from "@/components/CursorGlow";
-import IntroVoyage from "@/components/voyage/IntroVoyage";
+import IntroPicker from "@/components/IntroPicker";
 import "./globals.css";
 
 const anton = Anton({
@@ -98,7 +98,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="min-h-full flex flex-col">
-        <IntroVoyage />
+        <IntroPicker />
         <div className="wallpaper" aria-hidden />
         <CursorGlow />
         <div className="top-scrim" aria-hidden />

@@ -15,7 +15,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
  * per session, and never for visitors who prefer reduced motion (see
  * lib/intro.ts).
  */
-export default function IntroVoyage() {
+export default function IntroVoyage({ onUnsupported }: { onUnsupported?: () => void }) {
   const state = useIntro();
 
   const finish = useCallback(() => {
@@ -47,7 +47,7 @@ export default function IntroVoyage() {
           exit={{ opacity: 0, scale: 1.03, filter: "blur(10px)" }}
           transition={{ duration: 0.7, ease }}
         >
-          <Scene onDone={finish} />
+          <Scene onDone={finish} onUnsupported={onUnsupported} />
 
           <p className="sr-only" role="status">
             Loading Pooja Verma&apos;s portfolio
@@ -67,7 +67,7 @@ export default function IntroVoyage() {
 }
 
 /** Owns the canvases, so the render loop stops when the overlay unmounts. */
-function Scene({ onDone }: { onDone: () => void }) {
+function Scene({ onDone, onUnsupported }: { onDone: () => void; onUnsupported?: () => void }) {
   const host = useRef<HTMLDivElement>(null);
   const boat = useRef<HTMLDivElement>(null);
 
@@ -78,8 +78,8 @@ function Scene({ onDone }: { onDone: () => void }) {
       const t = new URLSearchParams(window.location.search).get("intro-t");
       if (t !== null && !Number.isNaN(Number(t))) freezeAt = Number(t);
     }
-    return startVoyage({ host: host.current, boat: boat.current, onDone, freezeAt });
-  }, [onDone]);
+    return startVoyage({ host: host.current, boat: boat.current, onDone, onUnsupported, freezeAt });
+  }, [onDone, onUnsupported]);
 
   return (
     <div ref={host} className="absolute inset-0" aria-hidden>

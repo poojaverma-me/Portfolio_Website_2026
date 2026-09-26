@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { IntroState } from "@/lib/intro";
+import type { IntroKind, IntroState } from "@/lib/intro";
 
 function subscribe(onChange: () => void) {
   const observer = new MutationObserver(onChange);
@@ -25,4 +25,22 @@ export function useIntro(): IntroState {
 /** True once the page underneath should run its own entrance animations. */
 export function useIntroFinished() {
   return useIntro() !== "play";
+}
+
+function subscribeKind(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-intro-kind"],
+  });
+  return () => observer.disconnect();
+}
+
+function readKind(): IntroKind {
+  return document.documentElement.dataset.introKind === "voyage" ? "voyage" : "hello";
+}
+
+/** Which intro this visit was dealt; null on the server, before the page knows. */
+export function useIntroKind(): IntroKind | null {
+  return useSyncExternalStore(subscribeKind, readKind, () => null);
 }
