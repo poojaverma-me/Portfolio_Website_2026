@@ -70,9 +70,9 @@ export function makeLayout(W: number, H: number): Layout {
     perp: { x: -dir.y, y: dir.x },
     L,
     bend: -L * 0.035,
-    wHead: boatLen * 0.3,
-    wTail: boatLen * (portrait ? 0.98 : 1.02),
-    spread: boatLen * 1.5,
+    wHead: boatLen * 0.36,
+    wTail: boatLen * (portrait ? 1.22 : 1.4),
+    spread: boatLen * 1.1,
     lead: boatLen * 0.62,
     bStart: -0.07,
   };

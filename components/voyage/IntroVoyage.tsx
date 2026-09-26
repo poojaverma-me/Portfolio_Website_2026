@@ -45,7 +45,7 @@ export default function IntroVoyage() {
           key="intro"
           className="intro-overlay fixed inset-0 z-[100] overflow-hidden"
           exit={{ opacity: 0, scale: 1.03, filter: "blur(10px)" }}
-          transition={{ duration: 0.9, ease }}
+          transition={{ duration: 0.7, ease }}
         >
           <Scene onDone={finish} />
 

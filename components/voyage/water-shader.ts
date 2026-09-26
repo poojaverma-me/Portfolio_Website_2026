@@ -1,29 +1,33 @@
 /**
- * The sea, drawn in one full-screen pass. Work happens in CSS pixels with y
- * pointing down so the numbers match geometry.ts.
+ * The sea, drawn in one full-screen pass from the simulated surface
+ * (fluid.ts). Work happens in CSS pixels with y pointing down.
  *
- * Layers, bottom to top: depth colour, sunlight and shafts, the creatures
- * (read from a texture drawn by creatures.ts), caustics, glints, the boat's
- * shadow, bow foam, the Kelvin wake, oar puddles, and the bright meniscus at
- * the water's edge. Outside the water there is only a faint ember glow.
+ * The optics follow the surface rather than decorate it:
+ * - the normal comes from the gradient of the simulated wave height, plus a
+ *   fine capillary chop;
+ * - caustics are light focused by that surface, so their net is displaced by
+ *   the slope and brightened where the surface is convex (intensity grows as
+ *   the Laplacian of the height goes negative), which is why ripple rings show
+ *   up as bright rings on the bed;
+ * - what lies beneath (the whales) is seen through the surface, so it is
+ *   refracted by the same slope;
+ * - glints are real specular reflection of a sun in the upper left;
+ * - foam and calm slicks are dyes carried by the simulated current.
  *
  * All colours are shades of the site's one accent, #f96b0b.
  */
 
 export const MAX_DROPS = 32;
-export const MAX_PUDDLES = 16;
 
-export const VERT = `
-attribute vec2 aPos;
+export const VERT = `#version 300 es
+in vec2 aPos;
 void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 `;
 
-export const FRAG = `
-#ifdef GL_FRAGMENT_PRECISION_HIGH
+export const FRAG = `#version 300 es
 precision highp float;
-#else
-precision mediump float;
-#endif
+precision highp sampler2D;
+out vec4 o;
 
 uniform vec2 uRes;
 uniform float uScale;
@@ -44,12 +48,14 @@ uniform float uBoatLen;
 
 uniform vec2 uBoat;
 uniform vec2 uBoatDir;
-uniform float uWake;
 uniform vec2 uSun;
 
 uniform vec4 uDrops[${MAX_DROPS}];
-uniform vec4 uPuddles[${MAX_PUDDLES}];
 uniform sampler2D uLife;
+uniform sampler2D uWave;
+uniform sampler2D uDye;
+uniform vec2 uSimTexel;
+uniform float uCell;
 
 const vec3 C_SHALLOW = vec3(1.0, 0.56, 0.20);
 const vec3 C_MID     = vec3(0.88, 0.31, 0.03);
@@ -59,6 +65,8 @@ const vec3 C_CAUSTIC = vec3(1.0, 0.83, 0.60);
 const vec3 C_SUN     = vec3(1.0, 0.72, 0.42);
 const vec3 C_FOAM    = vec3(1.0, 0.96, 0.90);
 const vec3 C_GLOW    = vec3(0.976, 0.42, 0.043);
+// toward the sun: up and to the left, well above the horizon
+const vec3 SUN_DIR   = vec3(-0.42, -0.5, 0.76);
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -88,8 +96,8 @@ float smin(float a, float b, float k) {
   return min(a, b) - h * h * k * 0.25;
 }
 
-// Distance to the nearest border between drifting Voronoi cells. Caustics are
-// light focused into exactly this kind of net.
+// distance to the nearest wall between drifting Voronoi cells: the net that
+// focused sunlight draws on a shallow bed
 float cellEdge(vec2 x, float t) {
   vec2 n = floor(x);
   vec2 f = fract(x);
@@ -99,8 +107,8 @@ float cellEdge(vec2 x, float t) {
   for (int j = -1; j <= 1; j++) {
     for (int i = -1; i <= 1; i++) {
       vec2 g = vec2(float(i), float(j));
-      vec2 o = 0.5 + 0.42 * sin(t + 6.2831 * hash2(n + g));
-      vec2 r = g + o - f;
+      vec2 q = 0.5 + 0.42 * sin(t + 6.2831 * hash2(n + g));
+      vec2 r = g + q - f;
       float d = dot(r, r);
       if (d < md) { md = d; mr = r; mg = g; }
     }
@@ -109,8 +117,8 @@ float cellEdge(vec2 x, float t) {
   for (int j = -1; j <= 1; j++) {
     for (int i = -1; i <= 1; i++) {
       vec2 g = mg + vec2(float(i), float(j));
-      vec2 o = 0.5 + 0.42 * sin(t + 6.2831 * hash2(n + g));
-      vec2 r = g + o - f;
+      vec2 q = 0.5 + 0.42 * sin(t + 6.2831 * hash2(n + g));
+      vec2 r = g + q - f;
       vec2 dr = r - mr;
       if (dot(dr, dr) > 0.00001) md = min(md, dot(0.5 * (mr + r), normalize(dr)));
     }
@@ -119,8 +127,6 @@ float cellEdge(vec2 x, float t) {
 }
 
 float caustics(vec2 p, float t) {
-  // a strong, two-scale warp bends the cell walls into the curling threads
-  // that real caustics make
   vec2 w = p + 0.42 * vec2(
     sin(p.y * 0.9 + t * 0.8) + 0.5 * sin(p.y * 2.3 - t * 1.1),
     cos(p.x * 0.8 - t * 0.7) + 0.5 * cos(p.x * 2.1 + t)
@@ -139,6 +145,8 @@ vec3 outsideGlow(float sd) {
 
 void main() {
   vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) / uScale;
+  vec2 su = vec2(p.x / uView.x, 1.0 - p.y / uView.y);
+  float h = texture(uWave, su).r;
 
   // --- where the water is -------------------------------------------------
   vec2 q = p - uP0;
@@ -148,27 +156,40 @@ void main() {
   float grow = 1.0 - exp(-max(behind, 0.0) / uSpread);
   float w = uWHead + (uWTail - uWHead) * grow;
 
-  // each bank gets its own ripple, blended through the middle so the two
-  // noises never meet in a seam
-  float along = u * uL / uBoatLen;
-  float nA = fbm(vec2(along * 1.5 + uTime * 0.06, 3.7));
-  float nB = fbm(vec2(along * 1.5 - uTime * 0.05, 11.3));
-  float nBig = noise(vec2(along * 0.42, 1.3 + step(0.0, v) * 7.0));
-  float bank = smoothstep(-0.3, 0.3, v / max(w, 1.0));
-  float n = mix(nA, nB, bank) - 0.5 + (nBig - 0.5) * 0.8;
-  float amp = mix(0.05, 0.22, grow);
-  float wEdge = w * (1.0 + amp * n * 2.0);
+  // cheap bounds first: the edge noise moves the bank by at most 0.4 w, and
+  // every splash lies within half a boat length of it
+  float amp = mix(0.05, 0.2, grow);
+  float reach = w * amp * 2.0;
+  float sd0 = behind >= 0.0
+    ? abs(v) - w
+    : (length(vec2(-behind / uLead, v / max(w, 1.0))) - 1.0) * uWHead;
+  if (sd0 - reach > uBoatLen * 0.6) {
+    o = vec4(outsideGlow(sd0 - reach), 1.0);
+    return;
+  }
+
+  // the organic bank, only where it can matter
+  float wEdge = w;
+  if (sd0 > -reach * 1.2) {
+    float along = u * uL / uBoatLen;
+    float nA = fbm(vec2(along * 1.3 + uTime * 0.06, 3.7));
+    float nB = fbm(vec2(along * 1.3 - uTime * 0.05, 11.3));
+    float nBig = noise(vec2(along * 0.4, 1.3 + step(0.0, v) * 7.0));
+    float bank = smoothstep(-0.3, 0.3, v / max(w, 1.0));
+    float n = mix(nA, nB, bank) - 0.5 + (nBig - 0.5) * 0.8;
+    wEdge = w * (1.0 + amp * n * 2.0);
+  }
 
   float sd;
   if (behind >= 0.0) {
     sd = abs(v) - wEdge;
   } else {
-    // the rounded bow wave just ahead of the boat
     float cap = length(vec2(-behind / uLead, v / max(wEdge, 1.0)));
     sd = (cap - 1.0) * uWHead;
   }
+  // waves reaching the bank lift it
+  sd -= h * 0.6;
 
-  // splashes, merged into the body where they touch it
   float sdw = sd;
   for (int i = 0; i < ${MAX_DROPS}; i++) {
     vec4 d = uDrops[i];
@@ -176,13 +197,27 @@ void main() {
     sdw = smin(sdw, length(p - d.xy) - d.z, d.w);
   }
 
-  // nothing but the glow outside the water, so skip the expensive part
   if (sdw > 1.0) {
-    gl_FragColor = vec4(outsideGlow(sdw), 1.0);
+    o = vec4(outsideGlow(sdw), 1.0);
     return;
   }
-
   float mask = smoothstep(0.8, -0.8, sdw);
+
+  // --- the surface ------------------------------------------------------------
+  float hL = texture(uWave, su - vec2(uSimTexel.x, 0.0)).r;
+  float hR = texture(uWave, su + vec2(uSimTexel.x, 0.0)).r;
+  float hT = texture(uWave, su + vec2(0.0, uSimTexel.y)).r;
+  float hB = texture(uWave, su - vec2(0.0, uSimTexel.y)).r;
+  // slope in screen space (y down) and curvature, from the simulated height
+  vec2 slope = vec2(hR - hL, hB - hT) / (2.0 * uCell);
+  float curv = (hL + hR + hT + hB - 4.0 * h) / (uCell * uCell);
+  // fine capillary chop on top
+  vec2 cp = p / (uBoatLen * 0.05);
+  float c0 = noise(cp + uTime * 0.9);
+  vec2 chop = vec2(noise(cp + vec2(0.7, 0.0) + uTime * 0.9) - c0, noise(cp + vec2(0.0, 0.7) + uTime * 0.9) - c0) * 0.12;
+  vec3 N = normalize(vec3(-(slope + chop), 1.0));
+  vec4 dye = texture(uDye, su);
+  float calm = clamp(dye.g, 0.0, 1.0);
 
   // --- depth ---------------------------------------------------------------
   float vn = clamp(abs(v) / max(wEdge, 1.0), 0.0, 1.0);
@@ -196,95 +231,75 @@ void main() {
   col = mix(col, C_DEEP, smoothstep(0.25, 0.85, dpt));
   col = mix(col, C_ABYSS, smoothstep(0.5, 1.0, dpt) * smoothstep(uBoatLen * 0.6, uBoatLen * 4.0, behind) * 0.75);
 
-  // --- sunlight from the upper left, with slow shafts ------------------------
+  // --- sunlight and shafts --------------------------------------------------
   vec2 sp = (p - uSun) / uBoatLen;
   float sun = exp(-dot(sp, sp) / 1.4);
   vec2 rayDir = normalize(vec2(1.0, 0.62));
   float rays = noise(vec2(dot(p, vec2(rayDir.y, -rayDir.x)) / (uBoatLen * 0.085), uTime * 0.22));
   col += C_SUN * (sun * 0.22 + sun * smoothstep(0.55, 0.95, rays) * 0.2) * (1.0 - dpt * 0.4);
 
-  // --- whales and fish, drawn by creatures.ts --------------------------------
-  // five taps soften the silhouettes, deeper under the surface than at it
-  vec2 luv = p / uView;
-  vec2 lo = 1.6 / uView;
-  vec2 life = texture2D(uLife, luv).rg * 0.36
-    + (texture2D(uLife, luv + vec2(lo.x, lo.y)).rg
-    + texture2D(uLife, luv + vec2(-lo.x, lo.y)).rg
-    + texture2D(uLife, luv + vec2(lo.x, -lo.y)).rg
-    + texture2D(uLife, luv + vec2(-lo.x, -lo.y)).rg) * 0.16;
-  col = mix(col, col * vec3(0.15, 0.095, 0.085) + vec3(0.025, 0.005, 0.0), life.r);
-  col += vec3(0.2, 0.075, 0.025) * life.g * life.r;
+  // --- what lies beneath, seen through the moving surface ---------------------
+  // shallow bodies are crisp, deep ones are blurred by the water above them
+  // (the life layer is a GL texture, so its rows run bottom to top)
+  vec2 luv = vec2(p.x / uView.x, 1.0 - p.y / uView.y) + vec2(N.x, -N.y) * (4.0 + 6.0 * dpt) / uView;
+  vec2 near = 1.3 / uView;
+  vec2 far = 4.5 / uView;
+  vec4 lc = texture(uLife, luv);
+  vec4 ln = (texture(uLife, luv + near) + texture(uLife, luv - near)
+    + texture(uLife, luv + vec2(near.x, -near.y)) + texture(uLife, luv + vec2(-near.x, near.y))) * 0.25;
+  vec4 lf = (texture(uLife, luv + far) + texture(uLife, luv - far)
+    + texture(uLife, luv + vec2(far.x, -far.y)) + texture(uLife, luv + vec2(-far.x, far.y))) * 0.25;
+  float crisp = max(lc.b, ln.b);
+  vec4 lv = mix(lf * 0.55 + ln * 0.3 + lc * 0.15, lc * 0.45 + ln * 0.55, crisp);
+  col = mix(col, col * vec3(0.15, 0.095, 0.085) + vec3(0.025, 0.005, 0.0), lv.r);
+  col += vec3(0.2, 0.075, 0.025) * lv.g * lv.r;
 
-  // --- caustics ---------------------------------------------------------------
-  // light pools in patches and fades with depth
-  float cz = caustics(p / (uBoatLen * 0.12), uTime * 0.85);
+  // --- caustics, focused by the surface ----------------------------------------
+  float focus = clamp(1.0 - curv * 12.0, 0.45, 2.0);
   float pool = smoothstep(0.2, 0.85, fbm(p / (uBoatLen * 0.8) + vec2(0.0, uTime * 0.06)));
-  float thread = 0.45 + 0.55 * noise(p / (uBoatLen * 0.06) + uTime * 0.4);
-  float ci = mix(1.15, 0.16, dpt) * (0.4 + 0.6 * pool) * thread * (1.0 + sun * 0.9) * (1.0 - life.r * 0.72);
-  col += C_CAUSTIC * cz * ci;
+  float ci = mix(1.15, 0.16, dpt) * (0.4 + 0.6 * pool) * (1.0 + sun * 0.9) * (1.0 - lv.r * 0.72) * focus * (1.0 - 0.55 * calm);
+  // light only nets where enough of it reaches the bed
+  if (ci > 0.04) {
+    float thread = 0.45 + 0.55 * noise(p / (uBoatLen * 0.06) + uTime * 0.4);
+    col += C_CAUSTIC * caustics(p / (uBoatLen * 0.12) + slope * 1.1, uTime * 0.85) * ci * thread;
+  }
+  // broad focusing even between the threads, so rings read as light
+  col += C_CAUSTIC * clamp(-curv * 2.5, -0.06, 0.18) * (1.0 - dpt * 0.5);
 
-  // --- glints on the surface --------------------------------------------------
-  vec2 cell = floor(p / 11.0);
-  vec2 rnd = hash2(cell);
-  vec2 cp = (cell + 0.15 + 0.7 * rnd) * 11.0;
-  float tw = pow(max(0.0, sin(uTime * (1.4 + rnd.x * 2.6) + rnd.y * 40.0)), 26.0);
-  float glint = tw * step(0.8, hash(cell + 7.1)) * smoothstep(1.8, 0.2, length(p - cp));
-  col += C_FOAM * glint * (0.95 - dpt * 0.6) * (0.55 + sun);
+  // --- light on the surface -----------------------------------------------------
+  // slopes facing the sun are brighter, a calm slick is glassier
+  col *= 1.0 + dot(N.xy, SUN_DIR.xy) * 0.55;
+  col = mix(col, col * 0.86, calm * 0.6);
+  vec3 H = normalize(SUN_DIR + vec3(0.0, 0.0, 1.0));
+  float spec = pow(max(dot(N, H), 0.0), 220.0) * (1.0 - calm * 0.8);
+  col += C_FOAM * spec * 1.6;
 
-  // --- the boat: shadow, bow foam, wake ----------------------------------------
+  // --- the boat's shadow on the water -------------------------------------------
   vec2 bn = vec2(-uBoatDir.y, uBoatDir.x);
-  vec2 bq = p - uBoat;
-  float lx = dot(bq, uBoatDir);
-  float ly = dot(bq, bn);
-  float ha = uBoatLen * 0.5;
-  float hb = uBoatLen * 0.185;
-  float e = length(vec2(lx / ha, ly / hb));
-
-  vec2 sq = bq - vec2(uBoatLen * 0.05, uBoatLen * 0.08);
-  float se = length(vec2(dot(sq, uBoatDir) / ha, dot(sq, bn) / (hb * 1.08)));
+  vec2 sq = p - uBoat - vec2(uBoatLen * 0.05, uBoatLen * 0.08);
+  float se = length(vec2(dot(sq, uBoatDir) / (uBoatLen * 0.5), dot(sq, bn) / (uBoatLen * 0.2)));
   col *= 1.0 - smoothstep(1.3, 0.55, se) * 0.5;
 
-  float foam = 0.0;
-  float churn = noise(p * 0.11 + uTime * 2.2);
-  float hullFoam = smoothstep(1.42, 1.04, e) * smoothstep(0.9, 1.04, e);
-  hullFoam *= (0.3 + 0.7 * smoothstep(-0.4, 0.9, lx / ha)) * (0.45 + 0.55 * churn);
-  foam += hullFoam * (0.35 + 0.65 * uWake);
-
-  float bx = -(lx + ha * 0.88);
-  if (bx > 0.0) {
-    float arm = abs(ly) - (hb * 0.85 + bx * 0.34);
-    float wdt = 1.4 + bx * 0.03;
-    float line = exp(-arm * arm / (wdt * wdt));
-    float fade = exp(-bx / (uBoatLen * 2.3)) * smoothstep(0.0, 14.0, bx);
-    float brk = smoothstep(0.2, 0.75, noise(vec2(bx * 0.05 - uTime * 1.1, ly * 0.07)));
-    float wash = exp(-ly * ly / (hb * hb * 0.7)) * exp(-bx / (uBoatLen * 0.8));
-    wash *= smoothstep(0.35, 0.8, noise(vec2(bx * 0.09 - uTime * 1.4, ly * 0.2)));
-    foam += (line * fade * (0.3 + 0.7 * brk) + wash * 0.4) * uWake;
+  // --- white water, carried by the current ----------------------------------------
+  // foam is a froth of bubbles: bright walls between cells, thinning as it decays
+  float foam = smoothstep(0.02, 0.5, dye.r);
+  if (foam > 0.001) {
+    // irregular bubbles, not a grid
+    vec2 fq = p / (uBoatLen * 0.08);
+    vec2 fp = p / (uBoatLen * 0.026) + 0.7 * vec2(noise(fq), noise(fq + 5.2));
+    float wall = cellEdge(fp, uTime * 0.4);
+    float lace = 1.0 - smoothstep(0.0, mix(0.08, 0.3, foam), wall);
+    // dense at the stern; thinner foam tears into patches and streaks
+    float patches = smoothstep(0.4, 0.78, fbm(p / (uBoatLen * 0.16)) + foam * 0.5);
+    col = mix(col, C_FOAM, foam * patches * (0.3 + 0.7 * lace) * 0.92);
   }
 
-  // the pair of swirls each oar stroke leaves behind
-  for (int i = 0; i < ${MAX_PUDDLES}; i++) {
-    vec4 pd = uPuddles[i];
-    if (pd.w <= 0.0) continue;
-    float age = pd.z;
-    float dist = length(p - pd.xy);
-    float R = uBoatLen * (0.03 + 0.045 * age);
-    float th = 1.1 + age * 1.8;
-    float ring = exp(-pow((dist - R) / th, 2.0));
-    float swirl = smoothstep(R, 0.0, dist) * 0.22;
-    foam += (ring * 0.75 + swirl) * pd.w * exp(-age * 0.75);
-  }
-
-  col = mix(col, C_FOAM, clamp(foam, 0.0, 1.0) * 0.82);
-
-  // --- the meniscus -------------------------------------------------------------
+  // --- the meniscus ------------------------------------------------------------------
   float rim = smoothstep(-8.0, -0.5, sdw);
   col = mix(col, C_SHALLOW * 1.06, rim * 0.5);
   col += C_FOAM * exp(-pow((sdw + 1.6) / 1.1, 2.0)) * 0.3;
 
-  // a little grain keeps the dark gradients from banding
   col += (hash(p + fract(uTime) * 91.0) - 0.5) * 0.02;
-
-  gl_FragColor = vec4(mix(outsideGlow(sdw), col, mask), 1.0);
+  o = vec4(mix(outsideGlow(sdw), col, mask), 1.0);
 }
 `;

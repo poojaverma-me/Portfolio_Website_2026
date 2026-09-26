@@ -1,13 +1,30 @@
 /**
- * Runs the voyage: one clock drives the boat, the oars, the water, the
- * creatures and the bubbles, so everything stays in step.
+ * Runs the voyage. One clock drives everything, and the parts are coupled the
+ * way they are in the world:
  *
- * The boat does not glide at a constant speed. Time is warped by the rowing
- * stroke, so it surges on each drive and eases on each recovery, and it enters
- * already moving and comes to rest at its mooring.
+ * - rowing.ts integrates the boat's force balance; its speed and oar angle
+ *   come from there, not from an easing curve.
+ * - The hull and the buried blades are moving bodies in the fluid (fluid.ts),
+ *   so the wake, the bow wave and the swirls each stroke leaves come out of
+ *   the simulation. Blade catches and the drips flicked off at the release
+ *   knock rings into the wave field where they land.
+ * - Fish that find the hull or a blade too close do a C-start (swimmers.ts);
+ *   shallow whales leave fluke prints.
+ * - Bubbles and drips drift with the simulated current, read back from the GPU
+ *   without stalling it.
  */
 
-import { CREATURES, blowhole, drawCreatures, poseOf } from "./creatures";
+import {
+  BLADE,
+  FOREARM,
+  GRIP,
+  PIVOT_X,
+  PIVOT_Y,
+  SHOULDER_X,
+  SHOULDER_Y,
+  UPPER_ARM,
+} from "./Boat";
+import { type FluidInput, Fluid, type Ripple, type Spot } from "./fluid";
 import {
   type Layout,
   bodySd,
@@ -21,73 +38,19 @@ import {
   toWorld,
   widthAt,
 } from "./geometry";
-import { FRAG, MAX_DROPS, MAX_PUDDLES, VERT } from "./water-shader";
+import { bind, blit, canRenderHalfFloat, fullScreen, program, programsLinked, programsReady } from "./gl";
+import { CATCH, FINISH, type Voyage, planVoyage } from "./rowing";
+import { blowhole, drawSwimmers, makeSwimmers, stepSwimmers, type Swimmer } from "./swimmers";
+import { BubbleLayer, LifeLayer, MAX_BUBBLES } from "./sprites";
+import { FRAG, MAX_DROPS, VERT } from "./water-shader";
 
 const TAU = Math.PI * 2;
 const DEG = Math.PI / 180;
 
-/** seconds from the corner to the mooring */
-export const TRAVEL = 4.2;
-/** seconds the finished scene holds before the page is revealed */
-export const HOLD = 1.1;
-export const END = TRAVEL + HOLD;
-
-/** one oar stroke; TRAVEL is a whole number of them so the surge lands at rest */
-const STROKE = 1.05;
-const SURGE = 0.3;
-
-// oar sweep in degrees: blades toward the bow at the catch, aft at the finish
-const CATCH = 48;
-const FINISH = -28;
-const REST = -6;
-
-// boat units (1/200 of the hull), matching Boat.tsx
-const PIVOT_X = -6;
-const PIVOT_Y = 38;
-const BLADE = 113;
-const GRIP = 30;
-const SHOULDER_X = 12;
-const UPPER_ARM = 19;
-const FOREARM = 21;
 
 const LIFE_SCALE = 0.5;
-const MAX_BUBBLES = 320;
 
-const envelope = (t: number) => 1 - smooth(TRAVEL * 0.8, TRAVEL, t);
-
-/** Boat progress along the line at time t. */
-function progress(l: Layout, t: number) {
-  const tc = clamp(t, 0, TRAVEL);
-  const tau =
-    tc -
-    envelope(tc) * ((SURGE * STROKE) / TAU) * Math.sin((TAU * tc) / STROKE);
-  const x = clamp(tau / TRAVEL, 0, 1);
-  return lerp(l.bStart, 1, 1 - Math.pow(1 - x, 2.1));
-}
-
-const easeSine = (x: number) => 0.5 - 0.5 * Math.cos(Math.PI * x);
-
-/** Drive from 0.3 to 0.7 of the stroke, recovery the rest of the way round. */
-function rowAngle(phase: number) {
-  if (phase >= 0.3 && phase < 0.7) {
-    return lerp(CATCH, FINISH, easeSine((phase - 0.3) / 0.4));
-  }
-  return lerp(FINISH, CATCH, easeSine((((phase - 0.7) % 1) + 1) % 1 / 0.6));
-}
-const bladeInWater = (phase: number) =>
-  smooth(0.26, 0.32, phase) * (1 - smooth(0.68, 0.74, phase));
-
-const crossed = (a: number, b: number, x: number) =>
-  b >= a ? a < x && b >= x : a < x || b >= x;
-
-type EdgeDrop = {
-  u: number;
-  v: number;
-  r: number;
-  k: number;
-  drift: number;
-  born: number;
-};
+type EdgeDrop = { u: number; v: number; r: number; k: number; drift: number; born: number };
 type Splash = {
   x: number;
   y: number;
@@ -97,19 +60,10 @@ type Splash = {
   k: number;
   born: number;
   life: number;
+  /** a drip in flight; it lands with a ring when it dies */
   flick: boolean;
 };
-type Puddle = { x: number; y: number; born: number; strength: number };
-type Bubble = {
-  x: number;
-  y: number;
-  r: number;
-  vx: number;
-  vy: number;
-  born: number;
-  life: number;
-  ph: number;
-};
+type Bubble = { x: number; y: number; r: number; born: number; life: number; ph: number };
 
 /** Splashes thrown clear of the banks as the boat passes, some still joined on. */
 function makeEdgeDrops(l: Layout): EdgeDrop[] {
@@ -124,16 +78,11 @@ function makeEdgeDrops(l: Layout): EdgeDrop[] {
     const attached = rand() < 0.5;
     const r =
       l.boatLen *
-      (nearBoat
-        ? 0.03 + rand() * 0.04
-        : attached
-          ? 0.07 + rand() * 0.09
-          : 0.035 + rand() * 0.06);
-    const dist = attached ? w * (0.92 + rand() * 0.12) : w * (1.1 + rand() * 0.28) + r;
+      (nearBoat ? 0.03 + rand() * 0.04 : attached ? 0.07 + rand() * 0.09 : 0.035 + rand() * 0.06);
+    const dist = attached ? w * (0.92 + rand() * 0.12) : w * (1.08 + rand() * 0.22) + r;
     const drift = side * l.boatLen * (0.02 + rand() * 0.03);
     drops.push({ u, v: side * dist, r, k: attached ? r * 1.1 : r * 0.7, drift, born: -1 });
     if (!attached && rand() < 0.6) {
-      // a second, smaller circle turns a round drop into a teardrop
       const r2 = r * (0.55 + rand() * 0.25);
       drops.push({
         u: u + ((rand() < 0.5 ? -1 : 1) * r * 0.95) / l.L,
@@ -159,23 +108,20 @@ export type VoyageOptions = {
 
 export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptions) {
   const glCanvas = document.createElement("canvas");
-  const sparkCanvas = document.createElement("canvas");
-  for (const c of [glCanvas, sparkCanvas]) {
-    c.setAttribute("aria-hidden", "true");
-    Object.assign(c.style, {
-      position: "absolute",
-      inset: "0",
-      width: "100%",
-      height: "100%",
-      pointerEvents: "none",
-    });
-  }
-  host.insertBefore(sparkCanvas, host.firstChild);
-  host.insertBefore(glCanvas, sparkCanvas);
+  glCanvas.setAttribute("aria-hidden", "true");
+  Object.assign(glCanvas.style, {
+    position: "absolute",
+    inset: "0",
+    width: "100%",
+    height: "100%",
+    pointerEvents: "none",
+  });
+  host.insertBefore(glCanvas, host.firstChild);
 
   let raf = 0;
   let safety = 0;
   let done = false;
+  let fluid: Fluid | null = null;
   const finish = () => {
     if (done) return;
     done = true;
@@ -187,14 +133,14 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
     clearTimeout(safety);
     window.removeEventListener("resize", resize);
     glCanvas.removeEventListener("webglcontextlost", finish);
+    fluid?.dispose();
     gl?.getExtension("WEBGL_lose_context")?.loseContext();
     glCanvas.remove();
-    sparkCanvas.remove();
   };
 
   // Without a GPU the browser would draw this in software: a slideshow for the
-  // visitor and a frozen main thread. Better to skip straight to the page.
-  const gl = glCanvas.getContext("webgl", {
+  // visitor and a frozen main thread. Better to go straight to the page.
+  const gl = glCanvas.getContext("webgl2", {
     alpha: false,
     antialias: false,
     depth: false,
@@ -203,89 +149,23 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
     powerPreference: "high-performance",
     failIfMajorPerformanceCaveat: true,
   });
-  const sctx = sparkCanvas.getContext("2d");
-  const lifeCanvas = document.createElement("canvas");
-  const lctx = lifeCanvas.getContext("2d", { alpha: false });
-  if (!gl || !sctx || !lctx) {
+  if (!gl || !canRenderHalfFloat(gl)) {
     finish();
     return cleanup;
   }
 
-  // --- WebGL -----------------------------------------------------------------
-  // Compiled without asking for the result: asking blocks until the GPU is done,
-  // which can freeze the page for a moment on a slow phone. The loop polls
-  // instead and starts the voyage once the program is ready.
-  const vs = gl.createShader(gl.VERTEX_SHADER)!;
-  const fs = gl.createShader(gl.FRAGMENT_SHADER)!;
-  gl.shaderSource(vs, VERT);
-  gl.shaderSource(fs, FRAG);
-  gl.compileShader(vs);
-  gl.compileShader(fs);
-  const prog = gl.createProgram()!;
-  gl.attachShader(prog, vs);
-  gl.attachShader(prog, fs);
-  gl.linkProgram(prog);
+  // compiled without waiting; the loop polls until every program is ready
+  const screen = fullScreen(gl);
+  const view = program(gl, VERT, FRAG);
+  fluid = new Fluid(gl);
+  const life = new LifeLayer(gl);
+  const bubbleLayer = new BubbleLayer(gl);
+  const programs = [view, life.prog, bubbleLayer.prog, ...fluid.programs];
   const parallel = gl.getExtension("KHR_parallel_shader_compile");
-
-  const locate = (g: WebGLRenderingContext) => {
-    const U = (name: string) => g.getUniformLocation(prog, name);
-    return {
-      res: U("uRes"),
-      scale: U("uScale"),
-      view: U("uView"),
-      time: U("uTime"),
-      p0: U("uP0"),
-      dir: U("uDir"),
-      perp: U("uPerp"),
-      L: U("uL"),
-      bend: U("uBend"),
-      head: U("uHead"),
-      wHead: U("uWHead"),
-      wTail: U("uWTail"),
-      spread: U("uSpread"),
-      lead: U("uLead"),
-      boatLen: U("uBoatLen"),
-      boat: U("uBoat"),
-      boatDir: U("uBoatDir"),
-      wake: U("uWake"),
-      sun: U("uSun"),
-      drops: U("uDrops"),
-      puddles: U("uPuddles"),
-      life: U("uLife"),
-    };
-  };
-  let loc: ReturnType<typeof locate> | null = null;
-
-  /** Finishes setting up once the program has linked; false if it failed. */
-  function setup(g: WebGLRenderingContext) {
-    if (!g.getProgramParameter(prog, g.LINK_STATUS)) {
-      console.warn(g.getShaderInfoLog(vs), g.getShaderInfoLog(fs), g.getProgramInfoLog(prog));
-      return false;
-    }
-    g.useProgram(prog);
-    const buf = g.createBuffer();
-    g.bindBuffer(g.ARRAY_BUFFER, buf);
-    g.bufferData(g.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), g.STATIC_DRAW);
-    const aPos = g.getAttribLocation(prog, "aPos");
-    g.enableVertexAttribArray(aPos);
-    g.vertexAttribPointer(aPos, 2, g.FLOAT, false, 0, 0);
-
-    const tex = g.createTexture();
-    g.activeTexture(g.TEXTURE0);
-    g.bindTexture(g.TEXTURE_2D, tex);
-    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
-    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
-    g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
-
-    loc = locate(g);
-    g.uniform1i(loc.life, 0);
-    return true;
-  }
+  let ready = false;
 
   // --- the boat's moving parts -----------------------------------------------
-  const part = (name: string) =>
-    boat.querySelector<SVGElement>(`[data-part="${name}"]`);
+  const part = (name: string) => boat.querySelector<HTMLElement | SVGElement>(`[data-part="${name}"]`);
   const oarS = part("oar-s");
   const oarP = part("oar-p");
   const bladeS = part("s-blade");
@@ -300,41 +180,47 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
   }));
 
   // --- state -------------------------------------------------------------------
-  let layout = makeLayout(1, 1);
+  let layout: Layout = makeLayout(1, 1);
+  let voyage: Voyage = planVoyage(layout);
+  let swimmers: Swimmer[] = [];
   let edgeDrops: EdgeDrop[] = [];
   let quality = 1;
   let q = 1;
-  let sparkScale = 1;
   const splashes: Splash[] = [];
-  const puddles: Puddle[] = [];
   const bubbles: Bubble[] = [];
   const dropBuf = new Float32Array(MAX_DROPS * 4);
-  const puddleBuf = new Float32Array(MAX_PUDDLES * 4);
+  let dropCount = 0;
   const rand = seeded(11);
-  const breath = CREATURES.map(() => 0.4 + rand() * 1.6);
-  let prevPhase = 0;
-  let wakeMem = 0;
+  let breath: number[] = [];
+  let prevIn = 0;
+  let prevBlades: { x: number; y: number }[] | null = null;
+  let replay = false;
 
   function resize() {
     const W = host.clientWidth || window.innerWidth;
     const H = host.clientHeight || window.innerHeight;
     const born = edgeDrops.map((d) => d.born);
     layout = makeLayout(W, H);
+    voyage = planVoyage(layout);
+    swimmers = makeSwimmers(layout);
+    breath = swimmers.map(() => 0.3 + rand() * 1.4);
     edgeDrops = makeEdgeDrops(layout);
     edgeDrops.forEach((d, i) => (d.born = born[i] ?? -1));
+    prevBlades = null;
 
     const dpr = window.devicePixelRatio || 1;
-    q = Math.min(dpr, 1.25) * quality;
+    // the water is soft by nature; one sample per CSS pixel is plenty
+    q = Math.min(dpr, 1) * quality;
     glCanvas.width = Math.round(W * q);
     glCanvas.height = Math.round(H * q);
-    sparkScale = Math.min(dpr, 2);
-    sparkCanvas.width = Math.round(W * sparkScale);
-    sparkCanvas.height = Math.round(H * sparkScale);
-    lifeCanvas.width = Math.ceil(W * LIFE_SCALE);
-    lifeCanvas.height = Math.ceil(H * LIFE_SCALE);
+    life.size(W, H, LIFE_SCALE);
     const size = `${layout.boatLen * 2}px`;
     boat.style.width = size;
     boat.style.height = size;
+    boat.style.setProperty("--u", `${layout.boatLen / 200}px`);
+    fluid!.size(W, H, layout.boatLen * 3);
+    // a resize starts the water from rest; a frozen dev scene replays its history
+    replay = freezeAt != null;
   }
   resize();
   window.addEventListener("resize", resize);
@@ -344,17 +230,14 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
   let bx = 0;
   let by = 0;
   let heading = 0;
-  const toWorldFromBoat = (lx: number, ly: number) => {
+  const fromBoat = (lx: number, ly: number) => {
     const s = layout.boatLen / 200;
     const c = Math.cos(heading);
     const n = Math.sin(heading);
     return { x: bx + (lx * c - ly * n) * s, y: by + (lx * n + ly * c) * s };
   };
   const bladeAt = (alpha: number, side: number) =>
-    toWorldFromBoat(
-      PIVOT_X + BLADE * Math.sin(alpha * DEG),
-      side * (PIVOT_Y + BLADE * Math.cos(alpha * DEG)),
-    );
+    fromBoat(PIVOT_X + BLADE * Math.sin(alpha * DEG), side * (PIVOT_Y + BLADE * Math.cos(alpha * DEG)));
 
   const cluster = (x: number, y: number, n: number, spread: number, t: number, big = 1) => {
     const B = layout.boatLen;
@@ -363,53 +246,13 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
       bubbles.push({
         x: x + (rand() - 0.5) * spread * 2,
         y: y + (rand() - 0.5) * spread * 2,
-        r: B * (0.006 + rand() * rand() * 0.03) * big,
-        vx: (rand() - 0.5) * B * 0.05,
-        vy: (rand() - 0.5) * B * 0.05,
-        born: t + rand() * 0.25,
-        life: 1.1 + rand() * 1.8,
+        r: B * (0.006 + rand() * rand() * 0.028) * big,
+        born: t + rand() * 0.2,
+        life: 0.9 + rand() * 1.5,
         ph: rand() * TAU,
       });
     }
   };
-
-  function onCatch(t: number, alpha: number) {
-    const B = layout.boatLen;
-    for (const side of [1, -1]) {
-      const p = bladeAt(alpha, side);
-      splashes.push({ x: p.x, y: p.y, vx: 0, vy: 0, r: B * 0.048, k: B * 0.045, born: t, life: 1.1, flick: false });
-      cluster(p.x, p.y, 7, B * 0.04, t);
-    }
-  }
-
-  function onRelease(t: number, alpha: number, strength: number) {
-    const B = layout.boatLen;
-    for (const side of [1, -1]) {
-      const p = bladeAt(alpha, side);
-      puddles.push({ x: p.x, y: p.y, born: t, strength });
-      if (puddles.length > MAX_PUDDLES) puddles.shift();
-      // drips flicked off the blade as it leaves the water
-      const pivot = toWorldFromBoat(PIVOT_X, side * PIVOT_Y);
-      const ox = p.x - pivot.x;
-      const oy = p.y - pivot.y;
-      const on = Math.hypot(ox, oy) || 1;
-      for (let i = 0; i < 2; i++) {
-        const sp = B * (0.35 + rand() * 0.3);
-        splashes.push({
-          x: p.x,
-          y: p.y,
-          vx: (ox / on) * sp - Math.cos(heading) * B * 0.2 + (rand() - 0.5) * B * 0.15,
-          vy: (oy / on) * sp - Math.sin(heading) * B * 0.2 + (rand() - 0.5) * B * 0.15,
-          r: B * (0.014 + rand() * 0.014),
-          k: B * 0.02,
-          born: t,
-          life: 0.55 + rand() * 0.2,
-          flick: true,
-        });
-      }
-    }
-    while (splashes.length > 14) splashes.shift();
-  }
 
   function elbow(sx: number, sy: number, hx: number, hy: number, side: number) {
     const dx = hx - sx;
@@ -419,43 +262,79 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
     const base = Math.atan2(dy, dx);
     const e1 = { x: sx + UPPER_ARM * Math.cos(base + a), y: sy + UPPER_ARM * Math.sin(base + a) };
     const e2 = { x: sx + UPPER_ARM * Math.cos(base - a), y: sy + UPPER_ARM * Math.sin(base - a) };
-    // elbows go out, away from the centreline
     return side * e1.y > side * e2.y ? e1 : e2;
   }
 
-  // --- one frame -----------------------------------------------------------------
-  function step(t: number, dt: number, draw: boolean) {
+  // --- simulate one step -----------------------------------------------------------
+  let head = layout.bStart;
+
+  function simulate(t: number, dt: number) {
     const l = layout;
     const B = l.boatLen;
-    const head = progress(l, t);
-    const env = envelope(t);
-    const phase = (((t / STROKE) % 1) + 1) % 1;
+    const st = voyage.sample(t);
+    head = st.u;
 
-    // where the boat is and how hard it is moving
     const c = center(l, head);
     const tg = tangent(l, head);
     bx = c.x;
     by = c.y;
-    heading = Math.atan2(tg.y, tg.x) + 0.9 * DEG * Math.sin((TAU * t) / STROKE + 0.8) * env;
-    const h = 0.01;
-    const speed = ((progress(l, t + h) - progress(l, t - h)) * l.L) / (2 * h);
-    const avg = ((1 - l.bStart) * l.L) / TRAVEL;
-    const wake = clamp((speed / avg) * 0.8, 0, 1.2);
-    wakeMem = dt > 0 ? Math.max(wake, wakeMem - dt * 0.25) : wake;
+    heading = Math.atan2(tg.y, tg.x);
+    const speedN = st.v / (2 * B);
 
-    const alpha = lerp(REST, rowAngle(phase), env);
-    const inWater = lerp(1, bladeInWater(phase), env);
+    // the blades: where they are, which way the shafts point, how fast they move
+    const blades = [1, -1].map((side) => {
+      const p = bladeAt(st.alpha, side);
+      const pivot = fromBoat(PIVOT_X, side * PIVOT_Y);
+      const ax = p.x - pivot.x;
+      const ay = p.y - pivot.y;
+      const an = Math.hypot(ax, ay) || 1;
+      return { x: p.x, y: p.y, dx: ax / an, dy: ay / an };
+    });
+    const bladeVel = blades.map((b, i) =>
+      prevBlades && dt > 0
+        ? { vx: (b.x - prevBlades[i].x) / dt, vy: (b.y - prevBlades[i].y) / dt }
+        : { vx: tg.x * st.v, vy: tg.y * st.v },
+    );
+    prevBlades = blades.map((b) => ({ x: b.x, y: b.y }));
 
-    if (dt > 0 && env > 0.3) {
-      if (crossed(prevPhase, phase, 0.3)) onCatch(t, alpha);
-      if (crossed(prevPhase, phase, 0.7)) onRelease(t, alpha, env);
+    const ripples: Ripple[] = [];
+    const spots: Spot[] = [];
+    const minR = fluid!.cell * 1.3;
+
+    // catch: the blades go in; release: they come out, flicking drips
+    if (dt > 0) {
+      if (prevIn < 0.5 && st.inWater >= 0.5) {
+        for (const b of blades) {
+          ripples.push({ x: b.x, y: b.y, r: Math.max(B * 0.04, minR), amp: -B * 0.012 });
+          spots.push({ x: b.x, y: b.y, r: B * 0.05, foam: 0.9, slick: 0 });
+          splashes.push({ x: b.x, y: b.y, vx: 0, vy: 0, r: B * 0.04, k: B * 0.04, born: t, life: 0.8, flick: false });
+          cluster(b.x, b.y, 6, B * 0.04, t);
+        }
+      }
+      if (prevIn >= 0.5 && st.inWater < 0.5 && st.mode === "row") {
+        for (const b of blades) {
+          for (let i = 0; i < 2; i++) {
+            const sp = B * (0.4 + rand() * 0.35);
+            splashes.push({
+              x: b.x,
+              y: b.y,
+              vx: b.dx * sp - tg.x * B * 0.3 + (rand() - 0.5) * B * 0.2,
+              vy: b.dy * sp - tg.y * B * 0.3 + (rand() - 0.5) * B * 0.2,
+              r: B * (0.013 + rand() * 0.012),
+              k: B * 0.02,
+              born: t,
+              life: 0.35 + rand() * 0.25,
+              flick: true,
+            });
+          }
+        }
+      }
     }
-    prevPhase = phase;
+    prevIn = st.inWater;
 
     // splashes along the banks appear just behind the boat
     for (const d of edgeDrops) if (d.born < 0 && head >= d.u + 0.012) d.born = t;
 
-    // --- drops for the shader
     dropBuf.fill(0);
     let di = 0;
     for (const d of edgeDrops) {
@@ -470,28 +349,83 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
       const s = splashes[i];
       const age = t - s.born;
       if (age > s.life) {
+        // a drip lands: a small ring and a fleck of white
+        if (s.flick) {
+          ripples.push({ x: s.x, y: s.y, r: Math.max(B * 0.015, minR), amp: -B * 0.006 });
+          spots.push({ x: s.x, y: s.y, r: B * 0.02, foam: 0.5, slick: 0 });
+        }
         splashes.splice(i, 1);
         continue;
       }
+      // drips fly ballistically with a little air drag
       s.x += s.vx * dt;
       s.y += s.vy * dt;
-      s.vx *= Math.exp(-dt * 3.5);
-      s.vy *= Math.exp(-dt * 3.5);
+      s.vx *= Math.exp(-dt * 2);
+      s.vy *= Math.exp(-dt * 2);
       if (di >= MAX_DROPS) continue;
       const r = s.flick
-        ? s.r * (1 - age / s.life)
+        ? s.r * (1 - 0.4 * (age / s.life))
         : s.r * (1 - Math.exp(-age * 14)) * (1 - smooth(s.life * 0.4, s.life, age));
       if (r > 0.3) dropBuf.set([s.x, s.y, r, s.k], (di++) * 4);
     }
+    while (splashes.length > 16) splashes.shift();
+    dropCount = di;
 
-    puddleBuf.fill(0);
-    puddles.forEach((p, i) => {
-      const age = t - p.born;
-      puddleBuf.set([p.x, p.y, age, age > 5 ? 0 : p.strength], i * 4);
-    });
+    // --- swimmers, who notice the boat
+    const threats = [{ x: bx, y: by, r: B * 0.55 }];
+    if (st.inWater > 0.5) for (const b of blades) threats.push({ x: b.x, y: b.y, r: B * 0.18 });
+    const prints = dt > 0 ? stepSwimmers(swimmers, dt, t, threats) : [];
+    for (const p of prints) {
+      spots.push({ x: p.x, y: p.y, r: p.r, foam: 0, slick: 0.9 * p.strength });
+      ripples.push({ x: p.x, y: p.y, r: Math.max(p.r * 0.6, minR), amp: B * 0.005 * p.strength });
+    }
+    // the thrust wake of a shallow whale, pushed back off its flukes
+    const jets = swimmers
+      .filter((s) => s.kind === "whale" && s.depth > 0.7)
+      .map((s) => {
+        const back = -0.55 * s.L;
+        const push = s.U * 2.2 * (s.depth - 0.6);
+        return {
+          x: s.x + Math.cos(s.heading) * back,
+          y: s.y + Math.sin(s.heading) * back,
+          r: s.L * 0.12,
+          ax: -Math.cos(s.heading) * push,
+          ay: -Math.sin(s.heading) * push,
+        };
+      });
 
-    // --- bubbles
+    // --- the water itself
     if (dt > 0) {
+      const input: FluidInput = {
+        hull: {
+          x: bx,
+          y: by,
+          dx: tg.x,
+          dy: tg.y,
+          vx: tg.x * st.v,
+          vy: tg.y * st.v,
+          halfLen: B * 0.5,
+          halfBeam: B * 0.18,
+          on: 1,
+          foam: 4 * clamp(speedN, 0, 1.3),
+          depth: B * 0.012,
+        },
+        blades: blades.map((b, i) => ({ ...b, ...bladeVel[i], on: st.inWater })),
+        bladeHalf: [B * 0.09, B * 0.022],
+        bladeDepth: B * 0.008,
+        bladeFoam: [0, 1].map(() =>
+          st.inWater * (st.mode === "row" ? 6 * st.thrust : 6 * clamp(speedN, 0, 1)),
+        ) as [number, number],
+        jets,
+        spots,
+        ripples,
+        // a third of the cruising speed: the V trails at Kelvin's angle
+        waveSpeed: (2 * B) / 3,
+      };
+      gl!.bindVertexArray(screen);
+      fluid!.step(dt, input);
+
+      // --- bubbles: rising, drifting with the current, popping
       if (rand() < dt * 7) {
         const u = lerp(0, head - 0.03, rand());
         const w = widthAt(l, u, head);
@@ -500,129 +434,124 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
           cluster(p.x, p.y, 2 + Math.floor(rand() * 6), B * 0.07, t);
         }
       }
-      if (rand() < dt * 22 * wakeMem) {
-        const p = toWorldFromBoat(-104 - rand() * 30, (rand() - 0.5) * 40);
+      if (rand() < dt * 26 * clamp(speedN, 0, 1.2)) {
+        const p = fromBoat(-104 - rand() * 30, (rand() - 0.5) * 40);
         cluster(p.x, p.y, 1, B * 0.02, t, 0.7);
       }
-      CREATURES.forEach((cr, i) => {
-        if (cr.kind !== "whale") return;
+      swimmers.forEach((s, i) => {
+        if (s.kind !== "whale") return;
         breath[i] -= dt;
         if (breath[i] > 0) return;
-        breath[i] = 1.2 + rand() * 2.4;
-        const pose = poseOf(cr, l, Math.atan2(l.dir.y, l.dir.x), t);
-        const bh = blowhole(pose);
-        cluster(bh.x, bh.y, 5 + Math.floor(rand() * 6), B * 0.035 * cr.size, t, 0.9);
+        breath[i] = 1 + rand() * 2;
+        const bh = blowhole(s);
+        cluster(bh.x, bh.y, 5 + Math.floor(rand() * 6), s.L * 0.03, t, 0.9);
       });
       for (const b of bubbles) {
+        const [vx, vy] = fluid!.velocityAt(b.x, b.y);
         const wob = Math.sin(t * 5 + b.ph) * B * 0.012;
-        b.x += (b.vx + wob) * dt;
-        b.y += b.vy * dt;
+        b.x += (vx * 0.9 + wob) * dt;
+        b.y += vy * 0.9 * dt;
       }
     }
     for (let i = bubbles.length - 1; i >= 0; i--) {
       if (t - bubbles[i].born > bubbles[i].life) bubbles.splice(i, 1);
     }
 
-    // --- the boat
-    const deg = heading / DEG;
-    const bob = 1 + 0.006 * Math.sin((TAU * t) / STROKE) * env;
-    boat.style.transform = `translate3d(${bx - B}px, ${by - B}px, 0) rotate(${deg.toFixed(3)}deg) scale(${bob.toFixed(4)})`;
-    const oar = `translate(${PIVOT_X} ${PIVOT_Y}) rotate(${(-alpha).toFixed(2)})`;
-    oarS?.setAttribute("transform", oar);
-    oarP?.setAttribute("transform", oar);
+    // --- the boat: transforms only, so the compositor moves it without repainting
+    const U = B / 200;
+    const px = (v: number) => `${(v * U).toFixed(2)}px`;
+    boat.style.transform = `translate3d(${(bx - B).toFixed(2)}px, ${(by - B).toFixed(2)}px, 0) rotate(${(heading / DEG).toFixed(3)}deg)`;
+    const turn = `rotate(${(-st.alpha).toFixed(2)}deg)`;
+    if (oarS) oarS.style.transform = turn;
+    if (oarP) oarP.style.transform = `scale(1, -1) ${turn}`;
     // a squared blade in the water is edge-on from above; feathered, it shows its face
-    const bw = (1 - 0.55 * inWater).toFixed(3);
-    bladeS?.setAttribute("transform", `scale(${bw} 1)`);
-    bladeP?.setAttribute("transform", `scale(${bw} 1)`);
-    bladeS?.setAttribute("opacity", (1 - 0.3 * inWater).toFixed(3));
-    bladeP?.setAttribute("opacity", (1 - 0.3 * inWater).toFixed(3));
-    const lean = lerp(-7, 5, clamp((CATCH - alpha) / (CATCH - FINISH), 0, 1));
-    rower?.setAttribute("transform", `translate(${lean.toFixed(2)} 0)`);
-    hat?.setAttribute("transform", `translate(${lean.toFixed(2)} 0)`);
-    for (const arm of arms) {
-      const hx = PIVOT_X - GRIP * Math.sin(alpha * DEG);
-      const hy = arm.side * (PIVOT_Y - GRIP * Math.cos(alpha * DEG));
-      const sx = SHOULDER_X + lean;
-      const sy = arm.side * 15;
-      const e = elbow(sx, sy, hx, hy, arm.side);
-      arm.sleeve?.setAttribute("d", `M${sx.toFixed(2)} ${sy}L${e.x.toFixed(2)} ${e.y.toFixed(2)}`);
-      arm.fore?.setAttribute("d", `M${e.x.toFixed(2)} ${e.y.toFixed(2)}L${hx.toFixed(2)} ${hy.toFixed(2)}`);
-      arm.hand?.setAttribute("cx", hx.toFixed(2));
-      arm.hand?.setAttribute("cy", hy.toFixed(2));
+    const feather = `scaleX(${(1 - 0.55 * st.inWater).toFixed(3)})`;
+    const shade = (1 - 0.3 * st.inWater).toFixed(3);
+    for (const b of [bladeS, bladeP]) {
+      if (!b) continue;
+      b.style.transform = feather;
+      b.style.opacity = shade;
     }
+    const lean = lerp(-7, 5, clamp((CATCH - st.alpha) / (CATCH - FINISH), 0, 1));
+    if (rower) rower.style.transform = `translateX(${px(lean)})`;
+    if (hat) hat.style.transform = `translateX(${px(lean)})`;
+    for (const arm of arms) {
+      const hx = PIVOT_X - GRIP * Math.sin(st.alpha * DEG);
+      const hy = arm.side * (PIVOT_Y - GRIP * Math.cos(st.alpha * DEG));
+      const sx = SHOULDER_X + lean;
+      const sy = arm.side * SHOULDER_Y;
+      const e = elbow(sx, sy, hx, hy, arm.side);
+      const a1 = Math.atan2(e.y - sy, e.x - sx);
+      const a2 = Math.atan2(hy - e.y, hx - e.x);
+      // rigid bones: the hand sits where the forearm ends
+      const wx = e.x + Math.cos(a2) * FOREARM;
+      const wy = e.y + Math.sin(a2) * FOREARM;
+      if (arm.sleeve) arm.sleeve.style.transform = `translate(${px(sx)}, ${px(sy)}) rotate(${a1.toFixed(4)}rad)`;
+      if (arm.fore) arm.fore.style.transform = `translate(${px(e.x)}, ${px(e.y)}) rotate(${a2.toFixed(4)}rad)`;
+      if (arm.hand) arm.hand.style.transform = `translate(${px(wx)}, ${px(wy)})`;
+    }
+  }
 
-    if (!draw || !loc) return;
-
-    // --- creatures, into the texture the water reads
-    const pathAngle = Math.atan2(l.dir.y, l.dir.x);
-    drawCreatures(lctx!, l, pathAngle, t, LIFE_SCALE);
-
-    // --- the water
+  // --- draw one frame -----------------------------------------------------------------
+  function render(t: number) {
+    const l = layout;
     const g = gl!;
-    g.viewport(0, 0, glCanvas.width, glCanvas.height);
-    g.uniform2f(loc.res, glCanvas.width, glCanvas.height);
-    g.uniform1f(loc.scale, q);
-    g.uniform2f(loc.view, l.W, l.H);
-    g.uniform1f(loc.time, t);
-    g.uniform2f(loc.p0, l.p0.x, l.p0.y);
-    g.uniform2f(loc.dir, l.dir.x, l.dir.y);
-    g.uniform2f(loc.perp, l.perp.x, l.perp.y);
-    g.uniform1f(loc.L, l.L);
-    g.uniform1f(loc.bend, l.bend);
-    g.uniform1f(loc.head, head);
-    g.uniform1f(loc.wHead, l.wHead);
-    g.uniform1f(loc.wTail, l.wTail);
-    g.uniform1f(loc.spread, l.spread);
-    g.uniform1f(loc.lead, l.lead);
-    g.uniform1f(loc.boatLen, B);
-    g.uniform2f(loc.boat, bx, by);
-    g.uniform2f(loc.boatDir, Math.cos(heading), Math.sin(heading));
-    g.uniform1f(loc.wake, wakeMem);
-    const sun = toWorld(l, 0.42, -l.wTail * 0.55);
-    g.uniform2f(loc.sun, sun.x, sun.y);
-    g.uniform4fv(loc.drops, dropBuf);
-    g.uniform4fv(loc.puddles, puddleBuf);
-    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, lifeCanvas);
-    g.drawArrays(g.TRIANGLES, 0, 3);
+    const f = fluid!;
+    life.begin();
+    drawSwimmers(life, swimmers);
+    life.end();
 
-    // --- bubbles, kept inside the water
-    const ctx = sctx!;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
-    ctx.setTransform(sparkScale, 0, 0, sparkScale, 0, 0);
+    g.bindVertexArray(screen);
+    g.useProgram(view.prog);
+    const u = view.u;
+    g.uniform2f(u("uRes"), glCanvas.width, glCanvas.height);
+    g.uniform1f(u("uScale"), q);
+    g.uniform2f(u("uView"), l.W, l.H);
+    g.uniform1f(u("uTime"), t);
+    g.uniform2f(u("uP0"), l.p0.x, l.p0.y);
+    g.uniform2f(u("uDir"), l.dir.x, l.dir.y);
+    g.uniform2f(u("uPerp"), l.perp.x, l.perp.y);
+    g.uniform1f(u("uL"), l.L);
+    g.uniform1f(u("uBend"), l.bend);
+    g.uniform1f(u("uHead"), head);
+    g.uniform1f(u("uWHead"), l.wHead);
+    g.uniform1f(u("uWTail"), l.wTail);
+    g.uniform1f(u("uSpread"), l.spread);
+    g.uniform1f(u("uLead"), l.lead);
+    g.uniform1f(u("uBoatLen"), l.boatLen);
+    g.uniform2f(u("uBoat"), bx, by);
+    g.uniform2f(u("uBoatDir"), Math.cos(heading), Math.sin(heading));
+    const sun = toWorld(l, 0.42, -l.wTail * 0.5);
+    g.uniform2f(u("uSun"), sun.x, sun.y);
+    g.uniform4fv(u("uDrops"), dropBuf);
+    g.uniform2f(u("uSimTexel"), 1 / Math.round(l.W / f.cell), 1 / Math.round(l.H / f.cell));
+    g.uniform1f(u("uCell"), f.cell);
+    bind(g, view, "uLife", 0, life.tex!);
+    bind(g, view, "uWave", 1, f.wave.read.tex);
+    bind(g, view, "uDye", 2, f.dye.read.tex);
+    blit(g, null);
+
+    // bubbles, kept inside the water, drawn over it in the same pass
+    const data = bubbleLayer.data;
+    let n = 0;
     for (const b of bubbles) {
       const age = t - b.born;
-      if (age < 0) continue;
+      if (age < 0 || n >= MAX_BUBBLES) continue;
       let sd = bodySd(l, head, b.x, b.y);
-      for (let i = 0; i < di; i++) {
+      for (let i = 0; i < dropCount; i++) {
         const o = i * 4;
         sd = Math.min(sd, Math.hypot(b.x - dropBuf[o], b.y - dropBuf[o + 1]) - dropBuf[o + 2]);
       }
       const popping = smooth(b.life - 0.12, b.life, age);
       const a = smooth(0, 0.2, age) * (1 - popping) * clamp((-sd - 1) / 5, 0, 1);
       if (a <= 0.01) continue;
-      const r = b.r * (1 + popping * 0.35);
-      ctx.globalAlpha = a;
-      if (r < 1.5) {
-        ctx.fillStyle = "rgb(255 238 220 / 0.85)";
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, Math.max(r, 0.7), 0, TAU);
-        ctx.fill();
-        continue;
-      }
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, r, 0, TAU);
-      ctx.fillStyle = "rgb(255 214 170 / 0.12)";
-      ctx.fill();
-      ctx.lineWidth = Math.max(0.6, r * 0.16);
-      ctx.strokeStyle = "rgb(255 236 214 / 0.78)";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(b.x - r * 0.38, b.y - r * 0.38, r * 0.27, 0, TAU);
-      ctx.fillStyle = "rgb(255 255 255 / 0.95)";
-      ctx.fill();
+      data[n * 4] = b.x;
+      data[n * 4 + 1] = b.y;
+      data[n * 4 + 2] = b.r * (1 + popping * 0.35);
+      data[n * 4 + 3] = a;
+      n++;
     }
-    ctx.globalAlpha = 1;
+    bubbleLayer.draw(n, l.W, l.H);
   }
 
   // --- the loop ----------------------------------------------------------------------
@@ -630,42 +559,64 @@ export function startVoyage({ host, boat, onDone, freezeAt = null }: VoyageOptio
   let last = performance.now();
   let frames = 0;
   let ema = 16;
-
-  if (freezeAt != null) {
-    // replay the voyage up to that moment so the splashes and puddles are there
-    for (let t = 0; t < freezeAt; t += 1 / 60) step(t, 1 / 60, false);
-    clock = freezeAt;
-  } else {
-    safety = window.setTimeout(finish, (END + 4) * 1000);
-  }
+  if (freezeAt == null) safety = window.setTimeout(finish, 12000);
 
   const loop = (now: number) => {
     raf = requestAnimationFrame(loop);
-    if (!loc) {
+    if (!ready) {
       // hold on the black frame, without starting the clock, until it compiles
-      if (parallel && !gl.getProgramParameter(prog, parallel.COMPLETION_STATUS_KHR)) {
+      if (!programsReady(gl, programs, parallel)) {
         last = now;
         return;
       }
-      if (!setup(gl)) {
+      if (!programsLinked(gl, programs)) {
         finish();
         return;
       }
+      ready = true;
+      // the first draw with each program builds its GPU pipeline, which can take
+      // a tenth of a second; do it on the black frame, before the clock starts
+      simulate(0, 1 / 60);
+      render(0);
+      edgeDrops.forEach((d) => (d.born = -1));
+      last = performance.now();
+      return;
+    }
+    if (replay && freezeAt != null) {
+      // replay the voyage up to that moment so the water has its history
+      replay = false;
+      splashes.length = 0;
+      bubbles.length = 0;
+      edgeDrops.forEach((d) => (d.born = -1));
+      prevIn = 0;
+      for (let t = 0; t < freezeAt; t += 1 / 60) simulate(t, 1 / 60);
+      clock = freezeAt;
     }
     const real = Math.max(0, (now - last) / 1000);
     last = now;
-    // a throttled or backgrounded tab should not lurch forward
-    const dt = freezeAt != null ? 0 : Math.min(real, 0.1);
-    clock += dt;
-    step(clock, dt, true);
+    if (freezeAt != null) {
+      simulate(clock, 0);
+    } else {
+      // a long frame is split into steps the solvers stay stable over, and a
+      // backgrounded tab does not lurch forward when it comes back
+      const span = Math.min(real, 0.1);
+      const n = Math.max(1, Math.ceil(span / (1 / 30)));
+      for (let i = 0; i < n; i++) {
+        clock += span / n;
+        simulate(clock, span / n);
+      }
+    }
+    render(clock);
 
     frames++;
     ema = ema * 0.9 + real * 1000 * 0.1;
     if (freezeAt == null && frames > 40 && frames % 20 === 0 && ema > 26 && quality > 0.55) {
       quality *= 0.8;
-      resize();
+      q = Math.min(window.devicePixelRatio || 1, 1) * quality;
+      glCanvas.width = Math.round(layout.W * q);
+      glCanvas.height = Math.round(layout.H * q);
     }
-    if (freezeAt == null && clock >= END) finish();
+    if (freezeAt == null && clock >= voyage.end) finish();
   };
   raf = requestAnimationFrame(loop);
 
