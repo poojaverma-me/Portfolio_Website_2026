@@ -12,7 +12,7 @@ import {
   personSchema,
 } from "@/lib/site";
 import CursorGlow from "@/components/CursorGlow";
-import IntroHello from "@/components/IntroHello";
+import IntroVoyage from "@/components/voyage/IntroVoyage";
 import "./globals.css";
 
 const anton = Anton({
@@ -86,7 +86,7 @@ export default function RootLayout({
       className={`${anton.variable} ${archivo.variable} ${jetbrains.variable} h-full`}
     >
       <head>
-        {/* decides before first paint whether the hello intro plays, see lib/intro.ts */}
+        {/* decides before first paint whether the intro plays, see lib/intro.ts */}
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
         {/* who this is, in the form search engines and assistants parse */}
         <script
@@ -98,7 +98,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="min-h-full flex flex-col">
-        <IntroHello />
+        <IntroVoyage />
         <div className="wallpaper" aria-hidden />
         <CursorGlow />
         <div className="top-scrim" aria-hidden />
