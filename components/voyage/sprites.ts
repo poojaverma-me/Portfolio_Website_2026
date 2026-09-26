@@ -7,7 +7,7 @@
  *   stencil bit of every pixel it crosses, pixels crossed an odd number of
  *   times are inside, and a second pass colours exactly those. It handles the
  *   concave fins and flukes that a plain fan would get wrong. Channels combine
- *   with MAX blending: red body, green light on the back, blue sharpness.
+ *   with MAX blending: red for the body, blue for sharpness.
  * - BubbleLayer draws every bubble as an instanced quad shaded by a distance
  *   field: a thin bright rim, a faint body and a highlight up and to the left.
  */
@@ -127,31 +127,6 @@ export class LifeLayer {
     gl.stencilOp(gl.ZERO, gl.ZERO, gl.ZERO);
     gl.uniform4f(this.prog.u("uColor"), r, g, b, 1);
     gl.drawArrays(gl.TRIANGLE_FAN, 0, n + 2);
-  }
-
-  /** A thick line along `n` points, for light along a back. */
-  strip(pts: Float32Array, n: number, half: number, r: number, g: number, b: number) {
-    const gl = this.gl;
-    if (n < 2 || n * 4 > this.verts.length) return;
-    const v = this.verts;
-    for (let i = 0; i < n; i++) {
-      const a = Math.max(0, i - 1);
-      const c = Math.min(n - 1, i + 1);
-      let dx = pts[c * 2] - pts[a * 2];
-      let dy = pts[c * 2 + 1] - pts[a * 2 + 1];
-      const d = Math.hypot(dx, dy) || 1;
-      dx /= d;
-      dy /= d;
-      v[i * 4] = pts[i * 2] - dy * half;
-      v[i * 4 + 1] = pts[i * 2 + 1] + dx * half;
-      v[i * 4 + 2] = pts[i * 2] + dy * half;
-      v[i * 4 + 3] = pts[i * 2 + 1] - dx * half;
-    }
-    this.upload(n * 2);
-    gl.stencilFunc(gl.ALWAYS, 0, 0xff);
-    gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-    gl.uniform4f(this.prog.u("uColor"), r, g, b, 1);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n * 2);
   }
 
   end() {

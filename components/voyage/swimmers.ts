@@ -27,8 +27,8 @@
  * several body lengths a second, and drag bleeds the speed off again.
  *
  * Everything is drawn on the GPU into a half-resolution texture that the water
- * shader reads (see sprites.ts): red for the body, green for light along the
- * back, blue for how sharp it should look (shallow things are crisp, deep ones
+ * shader reads (see sprites.ts): red for the body and blue for how sharp it
+ * should look (shallow things are crisp, deep ones
  * soft).
  */
 
@@ -294,7 +294,6 @@ const sx = new Float32Array(N);
 const sy = new Float32Array(N);
 const out = new Float32Array(Math.max(WHALE.xs.length, FISH.xs.length) * 2);
 const tail = new Float32Array(WHALE.xs.length * 2);
-const back = new Float32Array(64);
 
 /** Curvature along the body, per outline unit, from the swimming kinematics. */
 function curvature(s: Swimmer, xu: number) {
@@ -363,9 +362,9 @@ export function blowhole(s: Swimmer): Vec {
 }
 
 /**
- * Draws every swimmer into the life layer: red for the body, green for light
- * along the back, blue for how sharp it should look. MAX blending keeps the
- * brightest value per channel, so the body, the flukes and the back never add
+ * Draws every swimmer into the life layer: red for the body, blue for how
+ * sharp it should look. MAX blending keeps the brightest value per channel, so
+ * the body and the flukes never add
  * up into seams.
  */
 export function drawSwimmers(layer: LifeLayer, swimmers: Swimmer[]) {
@@ -413,13 +412,5 @@ export function drawSwimmers(layer: LifeLayer, swimmers: Swimmer[]) {
       layer.fill(tail, m, Math.min(1, s.depth + 0.12 * s.heave), 0, sharp);
     }
 
-    // light along the back
-    let m = 0;
-    for (let x = -56; x <= 74; x += 6) {
-      const [bx, by] = onSpine(x, 0);
-      place(bx, by, back, m * 2);
-      m++;
-    }
-    layer.strip(back, m, 8.5 * scale, 0, 0.78 * s.depth, 0);
   }
 }

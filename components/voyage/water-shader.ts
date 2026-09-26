@@ -252,7 +252,6 @@ void main() {
   float crisp = max(lc.b, ln.b);
   vec4 lv = mix(lf * 0.55 + ln * 0.3 + lc * 0.15, lc * 0.45 + ln * 0.55, crisp);
   col = mix(col, col * vec3(0.15, 0.095, 0.085) + vec3(0.025, 0.005, 0.0), lv.r);
-  col += vec3(0.2, 0.075, 0.025) * lv.g * lv.r;
 
   // --- caustics, focused by the surface ----------------------------------------
   float focus = clamp(1.0 - curv * 12.0, 0.45, 2.0);
