@@ -15,7 +15,7 @@
  *
  * Once the boat has rowed out of the top right corner, the camera dives into
  * the dark body of the big whale in the middle until the screen is black, and
- * hands over (onBlack) for the page to be torn open.
+ * then hands over to the page.
  */
 
 import {
@@ -111,15 +111,13 @@ export type VoyageOptions = {
   host: HTMLElement;
   boat: HTMLElement;
   onDone: () => void;
-  /** the dive has reached black: time to reveal the page */
-  onBlack?: () => void;
   /** called instead of onDone when this device can't run the voyage */
   onUnsupported?: () => void;
   /** development only: hold the scene at this many seconds */
   freezeAt?: number | null;
 };
 
-export function startVoyage({ host, boat, onDone, onBlack, onUnsupported, freezeAt = null }: VoyageOptions) {
+export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null }: VoyageOptions) {
   const glCanvas = document.createElement("canvas");
   glCanvas.setAttribute("aria-hidden", "true");
   Object.assign(glCanvas.style, {
@@ -618,7 +616,6 @@ export function startVoyage({ host, boat, onDone, onBlack, onUnsupported, freeze
   let last = performance.now();
   let frames = 0;
   let ema = 16;
-  let black = false;
   if (freezeAt == null) safety = window.setTimeout(finish, 14000);
 
   const loop = (now: number) => {
@@ -676,11 +673,7 @@ export function startVoyage({ host, boat, onDone, onBlack, onUnsupported, freeze
       glCanvas.width = Math.round(layout.W * q);
       glCanvas.height = Math.round(layout.H * q);
     }
-    if (freezeAt == null && dived >= 1 && !black) {
-      black = true;
-      done = true;
-      (onBlack ?? onDone)();
-    }
+    if (freezeAt == null && dived >= 1) finish();
   };
   raf = requestAnimationFrame(loop);
 
