@@ -56,6 +56,11 @@ uniform sampler2D uWave;
 uniform sampler2D uDye;
 uniform vec2 uSimTexel;
 uniform float uCell;
+// the camera: the world point at the centre of the screen, how far in it is
+// zoomed, and how far the frame has faded to black
+uniform vec2 uCam;
+uniform float uZoom;
+uniform float uDark;
 
 const vec3 C_SHALLOW = vec3(1.0, 0.56, 0.20);
 const vec3 C_MID     = vec3(0.88, 0.31, 0.03);
@@ -144,7 +149,8 @@ vec3 outsideGlow(float sd) {
 }
 
 void main() {
-  vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) / uScale;
+  vec2 ps = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) / uScale;
+  vec2 p = uCam + (ps - uView * 0.5) / uZoom;
   vec2 su = vec2(p.x / uView.x, 1.0 - p.y / uView.y);
   float h = texture(uWave, su).r;
 
@@ -164,7 +170,7 @@ void main() {
     ? abs(v) - w
     : (length(vec2(-behind / uLead, v / max(w, 1.0))) - 1.0) * uWHead;
   if (sd0 - reach > uBoatLen * 0.6) {
-    o = vec4(outsideGlow(sd0 - reach), 1.0);
+    o = vec4(outsideGlow(sd0 - reach) * (1.0 - uDark), 1.0);
     return;
   }
 
@@ -198,7 +204,7 @@ void main() {
   }
 
   if (sdw > 1.0) {
-    o = vec4(outsideGlow(sdw), 1.0);
+    o = vec4(outsideGlow(sdw) * (1.0 - uDark), 1.0);
     return;
   }
   float mask = smoothstep(0.8, -0.8, sdw);
@@ -298,7 +304,7 @@ void main() {
   col = mix(col, C_SHALLOW * 1.06, rim * 0.5);
   col += C_FOAM * exp(-pow((sdw + 1.6) / 1.1, 2.0)) * 0.3;
 
-  col += (hash(p + fract(uTime) * 91.0) - 0.5) * 0.02;
-  o = vec4(mix(outsideGlow(sdw), col, mask), 1.0);
+  col += (hash(ps + fract(uTime) * 91.0) - 0.5) * 0.02;
+  o = vec4(mix(outsideGlow(sdw), col, mask) * (1.0 - uDark), 1.0);
 }
 `;

@@ -136,3 +136,13 @@ export function seeded(seed: number) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+
+/** Progress at which a boat on the line is fully out of sight, oars and all. */
+export function exitProgress(l: Layout) {
+  const m = l.boatLen * 0.95;
+  for (let u = 1; u < 3; u += 0.005) {
+    const c = center(l, u);
+    if (c.x > l.W + m || c.y < -m) return u;
+  }
+  return 3;
+}

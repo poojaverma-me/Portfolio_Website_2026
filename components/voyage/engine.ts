@@ -12,6 +12,10 @@
  *   shallow whales leave fluke prints.
  * - Bubbles and drips drift with the simulated current, read back from the GPU
  *   without stalling it.
+ *
+ * Once the boat has rowed out of the top right corner, the camera dives into
+ * the dark body of the big whale in the middle until the screen is black, and
+ * hands over (onBlack) for the page to be torn open.
  */
 
 import {
@@ -31,6 +35,7 @@ import {
   center,
   clamp,
   lerp,
+  exitProgress,
   makeLayout,
   seeded,
   smooth,
@@ -49,6 +54,10 @@ const DEG = Math.PI / 180;
 
 
 const LIFE_SCALE = 0.5;
+/** seconds the camera takes to dive into the whale */
+const DIVE = 1.3;
+/** the dive starts this long before the boat is out of sight, sweeping it out */
+const DIVE_LEAD = 0.8;
 
 type EdgeDrop = { u: number; v: number; r: number; k: number; drift: number; born: number };
 type Splash = {
@@ -102,13 +111,15 @@ export type VoyageOptions = {
   host: HTMLElement;
   boat: HTMLElement;
   onDone: () => void;
+  /** the dive has reached black: time to reveal the page */
+  onBlack?: () => void;
   /** called instead of onDone when this device can't run the voyage */
   onUnsupported?: () => void;
   /** development only: hold the scene at this many seconds */
   freezeAt?: number | null;
 };
 
-export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null }: VoyageOptions) {
+export function startVoyage({ host, boat, onDone, onBlack, onUnsupported, freezeAt = null }: VoyageOptions) {
   const glCanvas = document.createElement("canvas");
   glCanvas.setAttribute("aria-hidden", "true");
   Object.assign(glCanvas.style, {
@@ -188,7 +199,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
 
   // --- state -------------------------------------------------------------------
   let layout: Layout = makeLayout(1, 1);
-  let voyage: Voyage = planVoyage(layout);
+  let voyage: Voyage = planVoyage(layout, 1);
   let swimmers: Swimmer[] = [];
   let edgeDrops: EdgeDrop[] = [];
   let quality = 1;
@@ -208,7 +219,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     const H = host.clientHeight || window.innerHeight;
     const born = edgeDrops.map((d) => d.born);
     layout = makeLayout(W, H);
-    voyage = planVoyage(layout);
+    voyage = planVoyage(layout, exitProgress(layout));
     swimmers = makeSwimmers(layout);
     breath = swimmers.map(() => 0.3 + rand() * 1.4);
     edgeDrops = makeEdgeDrops(layout);
@@ -318,7 +329,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
           cluster(b.x, b.y, 6, B * 0.04, t);
         }
       }
-      if (prevIn >= 0.5 && st.inWater < 0.5 && st.mode === "row") {
+      if (prevIn >= 0.5 && st.inWater < 0.5) {
         for (const b of blades) {
           for (let i = 0; i < 2; i++) {
             const sp = B * (0.4 + rand() * 0.35);
@@ -420,9 +431,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
         blades: blades.map((b, i) => ({ ...b, ...bladeVel[i], on: st.inWater })),
         bladeHalf: [B * 0.09, B * 0.022],
         bladeDepth: B * 0.008,
-        bladeFoam: [0, 1].map(() =>
-          st.inWater * (st.mode === "row" ? 6 * st.thrust : 6 * clamp(speedN, 0, 1)),
-        ) as [number, number],
+        bladeFoam: [6 * st.inWater * st.thrust, 6 * st.inWater * st.thrust],
         jets,
         spots,
         ripples,
@@ -464,10 +473,14 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
       if (t - bubbles[i].born > bubbles[i].life) bubbles.splice(i, 1);
     }
 
-    // --- the boat: transforms only, so the compositor moves it without repainting
+    // --- the boat: transforms only, so the compositor moves it without repainting.
+    // It is seen through the same camera as the water.
     const U = B / 200;
     const px = (v: number) => `${(v * U).toFixed(2)}px`;
-    boat.style.transform = `translate3d(${(bx - B).toFixed(2)}px, ${(by - B).toFixed(2)}px, 0) rotate(${(heading / DEG).toFixed(3)}deg)`;
+    const cam = camera(t);
+    const onScreenX = (bx - cam.x) * cam.zoom + l.W / 2;
+    const onScreenY = (by - cam.y) * cam.zoom + l.H / 2;
+    boat.style.transform = `translate3d(${(onScreenX - B).toFixed(2)}px, ${(onScreenY - B).toFixed(2)}px, 0) rotate(${(heading / DEG).toFixed(3)}deg) scale(${cam.zoom.toFixed(4)})`;
     const turn = `rotate(${(-st.alpha).toFixed(2)}deg)`;
     if (oarS) oarS.style.transform = turn;
     if (oarP) oarP.style.transform = `scale(1, -1) ${turn}`;
@@ -499,11 +512,46 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     }
   }
 
+  // --- the camera ---------------------------------------------------------------------
+  // It holds still for the voyage, then dollies into the big whale nearest the
+  // middle of the screen. Zoom grows exponentially, so the push reads as a
+  // steady move toward the whale rather than a snap, and the frame darkens as
+  // it enters the body.
+  const camera = (t: number) => {
+    const l = layout;
+    const mid = { x: l.W / 2, y: l.H / 2 };
+    const k = clamp((t - (voyage.exit - DIVE_LEAD)) / DIVE, 0, 1);
+    if (k <= 0) return { x: mid.x, y: mid.y, zoom: 1, dark: 0, k };
+    let whale = swimmers[0];
+    let best = Infinity;
+    for (const s of swimmers) {
+      if (s.kind !== "whale" || s.L < l.boatLen) continue;
+      const d = Math.hypot(s.x - mid.x, s.y - mid.y);
+      if (d < best) {
+        best = d;
+        whale = s;
+      }
+    }
+    // deep enough in that the body, about 22 units either side of the spine,
+    // overfills the screen
+    const half = (22 * whale.L) / 210;
+    const zMax = (1.3 * Math.hypot(l.W, l.H)) / 2 / half;
+    const aim = smooth(0, 0.6, k);
+    return {
+      x: lerp(mid.x, whale.x, aim),
+      y: lerp(mid.y, whale.y, aim),
+      zoom: Math.pow(zMax, Math.pow(k, 1.7)),
+      dark: smooth(0.62, 0.96, k),
+      k,
+    };
+  };
+
   // --- draw one frame -----------------------------------------------------------------
   function render(t: number) {
     const l = layout;
     const g = gl!;
     const f = fluid!;
+    const cam = camera(t);
     life.begin();
     drawSwimmers(life, swimmers);
     life.end();
@@ -533,6 +581,9 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     g.uniform4fv(u("uDrops"), dropBuf);
     g.uniform2f(u("uSimTexel"), 1 / Math.round(l.W / f.cell), 1 / Math.round(l.H / f.cell));
     g.uniform1f(u("uCell"), f.cell);
+    g.uniform2f(u("uCam"), cam.x, cam.y);
+    g.uniform1f(u("uZoom"), cam.zoom);
+    g.uniform1f(u("uDark"), cam.dark);
     bind(g, view, "uLife", 0, life.tex!);
     bind(g, view, "uWave", 1, f.wave.read.tex);
     bind(g, view, "uDye", 2, f.dye.read.tex);
@@ -555,10 +606,11 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
       data[n * 4] = b.x;
       data[n * 4 + 1] = b.y;
       data[n * 4 + 2] = b.r * (1 + popping * 0.35);
-      data[n * 4 + 3] = a;
+      data[n * 4 + 3] = a * (1 - cam.dark);
       n++;
     }
-    bubbleLayer.draw(n, l.W, l.H);
+    bubbleLayer.draw(n, l.W, l.H, cam.x, cam.y, cam.zoom);
+    return cam.k;
   }
 
   // --- the loop ----------------------------------------------------------------------
@@ -566,7 +618,8 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
   let last = performance.now();
   let frames = 0;
   let ema = 16;
-  if (freezeAt == null) safety = window.setTimeout(finish, 12000);
+  let black = false;
+  if (freezeAt == null) safety = window.setTimeout(finish, 14000);
 
   const loop = (now: number) => {
     raf = requestAnimationFrame(loop);
@@ -613,7 +666,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
         simulate(clock, span / n);
       }
     }
-    render(clock);
+    const dived = render(clock);
 
     frames++;
     ema = ema * 0.9 + real * 1000 * 0.1;
@@ -623,7 +676,11 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
       glCanvas.width = Math.round(layout.W * q);
       glCanvas.height = Math.round(layout.H * q);
     }
-    if (freezeAt == null && clock >= voyage.end) finish();
+    if (freezeAt == null && dived >= 1 && !black) {
+      black = true;
+      done = true;
+      (onBlack ?? onDone)();
+    }
   };
   raf = requestAnimationFrame(loop);
 

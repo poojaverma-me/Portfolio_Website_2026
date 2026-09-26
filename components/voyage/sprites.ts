@@ -142,15 +142,19 @@ const BUBBLE_VS = `#version 300 es
 layout(location = 0) in vec2 aCorner;
 layout(location = 1) in vec4 aBubble;
 uniform vec2 uView;
+uniform vec2 uCam;
+uniform float uZoom;
 out vec2 vLocal;
 out float vR;
 out float vA;
 void main() {
-  float pad = aBubble.z + 1.5;
+  float r = aBubble.z * uZoom;
+  float pad = r + 1.5;
   vLocal = aCorner * pad;
-  vR = aBubble.z;
+  vR = r;
   vA = aBubble.w;
-  vec2 c = (aBubble.xy + vLocal) / uView * 2.0 - 1.0;
+  vec2 screen = (aBubble.xy - uCam) * uZoom + uView * 0.5 + vLocal;
+  vec2 c = screen / uView * 2.0 - 1.0;
   gl_Position = vec4(c.x, -c.y, 0.0, 1.0);
 }`;
 const BUBBLE_FS = `#version 300 es
@@ -206,12 +210,17 @@ export class BubbleLayer {
     gl.bindVertexArray(null);
   }
 
-  /** Draws the first `n` bubbles in `data` (x, y, r, alpha) over the current target. */
-  draw(n: number, W: number, H: number) {
+  /**
+   * Draws the first `n` bubbles in `data` (x, y, r, alpha) over the current
+   * target, seen by a camera centred on (camX, camY) at `zoom`.
+   */
+  draw(n: number, W: number, H: number, camX: number, camY: number, zoom: number) {
     if (n <= 0) return;
     const gl = this.gl;
     gl.useProgram(this.prog.prog);
     gl.uniform2f(this.prog.u("uView"), W, H);
+    gl.uniform2f(this.prog.u("uCam"), camX, camY);
+    gl.uniform1f(this.prog.u("uZoom"), zoom);
     gl.bindVertexArray(this.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.inst);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.data, 0, n * 4);

@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { INTRO_SESSION_KEY } from "@/lib/intro";
 import { useIntro } from "@/lib/use-intro";
 
 const WRITE = 2.6; // seconds to write "hello"
@@ -44,11 +43,6 @@ export default function IntroHello() {
   const state = useIntro();
 
   const finish = useCallback(() => {
-    try {
-      sessionStorage.setItem(INTRO_SESSION_KEY, "1");
-    } catch {
-      // storage blocked: the intro simply plays again next load
-    }
     document.documentElement.dataset.intro = "done";
   }, []);
 
