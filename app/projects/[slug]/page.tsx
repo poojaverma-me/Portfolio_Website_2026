@@ -7,7 +7,7 @@ import {
   ChevronRight,
   CircleCheck,
 } from "lucide-react";
-import { getProject, projects } from "@/lib/projects";
+import { CASE_STUDIES_PUBLISHED, getProject, projects } from "@/lib/projects";
 import { categoryIcon } from "@/lib/categories";
 import CaseStudyToc from "@/components/CaseStudyToc";
 import ScreenshotPlaceholder from "@/components/ScreenshotPlaceholder";
@@ -31,6 +31,8 @@ export async function generateMetadata({
     description: project.tagline,
     keywords: [project.title, project.category, ...project.stack, "Pooja Verma"],
     alternates: { canonical: url },
+    // placeholder write-ups are kept out of search until they are real
+    robots: CASE_STUDIES_PUBLISHED ? undefined : { index: false, follow: true },
     openGraph: {
       type: "article",
       title: `${project.title} · Pooja Verma`,

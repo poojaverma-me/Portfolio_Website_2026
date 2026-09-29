@@ -75,26 +75,29 @@ export default function Hero() {
 
       <div className="mx-auto max-w-6xl px-6 relative">
         <motion.div style={{ y: copyY, opacity: copyOpacity }} className="lg:max-w-[560px]">
-          <motion.p
-            variants={rise}
-            initial="hidden"
-            animate={introFinished ? "show" : "hidden"}
-            custom={0}
-            className="eyebrow"
-          >
-            {profile.role}, {profile.school}
-          </motion.p>
-
-          <motion.h1
-            variants={rise}
-            initial="hidden"
-            animate={introFinished ? "show" : "hidden"}
-            custom={1}
-            className="large-title mt-4"
-          >
-            <span className="block">{profile.headline[0]}</span>
-            <span className="block text-accent">{profile.headline[1]}</span>
-          </motion.h1>
+          {/* The eyebrow is part of the heading, so the page's one h1 says who this
+              is, what she does and where, in text that is on screen. */}
+          <h1>
+            <motion.span
+              variants={rise}
+              initial="hidden"
+              animate={introFinished ? "show" : "hidden"}
+              custom={0}
+              className="eyebrow block"
+            >
+              {profile.name} · {profile.role} · {profile.location}
+            </motion.span>
+            <motion.span
+              variants={rise}
+              initial="hidden"
+              animate={introFinished ? "show" : "hidden"}
+              custom={1}
+              className="large-title mt-4 block"
+            >
+              <span className="block">{profile.headline[0]}</span>
+              <span className="block text-accent">{profile.headline[1]}</span>
+            </motion.span>
+          </h1>
 
           <motion.p
             variants={rise}

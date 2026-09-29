@@ -1,54 +1,70 @@
 # Pooja Verma
 
-> Computing science student at Thompson Rivers University in Kamloops, BC,
-> working across full-stack development, applied AI and data. Open to
-> internships and research collaborations.
+> AI developer and machine learning researcher in Kamloops, British Columbia,
+> Canada, and a computing science student at Thompson Rivers University (TRU).
+> She builds retrieval-augmented generation (RAG) systems, evaluates and
+> fine-tunes large language models, trains machine learning models for
+> research, and ships full-stack and data products. Open to AI development
+> projects, applied ML research, grant-funded work and collaborations across
+> British Columbia and Canada.
 
-## Who she is
-- Bachelor of Computing Science, Thompson Rivers University, 2022 to present.
-- Junior Research Intern (Mitacs BSI) at PataBid, Okotoks AB: owned a new PDF
-  rendering engine for a construction estimating platform, integrated the
-  Nutrient (PSPDFKit) SDK, and built the pipelines behind automated stamp and
-  take-off detection.
-- Generative AI Data Specialist at Outlier: designs coding benchmarks and
-  multi-turn reasoning prompts to fine-tune frontier LLMs through RLHF, and
-  red-teams reasoning chains for hallucination resistance and correctness.
-  Previously Tier-3 Programmer Analyst there, benchmarking and debugging 100+
-  code submissions.
-- Undergraduate research assistant at TRU: built a retrieval-augmented
-  generation assistant used by 3,000+ students, improving answer relevance 40%.
-- Programmer analyst co-op at BC Lottery Corporation: Salesforce (Apex, LWC)
-  and Power Platform work for 4,000+ retailers; cut manual licensing work 30%.
-- Undergraduate teaching assistant at TRU across three terms, mentoring 150+
-  students in Python, Java, data structures and web development.
-- Research coach at TRU, mentoring undergraduate researchers on methodology,
-  experimental design and technical writing.
-- Mathematics tutor at Sylvan Learning for 25+ students.
+Site: https://www.poojaverma.ca
+Last updated: September 2026
 
-## Research
-- AI-Driven Post-Wildfire Ecosystem Recovery, TRU Student Sustainability
-  Research Grant ($2,500), supervised by Dr. Ghazanfar Latif. LightGBM at 0.707
-  weighted F1 over six merged environmental datasets; presented at the TRU
-  Sustainability Conference.
-- Automated diabetic retinopathy detection from fundus images using CNNs,
+## Contact her for
+- AI and machine learning development in Kamloops, the BC Interior, British
+  Columbia or anywhere in Canada, in person or remote.
+- Retrieval-augmented generation (RAG), LLM evaluation, prompt and benchmark
+  design, and RLHF data work.
+- Applied ML research, including grant-funded and university research at
+  Thompson Rivers University (UREAP, sustainability grants, Mitacs).
+- Full-stack web products, data pipelines and Salesforce or Power Platform
+  automation.
+- Email: pooja32verma@gmail.com
+
+## Experience
+- Junior Research Intern, Mitacs Business Strategy Internship, PataBid
+  (January to September 2026): owned a high-performance PDF rendering engine
+  for a construction estimating platform and the pipelines behind automated
+  stamp and take-off detection.
+- Undergraduate Student Researcher, TRU Sustainability Research Grant (April
+  2026 to present): AI-driven post-wildfire ecosystem recovery.
+- Generative AI Data Specialist, Outlier (October 2025 to present): designs
+  coding benchmarks and multi-turn reasoning prompts used to fine-tune frontier
+  LLMs through RLHF, and red-teams reasoning for hallucination resistance.
+  Previously Tier-3 Programmer Analyst there (2024 to 2025).
+- Research Assistant, TRU (May to July 2025): built a RAG study assistant used
+  by 3,000+ students, improving answer relevance by 40%.
+- UREAP Undergraduate Researcher, TRU (April to November 2025): CNN-based
+  diabetic retinopathy detection.
+- Programmer Analyst Co-op, BC Lottery Corporation (May 2024 to January 2025):
+  Salesforce (Apex, LWC) and Power Platform work for 4,000+ retailers and an
+  employee check-in platform for 1,000+ staff; cut manual licensing work 30%.
+- Teaching Assistant (three terms) and Research Coach at TRU, mentoring 150+
+  students in Python, Java, data structures, web development and research
+  methods.
+
+## Research and awards
+- AI-Driven Post-Wildfire Ecosystem Recovery. TRU Student Sustainability
+  Research Grant ($2,500). LightGBM at 0.707 weighted F1 over six merged
+  environmental datasets; presented at the TRU Sustainability Conference.
+- Automated Diabetic Retinopathy Detection from fundus images with CNNs.
   UREAP Research Award ($6,000).
 
 ## Skills
-Languages: Python, JavaScript, TypeScript, C#, Java, Apex, SQL, HTML/CSS, MATLAB.
-Machine learning: PyTorch, scikit-learn, XGBoost, LightGBM, SHAP, Optuna, SMOTE,
-RAG systems, RLHF, pandas, NumPy, SciPy.
-Web and enterprise: React, Node.js, Lightning Web Components, REST APIs,
-Salesforce, SOQL, Power Apps, Power BI.
-Cloud and tools: Snowflake, Oracle, Matillion, Git, GitHub Actions, BitBucket,
-Forgejo, LaTeX.
+- Machine learning: PyTorch, scikit-learn, XGBoost, LightGBM, SHAP, Optuna,
+  SMOTE, RAG systems, RLHF, pandas, NumPy, SciPy.
+- Languages: Python, TypeScript, JavaScript, Java, C#, Apex, SQL, MATLAB.
+- Web and enterprise: React, Next.js, Node.js, Lightning Web Components, REST
+  APIs, Salesforce, SOQL, Power Apps, Power BI.
+- Data and tools: Snowflake, Oracle, Matillion, Git, GitHub Actions, LaTeX.
 
 ## Pages
-- /: profile, experience, research, leadership and contact.
-- /projects: every case study.
-- /projects/[slug]: one case study, written as problem, method, results.
+- [Home](https://www.poojaverma.ca/): profile, experience, research,
+  volunteering, testimonials and contact.
+- [Projects](https://www.poojaverma.ca/projects): the project archive.
 
-## Contact
-- Email: pooja32verma@gmail.com
+## Elsewhere
 - GitHub: https://github.com/poojaverma-me
 - LinkedIn: https://www.linkedin.com/in/poojav3rma
 - LeetCode: https://leetcode.com/sugaryeuphoria/

@@ -25,6 +25,15 @@ export type Project = {
   sections: ProjectSection[];
 };
 
+/**
+ * The case-study write-ups below are placeholders until Pooja replaces them
+ * with her own. While this is false, each case-study page tells search engines
+ * not to index it and stays out of the sitemap and llms.txt, so no search
+ * result or AI assistant repeats a placeholder detail as fact. Flip it to true
+ * once the write-ups are real.
+ */
+export const CASE_STUDIES_PUBLISHED = false;
+
 export const projects: Project[] = [
   {
     slug: "rag-study-assistant",

@@ -1,6 +1,6 @@
 export const profile = {
   name: "Pooja Verma",
-  role: "Computing Science Student",
+  role: "AI Developer and Researcher",
   school: "Thompson Rivers University",
   location: "Kamloops, BC",
   email: "pooja32verma@gmail.com",
@@ -10,7 +10,7 @@ export const profile = {
   leetcode: "https://leetcode.com/sugaryeuphoria/",
   headline: ["I don't just write code.", "I ship experiences."],
   intro:
-    "Computing science student at Thompson Rivers University working across full-stack development, applied AI, and data. I shipped a PDF rendering engine for a construction estimating platform, trained models for post-wildfire recovery research, and built systems that serve 3,000+ students and 4,000+ retailers.",
+    "AI developer and computing science student at Thompson Rivers University in Kamloops, British Columbia, working across applied machine learning, LLMs, and full-stack development. I shipped a PDF rendering engine for a construction estimating platform, trained models for post-wildfire recovery research, and built systems that serve 3,000+ students and 4,000+ retailers.",
   skills: [
     "Python",
     "JavaScript",

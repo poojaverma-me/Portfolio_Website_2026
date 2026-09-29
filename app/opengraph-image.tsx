@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { profile } from "@/lib/profile";
 
-export const alt = `${profile.name}, computing science student and developer`;
+export const alt = `${profile.name}, AI developer and researcher in Kamloops, British Columbia`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -33,7 +33,7 @@ export default async function OpenGraphImage() {
               color: "#f96b0b",
             }}
           >
-            Computing Science · Thompson Rivers University
+            AI Developer and Researcher · Kamloops, BC
           </div>
         </div>
 
@@ -42,7 +42,7 @@ export default async function OpenGraphImage() {
             {profile.name}
           </div>
           <div style={{ fontSize: 34, lineHeight: 1.3, color: "rgba(245,245,247,0.72)" }}>
-            Full-stack builds, applied AI and data work
+            Applied machine learning, LLMs and full-stack AI products
           </div>
         </div>
 
@@ -58,7 +58,7 @@ export default async function OpenGraphImage() {
           <span style={{ color: "#f96b0b" }}>·</span>
           <span>UREAP and TRU research awards</span>
           <span style={{ color: "#f96b0b" }}>·</span>
-          <span>Kamloops, BC</span>
+          <span>Thompson Rivers University</span>
         </div>
       </div>
     ),

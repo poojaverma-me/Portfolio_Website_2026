@@ -52,8 +52,10 @@ export default function Footer() {
               Let&apos;s build <span className="text-accent">something real.</span>
             </h2>
             <p className="lead mt-4 max-w-xl">
-              Open to internships, research collaborations, and anything that
-              needs to ship.
+              Based in Kamloops, British Columbia. Open to AI development
+              projects, applied machine learning research, grant-funded work
+              and internships, with Thompson Rivers University teams, startups
+              and organizations across BC and Canada.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <a href={`mailto:${profile.email}`} className="btn-primary">

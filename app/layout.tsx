@@ -8,6 +8,7 @@ import {
   KEYWORDS,
   SITE_DESCRIPTION,
   SITE_NAME,
+  SITE_TITLE,
   SITE_URL,
   personSchema,
 } from "@/lib/site";
@@ -34,7 +35,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${profile.name} · Computing Science Student and Developer`,
+    default: SITE_TITLE,
     // every page appends the name, so a tab or a search result still says whose site it is
     template: `%s · ${profile.name}`,
   },
@@ -49,14 +50,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title: `${profile.name} · Computing Science Student and Developer`,
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     locale: "en_CA",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${profile.name} · Computing Science Student and Developer`,
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
   robots: {
@@ -80,7 +81,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-CA"
       data-intro="play"
       suppressHydrationWarning
       className={`${anton.variable} ${archivo.variable} ${jetbrains.variable} h-full`}
