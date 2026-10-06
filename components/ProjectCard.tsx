@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Project } from "@/lib/projects";
@@ -19,13 +20,22 @@ export default function ProjectCard({
       href={`/projects/${project.slug}`}
       className="glass-card group flex h-full flex-col overflow-hidden"
     >
-      {/* cover placeholder until real screenshots land */}
-      <div
-        className="cover-placeholder relative flex aspect-[16/10] w-full items-center justify-center border-b hairline"
-      >
-        <span className="app-icon is-lg transition-transform duration-500 ease-out group-hover:scale-105">
-          <Icon size={30} strokeWidth={1.75} />
-        </span>
+      <div className="cover-placeholder relative aspect-[16/10] w-full overflow-hidden border-b hairline">
+        {project.cover ? (
+          <Image
+            src={project.cover}
+            alt={`${project.title} screenshot`}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 380px"
+            className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          />
+        ) : (
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="app-icon is-lg transition-transform duration-500 ease-out group-hover:scale-105">
+              <Icon size={30} strokeWidth={1.75} />
+            </span>
+          </span>
+        )}
         <span className="token absolute right-3 top-3 !bg-base/60 backdrop-blur-md tabular-nums">
           {project.year}
         </span>

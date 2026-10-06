@@ -54,10 +54,49 @@ Last updated: September 2026
 ## Skills
 - Machine learning: PyTorch, scikit-learn, XGBoost, LightGBM, SHAP, Optuna,
   SMOTE, RAG systems, RLHF, pandas, NumPy, SciPy.
+- AI products: TypeSafe Jev typed decision APIs (probabilistic yes/no, choice
+  and score questions), LLM evaluation, Gemini API, Web Speech API.
 - Languages: Python, TypeScript, JavaScript, Java, C#, Apex, SQL, MATLAB.
 - Web and enterprise: React, Next.js, Node.js, Lightning Web Components, REST
   APIs, Salesforce, SOQL, Power Apps, Power BI.
 - Data and tools: Snowflake, Oracle, Matillion, Git, GitHub Actions, LaTeX.
+
+## Projects (case studies with screenshots and source links)
+- [After Fire](https://www.poojaverma.ca/projects/after-fire): interactive
+  atlas of post-wildfire recovery in BC's Thompson-Okanagan; 2,600 burned
+  sites, 6 open datasets, XGBoost with SHAP, Next.js, React Three Fiber,
+  MapLibre.
+- [ReelMind](https://www.poojaverma.ca/projects/reelmind): Netflix-style movie
+  recommender built on TypeSafe's Jev decision model; three typed requests,
+  about 400 ms and $0.0006 per recommendation, every pick explained.
+- [Pulse](https://www.poojaverma.ca/projects/pulse): live sales-call coaching;
+  Jev answers 12 typed questions after every sentence (median 230 ms).
+- [Tidal](https://www.poojaverma.ca/projects/tidal): IT and support ticket
+  routing with confidence-gated human review; 96.9% team accuracy on 96
+  labelled tickets.
+- [Shortlist](https://www.poojaverma.ca/projects/shortlist): resume screening
+  where every criterion is a typed question; new criteria re-score 40 resumes
+  in about a second.
+- [Wildwood](https://www.poojaverma.ca/projects/wildwood): voice-controlled
+  first-person survival game in the browser (Three.js, React Three Fiber);
+  sentences become game actions through Jev in about 115 ms.
+- [Tadka](https://www.poojaverma.ca/projects/tadka): installable mobile app for
+  Indian home cooking; one Jev request scores 68 dishes against a craving.
+- [Keystroke Dynamics](https://www.poojaverma.ca/projects/keystroke-dynamics):
+  a typing simulator built from 99 real typists, tested against Random Forest,
+  Gradient Boosting and AdaBoost detectors of synthetic typing; Python,
+  scikit-learn, Flask.
+- [Sprint Ticket Master](https://www.poojaverma.ca/projects/sprint-ticket-master):
+  Excel task lists turned into sprint tickets by Google Gemini; Next.js,
+  SheetJS.
+- [Schedulo](https://www.poojaverma.ca/projects/schedulo): real-time shift
+  scheduler with swaps, a drag-and-drop store calendar and analytics; React,
+  Firebase Firestore.
+- [Workout Calorie Prediction](https://www.poojaverma.ca/projects/workout-calories-ml):
+  machine-learning study of 20,000 workout sessions, including an audit of a
+  leaked feature; scikit-learn.
+- [Solo Ascend](https://www.poojaverma.ca/projects/solo-ascend): gamified
+  habit tracker with XP, levels and ranks; React, Tailwind CSS, Framer Motion.
 
 ## Pages
 - [Home](https://www.poojaverma.ca/): profile, experience, research,

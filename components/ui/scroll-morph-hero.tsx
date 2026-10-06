@@ -176,6 +176,11 @@ const seeded = (n: number) => {
   return x - Math.floor(x);
 };
 
+const NUMBER_WORDS: Record<number, string> = {
+  1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight",
+  9: "Nine", 10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen", 14: "Fourteen", 15: "Fifteen",
+};
+
 export default function ScrollMorphHero({
   cards,
   allHref = "/projects",
@@ -185,6 +190,9 @@ export default function ScrollMorphHero({
   allHref?: string;
 }) {
   const total = cards.length;
+  // one heading per project, not per card: several cards share a case study
+  const builds = new Set(cards.map((c) => c.href)).size;
+  const buildsWord = NUMBER_WORDS[builds] ?? String(builds);
   const reduceMotion = useReducedMotion() ?? false;
 
   const trackRef = useRef<HTMLDivElement>(null);
@@ -370,7 +378,7 @@ export default function ScrollMorphHero({
           >
             <p className="eyebrow mb-2">The archive</p>
             <h3 className="section-title mb-3 sm:mb-4">
-              Six builds. <span className="text-label-2">One archive.</span>
+              {buildsWord} builds. <span className="text-label-2">One archive.</span>
             </h3>
             <p className="lead max-w-lg !text-[0.9375rem] sm:!text-[1.0625rem]">
               <span className="sm:hidden">

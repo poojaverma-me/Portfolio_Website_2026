@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 import ProjectCard from "@/components/ProjectCard";
 import { projects } from "@/lib/projects";
 
-const categories = ["All", "AI / ML", "Data", "Security", "Full-Stack"] as const;
-type Filter = (typeof categories)[number];
+const ORDER = ["AI / ML", "Data", "Security", "Full-Stack"] as const;
+type Filter = "All" | (typeof ORDER)[number];
+// only the categories that have projects get a tab
+const categories: Filter[] = ["All", ...ORDER.filter((c) => projects.some((p) => p.category === c))];
 
 export default function ProjectsGrid() {
   const [active, setActive] = useState<Filter>("All");

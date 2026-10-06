@@ -3,7 +3,7 @@ import ProjectsGrid from "@/components/ProjectsGrid";
 import Reveal from "@/components/Reveal";
 
 const description =
-  "Case studies by Pooja Verma: full-stack builds, retrieval and CNN research, Salesforce platform work, and data systems, each written up with the problem, the architecture and the result.";
+  "Case studies by Pooja Verma: AI products built on TypeSafe's Jev (a movie recommender, live sales-call coaching, ticket routing, resume screening, a voice-controlled game and a cooking app), a wildfire-recovery atlas from her ML research, a keystroke-biometrics study and more.";
 
 export const metadata: Metadata = {
   // the layout template appends the name, so the title stays short here
@@ -11,11 +11,12 @@ export const metadata: Metadata = {
   description,
   keywords: [
     "Pooja Verma projects",
-    "software engineering case studies",
-    "RAG system project",
-    "CNN research project",
-    "Salesforce automation project",
-    "full-stack portfolio projects",
+    "machine learning case studies",
+    "wildfire recovery machine learning",
+    "keystroke dynamics behavioural biometrics",
+    "Gemini LLM app",
+    "Firebase real-time app",
+    "Next.js portfolio projects",
   ],
   alternates: { canonical: "/projects" },
   openGraph: {
@@ -34,9 +35,10 @@ export default function ProjectsPage() {
         <p className="eyebrow">The archive</p>
         <h1 className="large-title mt-2">Projects.</h1>
         <p className="lead mt-5 max-w-2xl">
-          Every project ships with a full case study covering the problem, the
-          architecture, and the results, written like documentation, because
-          that&apos;s how I work.
+          Twelve builds across machine learning research, AI products and
+          full-stack apps. Each case study covers the problem, how it works and the
+          results, with screenshots of the real thing and what I would fix
+          next.
         </p>
       </Reveal>
       <ProjectsGrid />

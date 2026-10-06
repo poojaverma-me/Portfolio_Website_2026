@@ -7,9 +7,11 @@ import {
   ChevronRight,
   CircleCheck,
 } from "lucide-react";
-import { CASE_STUDIES_PUBLISHED, getProject, projects } from "@/lib/projects";
+import { CASE_STUDIES_PUBLISHED, getProject, projects, type Figure } from "@/lib/projects";
+import { SITE_URL } from "@/lib/site";
 import { categoryIcon } from "@/lib/categories";
 import CaseStudyToc from "@/components/CaseStudyToc";
+import Screenshot from "@/components/Screenshot";
 import ScreenshotPlaceholder from "@/components/ScreenshotPlaceholder";
 import Reveal from "@/components/Reveal";
 
@@ -50,10 +52,52 @@ export async function generateMetadata({
   };
 }
 
-/** Renders our trusted dummy-data markup: **bold** and <code>…</code>. */
+/** Renders the write-ups' own markup: **bold** and `code`, with HTML escaped first. */
 function Prose({ text }: { text: string }) {
-  const html = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  const html = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/`(.+?)`/g, "<code>$1</code>");
   return <p dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+/** Screenshots in order; phone shots pair up side by side. */
+function Figures({ figures, first }: { figures: Figure[]; first: boolean }) {
+  const rows: Figure[][] = [];
+  for (const f of figures) {
+    const last = rows[rows.length - 1];
+    if (f.device === "phone" && last?.[0]?.device === "phone" && last.length < 2) last.push(f);
+    else rows.push([f]);
+  }
+  return (
+    <div className="mt-10 grid gap-10">
+      {rows.map((row, r) =>
+        row[0].device === "phone" ? (
+          <div key={r} className={`grid gap-4 sm:gap-8 ${row.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
+            {row.map((f) => (
+              <Screenshot key={f.caption} src={f.src!} alt={f.alt ?? f.caption} caption={f.caption} device="phone" />
+            ))}
+          </div>
+        ) : row[0].src ? (
+          <Screenshot
+            key={r}
+            src={row[0].src}
+            alt={row[0].alt ?? row[0].caption}
+            caption={row[0].caption}
+            priority={first && r === 0}
+          />
+        ) : (
+          <ScreenshotPlaceholder
+            key={r}
+            caption={row[0].caption}
+            aspect={row[0].aspect === "wide" ? "wide" : row[0].aspect === "tall" ? "tall" : "video"}
+          />
+        ),
+      )}
+    </div>
+  );
 }
 
 function MetaItem({
@@ -87,8 +131,27 @@ export default async function ProjectPage({
   const next = projects[(idx + 1) % projects.length];
   const Icon = categoryIcon[project.category];
 
+  // what this project is, for search engines and assistants
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: project.title,
+    description: project.tagline,
+    url: `${SITE_URL}/projects/${project.slug}`,
+    ...(project.links.github && { codeRepository: project.links.github }),
+    programmingLanguage: project.stack,
+    keywords: project.stack.join(", "),
+    dateCreated: project.year,
+    ...(project.cover && { image: `${SITE_URL}${project.cover}` }),
+    author: { "@id": `${SITE_URL}/#person` },
+  };
+
   return (
     <div className="mx-auto max-w-4xl px-6 pb-24 pt-32 sm:pt-36 lg:max-w-5xl xl:max-w-6xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
       <div className="lg:grid lg:grid-cols-[168px_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[200px_minmax(0,1fr)] xl:gap-14">
         <CaseStudyToc
           sections={project.sections.map((s) => ({ id: s.id, title: s.title }))}
@@ -220,23 +283,7 @@ export default async function ProjectPage({
                   </ul>
                 )}
 
-                {section.figures && (
-                  <div className="mt-10 grid gap-8">
-                    {section.figures.map((f) => (
-                      <ScreenshotPlaceholder
-                        key={f.caption}
-                        caption={f.caption}
-                        aspect={
-                          f.aspect === "wide"
-                            ? "wide"
-                            : f.aspect === "tall"
-                              ? "tall"
-                              : "video"
-                        }
-                      />
-                    ))}
-                  </div>
-                )}
+                {section.figures && <Figures figures={section.figures} first={i === 0} />}
               </section>
             </Reveal>
           ))}
