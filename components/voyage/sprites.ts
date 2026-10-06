@@ -170,13 +170,13 @@ void main() {
   if (vR < 1.5) {
     float r = max(vR, 0.7);
     a = (1.0 - smoothstep(r - 0.3, r + 0.7, d)) * 0.85;
-    col = vec3(1.0, 0.93, 0.86) * a;
+    col = vec3(0.9, 0.98, 1.0) * a;
   } else {
     float w = max(0.6, vR * 0.16);
     float rim = (1.0 - smoothstep(w * 0.5 - 0.5, w * 0.5 + 0.5, abs(d - vR))) * 0.78;
     float body = (1.0 - smoothstep(vR - 0.5, vR + 0.5, d)) * 0.12;
     float hl = (1.0 - smoothstep(vR * 0.27 - 0.5, vR * 0.27 + 0.5, length(vLocal + vR * 0.38))) * 0.95;
-    col = vec3(1.0, 0.925, 0.84) * rim + vec3(1.0, 0.84, 0.67) * body + vec3(1.0) * hl;
+    col = vec3(0.88, 0.97, 1.0) * rim + vec3(0.62, 0.88, 1.0) * body + vec3(1.0) * hl;
     a = max(max(rim, body), hl);
   }
   o = vec4(col, a) * vA;

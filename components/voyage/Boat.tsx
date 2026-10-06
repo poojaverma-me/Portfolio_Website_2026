@@ -11,8 +11,9 @@
  * The arms are rigid segments of fixed length, solved each frame by two-bone
  * inverse kinematics.
  *
- * Graphite hull and varnished interior keep to the site's neutrals and ember;
- * the accent shows only as a pinstripe, the hat band and the oar blades.
+ * Colours follow the reference painting: a varnished wooden hull with a pale
+ * honey gunwale, a planked interior, wooden oars, a rower in a pale shirt and
+ * navy trousers, and a straw hat with a tan band.
  */
 
 import type { CSSProperties } from "react";
@@ -52,10 +53,10 @@ const layer: CSSProperties = { willChange: "transform" };
 function Shaft() {
   return (
     <svg viewBox="-9 -40 18 128" style={place(-9, -40, 18, 128)} aria-hidden>
-      <rect x={-2.4} y={-38} width={4.8} height={14} rx={2.4} fill="#26262a" />
+      <rect x={-2.4} y={-38} width={4.8} height={14} rx={2.4} fill="#7a4a22" />
       <rect x={-1.9} y={-25} width={3.8} height={121} rx={1.9} fill="url(#voy-shaft)" />
-      <rect x={-0.5} y={-24} width={0.9} height={112} fill="rgb(255 240 220 / 0.45)" />
-      <rect x={-2.7} y={-5} width={5.4} height={11} rx={1.3} fill="#1a1a1d" />
+      <rect x={-0.5} y={-24} width={0.9} height={112} fill="rgb(255 244 222 / 0.5)" />
+      <rect x={-2.7} y={-5} width={5.4} height={11} rx={1.3} fill="#5a3a1e" />
     </svg>
   );
 }
@@ -70,11 +71,11 @@ function Blade({ part }: { part: string }) {
     >
       <path
         d="M0 91 C7.5 95 8 124 0 135 C-8 124 -7.5 95 0 91 Z"
-        fill="#1d1d20"
-        stroke="rgb(255 255 255 / 0.22)"
+        fill="url(#voy-blade)"
+        stroke="rgb(90 48 18 / 0.55)"
         strokeWidth={0.8}
       />
-      <path d="M-5.6 103.5 L5.6 103.5" stroke="#f96b0b" strokeWidth={2.4} />
+      <path d="M0 95 L0 131" stroke="rgb(255 236 200 / 0.35)" strokeWidth={0.9} />
     </svg>
   );
 }
@@ -116,36 +117,40 @@ export default function Boat() {
       <svg viewBox="-200 -200 400 400" className="absolute inset-0 h-full w-full overflow-visible">
         <defs>
           <linearGradient id="voy-hull" x1="0" y1="-38" x2="0" y2="38" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#46464c" />
-            <stop offset="0.45" stopColor="#242428" />
-            <stop offset="1" stopColor="#0e0e10" />
+            <stop offset="0" stopColor="#d59251" />
+            <stop offset="0.5" stopColor="#a8622b" />
+            <stop offset="1" stopColor="#6a3512" />
           </linearGradient>
           <linearGradient id="voy-wood" x1="-90" y1="-30" x2="90" y2="30" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#3a1807" />
-            <stop offset="0.55" stopColor="#5a2a10" />
-            <stop offset="1" stopColor="#2e1306" />
+            <stop offset="0" stopColor="#7a4119" />
+            <stop offset="0.55" stopColor="#9a5a27" />
+            <stop offset="1" stopColor="#6b3614" />
           </linearGradient>
           <linearGradient id="voy-seat" x1="0" y1="-30" x2="0" y2="30" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#a65c26" />
-            <stop offset="1" stopColor="#6c3413" />
+            <stop offset="0" stopColor="#d49a5a" />
+            <stop offset="1" stopColor="#a4652e" />
           </linearGradient>
           <linearGradient id="voy-shaft" x1="-2" y1="0" x2="2" y2="0" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#f2c890" />
-            <stop offset="1" stopColor="#b8773d" />
+            <stop offset="0" stopColor="#f0c585" />
+            <stop offset="1" stopColor="#b97a3e" />
+          </linearGradient>
+          <linearGradient id="voy-blade" x1="-7" y1="0" x2="7" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#eab874" />
+            <stop offset="1" stopColor="#b5763a" />
           </linearGradient>
           <radialGradient id="voy-straw" cx="9" cy="-6" r="24" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#fff3da" />
-            <stop offset="0.55" stopColor="#efd39e" />
-            <stop offset="1" stopColor="#c4924f" />
+            <stop offset="0" stopColor="#fff2c6" />
+            <stop offset="0.55" stopColor="#f1cf86" />
+            <stop offset="1" stopColor="#c99448" />
           </radialGradient>
           <radialGradient id="voy-crown" cx="11" cy="-4" r="12" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#fff8e8" />
-            <stop offset="1" stopColor="#e2bd7c" />
+            <stop offset="0" stopColor="#fff6dc" />
+            <stop offset="1" stopColor="#e6bb6c" />
           </radialGradient>
           <radialGradient id="voy-shirt" cx="10" cy="-8" r="26" gradientUnits="userSpaceOnUse">
             <stop offset="0" stopColor="#ffffff" />
-            <stop offset="0.6" stopColor="#e7e7eb" />
-            <stop offset="1" stopColor="#b4b4bb" />
+            <stop offset="0.6" stopColor="#e2edf6" />
+            <stop offset="1" stopColor="#a6bfd6" />
           </radialGradient>
           <clipPath id="voy-inner">
             <path d={INNER} />
@@ -153,18 +158,18 @@ export default function Boat() {
         </defs>
 
         <path d={HULL} fill="url(#voy-hull)" />
-        <path d={HULL} fill="none" stroke="rgb(255 255 255 / 0.2)" strokeWidth={1} />
-        <path d={HULL} fill="none" stroke="#f96b0b" strokeWidth={1.1} transform="scale(0.985 0.93)" />
+        <path d={HULL} fill="none" stroke="rgb(255 226 180 / 0.45)" strokeWidth={1} />
+        <path d={HULL} fill="none" stroke="rgb(70 32 8 / 0.5)" strokeWidth={1.1} transform="scale(0.985 0.93)" />
         <path d={INNER} fill="url(#voy-wood)" />
         <g clipPath="url(#voy-inner)">
           {[-22, -11, 0, 11, 22].map((y) => (
             <g key={y}>
-              <line x1={-100} x2={100} y1={y} y2={y} stroke="#1f0c03" strokeWidth={0.9} />
-              <line x1={-100} x2={100} y1={y + 1} y2={y + 1} stroke="rgb(255 190 140 / 0.1)" strokeWidth={0.8} />
+              <line x1={-100} x2={100} y1={y} y2={y} stroke="#3a1c0a" strokeWidth={0.9} />
+              <line x1={-100} x2={100} y1={y + 1} y2={y + 1} stroke="rgb(255 210 160 / 0.16)" strokeWidth={0.8} />
             </g>
           ))}
           {[-76, -60, -44, -28, -12, 4, 20, 36, 52, 68].map((x) => (
-            <line key={x} x1={x} x2={x} y1={-40} y2={40} stroke="rgb(0 0 0 / 0.26)" strokeWidth={1.5} />
+            <line key={x} x1={x} x2={x} y1={-40} y2={40} stroke="rgb(40 16 4 / 0.08)" strokeWidth={1.2} />
           ))}
           <rect x={-88} y={-40} width={21} height={80} fill="url(#voy-seat)" />
           <rect x={-88} y={-40} width={21} height={80} fill="none" stroke="rgb(0 0 0 / 0.35)" strokeWidth={1} />
@@ -172,19 +177,19 @@ export default function Boat() {
           <rect x={6} y={-40} width={15} height={80} fill="none" stroke="rgb(0 0 0 / 0.35)" strokeWidth={1} />
           <path d="M60 -26 L96 0 L60 26 Z" fill="url(#voy-seat)" />
           <path d="M60 -26 L60 26" stroke="rgb(0 0 0 / 0.35)" strokeWidth={1} />
-          <path d={INNER} fill="none" stroke="rgb(0 0 0 / 0.4)" strokeWidth={7} />
+          <path d={INNER} fill="none" stroke="rgb(40 16 4 / 0.38)" strokeWidth={7} />
         </g>
-        <path d={INNER} fill="none" stroke="#b4632a" strokeWidth={3} />
-        <path d={INNER} fill="none" stroke="rgb(255 214 170 / 0.35)" strokeWidth={0.8} />
+        <path d={INNER} fill="none" stroke="#dea566" strokeWidth={3.2} />
+        <path d={INNER} fill="none" stroke="rgb(255 236 200 / 0.55)" strokeWidth={0.8} />
         <circle cx={72} cy={0} r={5.2} fill="none" stroke="#dcc091" strokeWidth={1.7} />
         <circle cx={72} cy={0} r={2.7} fill="none" stroke="#c9a570" strokeWidth={1.5} />
         {[-1, 1].map((s) => (
-          <circle key={s} cx={PIVOT_X} cy={36.5 * s} r={2.9} fill="#2c2c30" stroke="rgb(255 255 255 / 0.3)" strokeWidth={0.7} />
+          <circle key={s} cx={PIVOT_X} cy={36.5 * s} r={2.9} fill="#5a3c1c" stroke="rgb(255 226 180 / 0.4)" strokeWidth={0.7} />
         ))}
         {[-1, 1].map((s) => (
           <g key={s}>
-            <path d={`M9 ${6 * s} L-22 ${9 * s}`} stroke="#2e2e33" strokeWidth={7.5} strokeLinecap="round" />
-            <ellipse cx={-26} cy={9.5 * s} rx={5.2} ry={3.4} fill="#141416" />
+            <path d={`M9 ${6 * s} L-22 ${9 * s}`} stroke="#1f3552" strokeWidth={7.5} strokeLinecap="round" />
+            <ellipse cx={-26} cy={9.5 * s} rx={5.2} ry={3.4} fill="#2a1a10" />
           </g>
         ))}
       </svg>
@@ -200,7 +205,7 @@ export default function Boat() {
 
       {(["s", "p"] as const).map((s) => (
         <div key={s}>
-          <Segment part={`sleeve-${s}`} length={UPPER_ARM} thick={SLEEVE} color="#ececf0" />
+          <Segment part={`sleeve-${s}`} length={UPPER_ARM} thick={SLEEVE} color="#e4eef7" />
           <Segment part={`fore-${s}`} length={FOREARM} thick={FORE} color="#d99a6c" />
           <div
             data-part={`hand-${s}`}
@@ -211,10 +216,10 @@ export default function Boat() {
 
       {/* the hat, over everything */}
       <svg data-part="hat" viewBox="-6 -20 40 40" style={{ ...place(-6, -20, 40, 40), ...layer }}>
-        <circle cx={14} cy={0} r={19} fill="url(#voy-straw)" stroke="#b3874c" strokeWidth={0.8} />
+        <circle cx={14} cy={0} r={19} fill="url(#voy-straw)" stroke="#b98a48" strokeWidth={0.8} />
         <circle cx={14} cy={0} r={16.2} fill="none" stroke="rgb(140 90 40 / 0.35)" strokeWidth={0.7} strokeDasharray="2.2 1.4" />
         <circle cx={14} cy={0} r={13.4} fill="none" stroke="rgb(140 90 40 / 0.3)" strokeWidth={0.7} strokeDasharray="2 1.3" />
-        <circle cx={14} cy={0} r={10.6} fill="none" stroke="#f96b0b" strokeWidth={2.4} />
+        <circle cx={14} cy={0} r={10.6} fill="none" stroke="#a8743a" strokeWidth={2.4} />
         <circle cx={14} cy={0} r={9.3} fill="url(#voy-crown)" />
         <circle cx={14} cy={0} r={6.4} fill="none" stroke="rgb(140 90 40 / 0.25)" strokeWidth={0.6} strokeDasharray="1.6 1.2" />
         <ellipse cx={10.5} cy={-4} rx={4} ry={2.6} fill="rgb(255 255 255 / 0.5)" transform="rotate(-35 10.5 -4)" />

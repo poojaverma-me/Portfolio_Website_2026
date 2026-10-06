@@ -14,7 +14,8 @@
  * - glints are real specular reflection of a sun in the upper left;
  * - foam and calm slicks are dyes carried by the simulated current.
  *
- * All colours are shades of the site's one accent, #f96b0b.
+ * The palette follows the reference painting: a cyan and cobalt sea on black,
+ * navy whales, white foam and near-white caustics.
  */
 
 export const MAX_DROPS = 32;
@@ -62,14 +63,18 @@ uniform vec2 uCam;
 uniform float uZoom;
 uniform float uDark;
 
-const vec3 C_SHALLOW = vec3(1.0, 0.56, 0.20);
-const vec3 C_MID     = vec3(0.88, 0.31, 0.03);
-const vec3 C_DEEP    = vec3(0.50, 0.13, 0.012);
-const vec3 C_ABYSS   = vec3(0.21, 0.045, 0.0);
-const vec3 C_CAUSTIC = vec3(1.0, 0.83, 0.60);
-const vec3 C_SUN     = vec3(1.0, 0.72, 0.42);
-const vec3 C_FOAM    = vec3(1.0, 0.96, 0.90);
-const vec3 C_GLOW    = vec3(0.976, 0.42, 0.043);
+// the reference painting's sea: cyan shallows over a cobalt deep, with
+// near-white caustics and navy whales
+const vec3 C_SHALLOW = vec3(0.26, 0.80, 0.95);
+const vec3 C_MID     = vec3(0.02, 0.52, 0.76);
+const vec3 C_DEEP    = vec3(0.015, 0.30, 0.52);
+const vec3 C_ABYSS   = vec3(0.012, 0.17, 0.32);
+const vec3 C_CAUSTIC = vec3(0.80, 0.97, 1.0);
+const vec3 C_SUN     = vec3(0.72, 0.93, 1.0);
+const vec3 C_FOAM    = vec3(0.96, 0.99, 1.0);
+const vec3 C_GLOW    = vec3(0.03, 0.55, 0.80);
+const vec3 C_WHALE   = vec3(0.05, 0.18, 0.34);
+const vec3 C_WHALE_LIT = vec3(0.20, 0.42, 0.58);
 // toward the sun: up and to the left, well above the horizon
 const vec3 SUN_DIR   = vec3(-0.42, -0.5, 0.76);
 
@@ -138,8 +143,8 @@ float caustics(vec2 p, float t) {
   );
   float a = cellEdge(w, t * 0.9);
   float b = cellEdge(w * 1.33 + 4.1, 1.7 - t * 0.7);
-  float la = 1.0 - smoothstep(0.0, 0.055, a);
-  float lb = 1.0 - smoothstep(0.0, 0.05, b);
+  float la = 1.0 - smoothstep(0.0, 0.038, a);
+  float lb = 1.0 - smoothstep(0.0, 0.032, b);
   return la * 0.6 + lb * 0.34 + la * lb * 0.9 + exp(-a * 14.0) * 0.12;
 }
 
@@ -257,12 +262,31 @@ void main() {
     + texture(uLife, luv + vec2(far.x, -far.y)) + texture(uLife, luv + vec2(-far.x, far.y))) * 0.25;
   float crisp = max(lc.b, ln.b);
   vec4 lv = mix(lf * 0.55 + ln * 0.3 + lc * 0.15, lc * 0.45 + ln * 0.55, crisp);
-  col = mix(col, col * vec3(0.15, 0.095, 0.085) + vec3(0.025, 0.005, 0.0), lv.r);
+  // the layer is half resolution, so as the camera dives its texels would show
+  // as steps along the outline: trade sharpness for a wider blur instead
+  float zc = clamp((uZoom - 1.4) / 2.5, 0.0, 1.0);
+  if (zc > 0.0) {
+    vec2 wide = far * 2.4;
+    vec4 lw = (texture(uLife, luv + vec2(wide.x, 0.0)) + texture(uLife, luv - vec2(wide.x, 0.0))
+      + texture(uLife, luv + vec2(0.0, wide.y)) + texture(uLife, luv - vec2(0.0, wide.y))) * 0.25;
+    lv = mix(lv, lf * 0.5 + lw * 0.5, zc);
+    crisp *= 1.0 - zc;
+  }
+  // a whale is a rounded body lit from the sun: the slope of its blurred
+  // silhouette stands in for the surface normal, so the flank toward the sun
+  // is paler and the far flank falls into shadow
+  vec2 lg = vec2(
+    texture(uLife, luv + vec2(far.x, 0.0)).r - texture(uLife, luv - vec2(far.x, 0.0)).r,
+    texture(uLife, luv - vec2(0.0, far.y)).r - texture(uLife, luv + vec2(0.0, far.y)).r
+  );
+  float lit = clamp(0.5 - dot(lg, normalize(SUN_DIR.xy)) * 1.6, 0.0, 1.0);
+  vec3 body = mix(C_WHALE, C_WHALE_LIT, lit * crisp) * (0.8 + 0.2 * (1.0 - dpt));
+  col = mix(col, mix(col * 0.55, body, 0.55 + 0.45 * crisp), lv.r);
 
   // --- caustics, focused by the surface ----------------------------------------
   float focus = clamp(1.0 - curv * 12.0, 0.45, 2.0);
   float pool = smoothstep(0.2, 0.85, fbm(p / (uBoatLen * 0.8) + vec2(0.0, uTime * 0.06)));
-  float ci = mix(1.15, 0.16, dpt) * (0.4 + 0.6 * pool) * (1.0 + sun * 0.9) * (1.0 - lv.r * 0.72) * focus * (1.0 - 0.55 * calm);
+  float ci = mix(1.15, 0.16, dpt) * (0.4 + 0.6 * pool) * (1.0 + sun * 0.9) * (1.0 - lv.r * 0.45) * focus * (1.0 - 0.55 * calm);
   // light only nets where enough of it reaches the bed
   if (ci > 0.04) {
     float thread = 0.45 + 0.55 * noise(p / (uBoatLen * 0.06) + uTime * 0.4);
@@ -286,17 +310,21 @@ void main() {
   col *= 1.0 - smoothstep(1.3, 0.55, se) * 0.5;
 
   // --- white water, carried by the current ----------------------------------------
-  // foam is a froth of bubbles: bright walls between cells, thinning as it decays
-  float foam = smoothstep(0.02, 0.5, dye.r);
-  if (foam > 0.001) {
-    // irregular bubbles, not a grid
+  // as in the painting the wake reads as clean white ribbons: a line where the
+  // foam's edge lies, torn streaks at the stern, and a few loose bubbles
+  float f = dye.r;
+  if (f > 0.02) {
+    float tear = fbm(p / (uBoatLen * 0.14) + vec2(uTime * 0.05, 0.0));
+    // contour lines of the foam, a constant couple of pixels wide whatever the
+    // gradient, so a broad fading patch shows only its rim
+    float fw = max(fwidth(f) * 1.4, 0.002);
+    float ribbon = max(exp(-pow((f - 0.22) / fw, 2.0)), exp(-pow((f - 0.5) / fw, 2.0)) * 0.8)
+      * smoothstep(0.3, 0.55, tear);
+    float streak = smoothstep(0.72, 1.0, f) * smoothstep(0.62, 0.76, tear);
     vec2 fq = p / (uBoatLen * 0.08);
-    vec2 fp = p / (uBoatLen * 0.026) + 0.7 * vec2(noise(fq), noise(fq + 5.2));
-    float wall = cellEdge(fp, uTime * 0.4);
-    float lace = 1.0 - smoothstep(0.0, mix(0.08, 0.3, foam), wall);
-    // dense at the stern; thinner foam tears into patches and streaks
-    float patches = smoothstep(0.4, 0.78, fbm(p / (uBoatLen * 0.16)) + foam * 0.5);
-    col = mix(col, C_FOAM, foam * patches * (0.3 + 0.7 * lace) * 0.92);
+    vec2 fp = p / (uBoatLen * 0.03) + 0.7 * vec2(noise(fq), noise(fq + 5.2));
+    float speck = (1.0 - smoothstep(0.0, 0.07, cellEdge(fp, uTime * 0.4))) * smoothstep(0.08, 0.6, f) * smoothstep(0.55, 0.8, tear);
+    col = mix(col, C_FOAM, clamp(ribbon * 0.85 + streak * 0.7 + speck * 0.3, 0.0, 0.9));
   }
 
   // --- the meniscus ------------------------------------------------------------------
