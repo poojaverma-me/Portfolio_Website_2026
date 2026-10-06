@@ -31,7 +31,7 @@ export async function generateMetadata({
   return {
     title: project.title,
     description: project.tagline,
-    keywords: [project.title, project.category, ...project.stack, "Pooja Verma"],
+    keywords: [project.title, project.category, ...project.domains, ...project.stack, "Pooja Verma"],
     alternates: { canonical: url },
     // placeholder write-ups are kept out of search until they are real
     robots: CASE_STUDIES_PUBLISHED ? undefined : { index: false, follow: true },
@@ -140,7 +140,7 @@ export default async function ProjectPage({
     url: `${SITE_URL}/projects/${project.slug}`,
     ...(project.links.github && { codeRepository: project.links.github }),
     programmingLanguage: project.stack,
-    keywords: project.stack.join(", "),
+    keywords: [...project.domains, ...project.stack].join(", "),
     dateCreated: project.year,
     ...(project.cover && { image: `${SITE_URL}${project.cover}` }),
     author: { "@id": `${SITE_URL}/#person` },
@@ -199,6 +199,7 @@ export default async function ProjectPage({
               <MetaItem label="Timeline">{project.timeline}</MetaItem>
               <MetaItem label="Role">{project.role}</MetaItem>
               <MetaItem label="Team">{project.team}</MetaItem>
+              <MetaItem label="Domain">{project.domains.join(" · ")}</MetaItem>
               <MetaItem label="Status">
                 <span className="flex items-center gap-1.5">
                   <CircleCheck size={15} className="text-accent" />

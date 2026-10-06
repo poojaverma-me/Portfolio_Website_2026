@@ -54,9 +54,9 @@ export default function ProjectCard({
           {project.tagline}
         </p>
         <div className="mt-4 flex flex-wrap gap-1.5">
-          {project.stack.slice(0, 3).map((s) => (
-            <span key={s} className="token">
-              {s}
+          {project.domains.map((d) => (
+            <span key={d} className="token">
+              {d}
             </span>
           ))}
         </div>

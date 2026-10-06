@@ -30,6 +30,8 @@ export type Project = {
   team: string;
   featured: boolean;
   stack: string[];
+  /** the field and sector the project serves, shown on its card */
+  domains: string[];
   metrics: { label: string; value: string }[];
   links: { github?: string; live?: string };
   /** the card image on /projects */
@@ -64,6 +66,7 @@ export const projects: Project[] = [
     team: "Solo, supervised by Dr. Ghazanfar Latif",
     featured: true,
     stack: ["Next.js 16", "React Three Fiber", "MapLibre GL", "XGBoost", "SHAP", "Python", "GSAP", "Vitest"],
+    domains: ["Environmental science", "Wildfire recovery", "Forestry"],
     metrics: [
       { label: "Burned sites in the study", value: "2,600" },
       { label: "Open datasets merged", value: "6" },
@@ -170,6 +173,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Next.js 16", "React 19", "TypeScript", "Jev (TypeSafe)", "Tailwind CSS 4", "Framer Motion"],
+    domains: ["Streaming and media", "Recommendation systems"],
     metrics: [
       { label: "Median time per recommendation, measured", value: "382 ms" },
       { label: "Cost per recommendation", value: "$0.0006" },
@@ -250,6 +254,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Next.js 16", "React 19", "TypeScript", "Jev (TypeSafe)", "Web Speech API", "Tailwind CSS 4"],
+    domains: ["Sales enablement", "Conversation intelligence", "B2B SaaS"],
     metrics: [
       { label: "Typed questions after every sentence", value: "12" },
       { label: "Median analysis time, measured", value: "230 ms" },
@@ -325,6 +330,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Next.js 16", "React 19", "TypeScript", "Jev (TypeSafe)", "Tailwind CSS 4"],
+    domains: ["IT service management", "Customer support"],
     metrics: [
       { label: "Team accuracy on 96 labelled tickets", value: "96.9%" },
       { label: "Median routing time per ticket", value: "176 ms" },
@@ -403,6 +409,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Next.js 16", "React 19", "TypeScript", "Jev (TypeSafe)", "Tailwind CSS 4", "Framer Motion"],
+    domains: ["HR tech", "Recruiting"],
     metrics: [
       { label: "Synthetic resumes across 3 openings", value: "80" },
       { label: "To score 40 resumes on a new criterion", value: "~1 s" },
@@ -490,6 +497,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Next.js 16", "Three.js", "React Three Fiber", "Jev (TypeSafe)", "Web Speech API", "TypeScript"],
+    domains: ["Gaming", "Voice interfaces"],
     metrics: [
       { label: "Median Jev time per command, measured", value: "115 ms" },
       { label: "Typed questions per sentence", value: "19" },
@@ -564,6 +572,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Next.js 16", "React 19", "TypeScript", "Jev (TypeSafe)", "PWA", "Tailwind CSS 4"],
+    domains: ["Food and cooking", "Consumer mobile"],
     metrics: [
       { label: "Typed questions in one request", value: "79" },
       { label: "Median search time, measured", value: "251 ms" },
@@ -637,6 +646,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Python", "scikit-learn", "SciPy", "pandas", "Flask", "JavaScript"],
+    domains: ["Cybersecurity", "Biometric authentication", "AI-text detection"],
     metrics: [
       { label: "Real typists in the dataset", value: "99" },
       { label: "Detector F1, Random Forest", value: "0.982" },
@@ -737,6 +747,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["Next.js 15", "React 19", "TypeScript", "Gemini 2.0 Flash", "SheetJS", "Tailwind CSS", "shadcn/ui"],
+    domains: ["Project management", "Agile delivery"],
     metrics: [
       { label: "Fields generated per ticket", value: "8" },
       { label: "Server route between the browser and Gemini", value: "1" },
@@ -823,6 +834,7 @@ export const projects: Project[] = [
     team: "Two developers; a teammate built the sign-up flow",
     featured: true,
     stack: ["React", "TypeScript", "Vite", "Firebase Firestore", "Tailwind CSS", "shadcn/ui", "Recharts"],
+    domains: ["Workforce management", "Retail and hospitality"],
     metrics: [
       { label: "Real-time Firestore listeners", value: "3" },
       { label: "Manager views over one dataset", value: "6" },
@@ -920,6 +932,7 @@ export const projects: Project[] = [
     team: "Two, with Gursahib Singh",
     featured: true,
     stack: ["Python", "scikit-learn", "pandas", "SciPy", "matplotlib", "seaborn", "LaTeX"],
+    domains: ["Health and fitness", "Wearables"],
     metrics: [
       { label: "Workout sessions, 54 columns", value: "20,000" },
       { label: "Test R² as submitted, then without the leaked feature", value: "0.997 → 0.65" },
@@ -1007,6 +1020,7 @@ export const projects: Project[] = [
     team: "Solo",
     featured: true,
     stack: ["React 19", "Vite 7", "Tailwind CSS 4", "Framer Motion", "date-fns"],
+    domains: ["Personal productivity", "Gamification"],
     metrics: [
       { label: "XP per completed quest", value: "50" },
       { label: "Named levels", value: "20" },
