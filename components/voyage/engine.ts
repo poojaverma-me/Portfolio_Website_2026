@@ -45,15 +45,17 @@ import {
 } from "./geometry";
 import { bind, blit, canRenderHalfFloat, fullScreen, program, programsLinked, programsReady } from "./gl";
 import { CATCH, FINISH, type Voyage, planVoyage } from "./rowing";
-import { blowhole, drawSwimmers, makeSwimmers, stepSwimmers, type Swimmer } from "./swimmers";
-import { BubbleLayer, LifeLayer, MAX_BUBBLES } from "./sprites";
+import { blowhole, layoutSwimmers, makeSwimmers, stepSwimmers, type Swimmer } from "./swimmers";
+import { BubbleLayer, CreatureLayer, MAX_BUBBLES } from "./sprites";
 import { FRAG, MAX_DROPS, VERT } from "./water-shader";
 
 const TAU = Math.PI * 2;
 const DEG = Math.PI / 180;
 
-
-const LIFE_SCALE = 0.5;
+/** the colour of the water column the animals are seen through */
+const WATER_TINT: [number, number, number] = [0.02, 0.42, 0.66];
+/** how long to hold the black frame for the creature textures before starting anyway */
+const TEXTURE_WAIT = 1500;
 /** seconds the camera takes to dive into the whale */
 const DIVE = 1.3;
 /** the dive starts this long before the boat is out of sight, sweeping it out */
@@ -174,7 +176,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
   const screen = fullScreen(gl);
   const view = program(gl, VERT, FRAG);
   fluid = new Fluid(gl);
-  const life = new LifeLayer(gl);
+  const life = new CreatureLayer(gl);
   const bubbleLayer = new BubbleLayer(gl);
   const programs = [view, life.prog, bubbleLayer.prog, ...fluid.programs];
   const parallel = gl.getExtension("KHR_parallel_shader_compile");
@@ -229,7 +231,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     q = Math.min(dpr, 1) * quality;
     glCanvas.width = Math.round(W * q);
     glCanvas.height = Math.round(H * q);
-    life.size(W, H, LIFE_SCALE);
+    life.size(glCanvas.width, glCanvas.height);
     const size = `${layout.boatLen * 2}px`;
     boat.style.width = size;
     boat.style.height = size;
@@ -550,9 +552,10 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     const g = gl!;
     const f = fluid!;
     const cam = camera(t);
-    life.begin();
-    drawSwimmers(life, swimmers);
-    life.end();
+    const laid = layoutSwimmers(swimmers, life.verts);
+    // animals that arrive after the start fade in rather than pop
+    const fade = life.loadedAt < 0 ? 0 : Math.min(1, (performance.now() - life.loadedAt) / 400);
+    life.draw(laid.draws, laid.used, l.W, l.H, cam, WATER_TINT, fade);
 
     g.bindVertexArray(screen);
     g.useProgram(view.prog);
@@ -618,11 +621,13 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
   let ema = 16;
   if (freezeAt == null) safety = window.setTimeout(finish, 14000);
 
+  const waitFrom = performance.now();
   const loop = (now: number) => {
     raf = requestAnimationFrame(loop);
     if (!ready) {
       // hold on the black frame, without starting the clock, until it compiles
-      if (!programsReady(gl, programs, parallel)) {
+      // and the creature textures have arrived (or a short wait has passed)
+      if (!programsReady(gl, programs, parallel) || (!life.ready && now - waitFrom < TEXTURE_WAIT)) {
         last = now;
         return;
       }

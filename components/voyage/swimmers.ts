@@ -26,82 +26,22 @@
  * away from the threat in about 70 ms, a return stroke throws the fish out at
  * several body lengths a second, and drag bleeds the speed off again.
  *
- * Everything is drawn on the GPU into a half-resolution texture that the water
- * shader reads (see sprites.ts): red for the body and blue for how sharp it
- * should look (shallow things are crisp, deep ones
- * soft).
+ * Sharks swim like fish, with a slower, wider body wave, and never bolt.
+ *
+ * Every animal is drawn as a textured ribbon bent along its spine (see
+ * CreatureLayer in sprites.ts and scripts/bake-creatures.py for the models).
  */
 
 import { type Layout, type Vec, seeded, toWorld, widthAt } from "./geometry";
-import type { LifeLayer } from "./sprites";
-
-type Pt = [number, number];
-type Seg = { c1: Pt; c2: Pt; to: Pt; tag: 0 | 1 | 2 }; // body, fin, fluke
-
-// upper half, snout (+100) to the notch in the tail; the lower half mirrors it
-const WHALE_HALF: Seg[] = [
-  { c1: [100, -10], c2: [95, -17], to: [86, -20], tag: 0 },
-  { c1: [76, -24], c2: [60, -26], to: [46, -26], tag: 0 },
-  { c1: [38, -30], c2: [22, -44], to: [0, -62], tag: 1 },
-  { c1: [-4, -66], c2: [-8, -64], to: [-6, -60], tag: 1 },
-  { c1: [4, -48], c2: [16, -34], to: [24, -25], tag: 1 },
-  { c1: [0, -22], c2: [-30, -16], to: [-58, -8], tag: 0 },
-  { c1: [-68, -5.5], c2: [-76, -4.5], to: [-82, -4.5], tag: 0 },
-  { c1: [-86, -10], c2: [-92, -28], to: [-104, -40], tag: 2 },
-  { c1: [-108, -44], c2: [-112, -42], to: [-110, -37], tag: 2 },
-  { c1: [-106, -26], c2: [-104, -10], to: [-97, 0], tag: 2 },
-];
-
-const FISH_HALF: Seg[] = [
-  { c1: [100, -12], c2: [74, -26], to: [30, -27], tag: 0 },
-  { c1: [-10, -27], c2: [-46, -15], to: [-66, -6], tag: 0 },
-  { c1: [-76, -12], c2: [-90, -28], to: [-104, -36], tag: 2 },
-  { c1: [-98, -20], c2: [-95, -8], to: [-90, 0], tag: 2 },
-];
-
-type Shape = { xs: Float32Array; ys: Float32Array; tags: Uint8Array };
-
-function buildShape(half: Seg[], steps: number): Shape {
-  const up: { x: number; y: number; tag: number }[] = [];
-  let from: Pt = [100, 0];
-  up.push({ x: 100, y: 0, tag: 0 });
-  for (const s of half) {
-    for (let i = 1; i <= steps; i++) {
-      const t = i / steps;
-      const m = 1 - t;
-      const a = m * m * m;
-      const b = 3 * m * m * t;
-      const c = 3 * m * t * t;
-      const d = t * t * t;
-      up.push({
-        x: a * from[0] + b * s.c1[0] + c * s.c2[0] + d * s.to[0],
-        y: a * from[1] + b * s.c1[1] + c * s.c2[1] + d * s.to[1],
-        tag: s.tag,
-      });
-    }
-    from = s.to;
-  }
-  const low = up
-    .slice(1, -1)
-    .reverse()
-    .map((p) => ({ x: p.x, y: -p.y, tag: p.tag }));
-  const all = [...up, ...low];
-  return {
-    xs: Float32Array.from(all, (p) => p.x),
-    ys: Float32Array.from(all, (p) => p.y),
-    tags: Uint8Array.from(all, (p) => p.tag),
-  };
-}
-
-const WHALE = buildShape(WHALE_HALF, 8);
-const FISH = buildShape(FISH_HALF, 5);
+import { ATLAS } from "./creature-atlas";
+import { CREATURE_STRIDE, type CreatureKind } from "./sprites";
 
 /** one body length in outline units */
 const UNITS = 210;
 // the spine, every 2 units from behind the tail to the snout
-const X0 = -118;
+const X0 = -126;
 const DX = 2;
-const N = 113;
+const N = 118;
 /** the centre of mass, about a third of the way back; the spine pivots here */
 const ANCHOR = (30 - X0) / DX;
 
@@ -120,7 +60,7 @@ const C_TURN = 1.5; // radians turned away from the threat
 const C_SPEED = 10; // body lengths per second at the end of the power stroke
 const C_DECAY = 0.4; // s, drag time constant back to cruising
 
-type Kind = "whale" | "fish";
+type Kind = CreatureKind;
 
 type Spec = {
   kind: Kind;
@@ -141,7 +81,6 @@ type Spec = {
 
 export type Swimmer = {
   kind: Kind;
-  shape: Shape;
   L: number;
   x: number;
   y: number;
@@ -163,15 +102,16 @@ export type Swimmer = {
   heave: number;
 };
 
-// A large whale across the upper middle, one turning below it, one beside the
-// boat, calves further back, and a scatter of fish, after the inspiration.
+// A large whale across the upper middle, one turning below it, a calf beside
+// the boat, three sharks further back, and a scatter of fish, after the
+// inspiration.
 const SPECS: Spec[] = [
   { kind: "whale", u: 0.5, vf: -0.34, heading: 26, size: 1.35, depth: 0.95, speed: 0.16, turn: -1.5, phase: 0 },
   { kind: "whale", u: 0.44, vf: 0.52, heading: 40, size: 1.1, depth: 0.88, speed: 0.15, turn: 11, phase: 1.7 },
   { kind: "whale", u: 0.76, vf: 0.42, heading: -4, size: 0.66, depth: 0.8, speed: 0.22, turn: 3, phase: 0.6 },
-  { kind: "whale", u: 0.16, vf: -0.26, heading: 14, size: 0.5, depth: 0.7, speed: 0.24, turn: 0, phase: 2.4 },
-  { kind: "whale", u: 0.1, vf: 0.6, heading: -12, size: 0.55, depth: 0.62, speed: 0.2, turn: 4, phase: 3.1 },
-  { kind: "whale", u: 0.63, vf: -0.72, heading: 8, size: 0.34, depth: 0.58, speed: 0.3, turn: -5, phase: 0.3 },
+  { kind: "shark", u: 0.16, vf: -0.26, heading: 14, size: 0.52, depth: 0.8, speed: 0.5, turn: 0, phase: 2.4 },
+  { kind: "shark", u: 0.1, vf: 0.6, heading: -12, size: 0.46, depth: 0.74, speed: 0.45, turn: 6, phase: 3.1 },
+  { kind: "shark", u: 0.63, vf: -0.72, heading: 8, size: 0.4, depth: 0.76, speed: 0.55, turn: -7, phase: 0.3 },
 ];
 
 export function makeSwimmers(l: Layout): Swimmer[] {
@@ -196,7 +136,6 @@ export function makeSwimmers(l: Layout): Swimmer[] {
     const L = s.size * l.boatLen;
     return {
       kind: s.kind,
-      shape: s.kind === "whale" ? WHALE : FISH,
       L,
       x: p.x,
       y: p.y,
@@ -232,9 +171,9 @@ export function stepSwimmers(
   const prints: Print[] = [];
   for (const s of swimmers) {
     const Lps = s.U / s.L;
-    if (s.kind === "fish") {
+    if (s.kind !== "whale") {
       s.escapeCooldown -= dt;
-      if (s.escape < 0 && s.escapeCooldown <= 0) {
+      if (s.kind === "fish" && s.escape < 0 && s.escapeCooldown <= 0) {
         for (const th of threats) {
           const dx = th.x - s.x;
           const dy = th.y - s.y;
@@ -292,14 +231,12 @@ export function stepSwimmers(
 const th = new Float32Array(N);
 const sx = new Float32Array(N);
 const sy = new Float32Array(N);
-const out = new Float32Array(Math.max(WHALE.xs.length, FISH.xs.length) * 2);
-const tail = new Float32Array(WHALE.xs.length * 2);
 
 /** Curvature along the body, per outline unit, from the swimming kinematics. */
 function curvature(s: Swimmer, xu: number) {
   const x = (100 - xu) / UNITS; // 0 at the snout, 1 at the tail
   let kappa = s.turn / Math.max(s.U / s.L, 0.05); // per body length
-  if (s.kind === "fish") {
+  if (s.kind !== "whale") {
     const k = (2 * Math.PI) / WAVELENGTH;
     const psi = k * x - s.beat;
     const A = 0.02 - 0.0825 * x + 0.1625 * x * x;
@@ -357,60 +294,68 @@ function onSpine(x: number, y: number): [number, number] {
 
 /** Where the blowhole is, for the bubbles a whale breathes out. */
 export function blowhole(s: Swimmer): Vec {
-  const d = (62 - 30) * (s.L / UNITS);
+  const d = (71 - 30) * (s.L / UNITS);
   return { x: s.x + Math.cos(s.heading) * d, y: s.y + Math.sin(s.heading) * d };
 }
 
+/** Cross-sections per animal: enough for a smooth bend at its size. */
+const SECTIONS: Record<Kind, number> = { whale: 64, shark: 40, fish: 14 };
+/** Where each kind's flukes begin, in body units; they foreshorten as they pitch. */
+const FLUKE_BASE = 100 - 182;
+
+export type CreatureDraw = { kind: Kind; depth: number; first: number; count: number };
+
 /**
- * Draws every swimmer into the life layer: red for the body, blue for how
- * sharp it should look. MAX blending keeps the brightest value per channel, so
- * the body and the flukes never add
- * up into seams.
+ * Lays every swimmer out as a triangle strip bent along its spine, deepest
+ * first so nearer animals cover farther ones. Writes into `verts` (see
+ * CREATURE_STRIDE) and returns one draw per animal plus the vertex count.
  */
-export function drawSwimmers(layer: LifeLayer, swimmers: Swimmer[]) {
-  for (const s of swimmers) {
-    const shape = s.shape;
+export function layoutSwimmers(swimmers: Swimmer[], verts: Float32Array) {
+  const order = [...swimmers].sort((a, b) => a.depth - b.depth);
+  const draws: CreatureDraw[] = [];
+  let v = 0;
+  for (const s of order) {
+    const a = ATLAS[s.kind];
+    const K = SECTIONS[s.kind];
+    if ((v + 2 * K) * CREATURE_STRIDE > verts.length) break;
+    bend(s);
     const scale = s.L / UNITS;
     const cos = Math.cos(s.heading);
     const sin = Math.sin(s.heading);
-    // the spine anchor (x = 30) sits on the swimmer's position
-    const place = (bx: number, by: number, into: Float32Array, i: number) => {
-      const lx = (bx - 30) * scale;
-      const ly = by * scale;
-      into[i] = s.x + lx * cos - ly * sin;
-      into[i + 1] = s.y + lx * sin + ly * cos;
-    };
-
-    bend(s);
-    // flukes foreshorten with pitch; fins scull a little
     const foreshorten = Math.cos(s.pitch);
-    const fin = 1 + 0.06 * Math.sin(s.beat * 0.5);
-    const n = shape.xs.length;
-    for (let i = 0; i < n; i++) {
-      const tag = shape.tags[i];
-      let x = shape.xs[i];
-      let y = shape.ys[i];
-      if (s.kind === "whale" && tag === 2) x = -82 + (x + 82) * foreshorten;
-      if (tag === 1) y *= fin;
-      const [bx, by] = onSpine(x, y);
-      place(bx, by, out, i * 2);
-    }
-
-    const sharp = Math.min(1, Math.max(0, (s.depth - 0.5) * 2));
-    layer.fill(out, n, s.depth, 0, sharp);
-    if (s.kind !== "whale") continue;
-
-    // on the upstroke the flukes come up toward the light and darken
-    if (s.heave > 0) {
-      let m = 0;
-      for (let i = 0; i < n; i++) {
-        if (shape.tags[i] !== 2 && shape.xs[i] > -78) continue;
-        tail[m * 2] = out[i * 2];
-        tail[m * 2 + 1] = out[i * 2 + 1];
-        m++;
+    // on the upstroke a whale's flukes rise toward the light
+    const lift = s.kind === "whale" ? 0.12 * Math.max(0, s.heave) : 0;
+    const first = v;
+    for (let i = 0; i < K; i++) {
+      const f = i / (K - 1);
+      const x = a.x0 + (a.x1 - a.x0) * f;
+      let xs = x;
+      let tailLift = 0;
+      if (s.kind === "whale" && x < FLUKE_BASE) {
+        xs = FLUKE_BASE + (x - FLUKE_BASE) * foreshorten;
+        tailLift = lift;
       }
-      layer.fill(tail, m, Math.min(1, s.depth + 0.12 * s.heave), 0, sharp);
+      // the spine's angle here, for turning the baked normals
+      let k = (xs - X0) / DX;
+      k = k < 0 ? 0 : k > N - 1.001 ? N - 1.001 : k;
+      const j = Math.floor(k);
+      const angle = s.heading + th[j] + (th[j + 1] - th[j]) * (k - j);
+      for (const side of [0, 1]) {
+        const y = side === 0 ? a.y0 : a.y1;
+        const [bx, by] = onSpine(xs, y);
+        const lx = (bx - 30) * scale;
+        const ly = by * scale;
+        const o = v * CREATURE_STRIDE;
+        verts[o] = s.x + lx * cos - ly * sin;
+        verts[o + 1] = s.y + lx * sin + ly * cos;
+        verts[o + 2] = f;
+        verts[o + 3] = side;
+        verts[o + 4] = angle;
+        verts[o + 5] = tailLift;
+        v++;
+      }
     }
-
+    draws.push({ kind: s.kind, depth: s.depth, first, count: v - first });
   }
+  return { draws, used: v };
 }

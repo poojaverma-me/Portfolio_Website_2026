@@ -1,69 +1,175 @@
 /**
- * GPU drawing for the two things that used to live on 2D canvases, so the
- * whole scene stays in one WebGL context with no per-frame canvas uploads.
+ * GPU drawing for the creatures and the bubbles, so the whole scene stays in
+ * one WebGL context with no per-frame canvas uploads.
  *
- * - LifeLayer fills the swimmers into a half-resolution texture with the
- *   stencil-then-cover technique: a triangle fan over the outline flips the
- *   stencil bit of every pixel it crosses, pixels crossed an odd number of
- *   times are inside, and a second pass colours exactly those. It handles the
- *   concave fins and flukes that a plain fan would get wrong. Channels combine
- *   with MAX blending: red for the body, blue for sharpness.
+ * - CreatureLayer draws every whale, shark and fish as a textured ribbon bent
+ *   along its swimming spine, into a full-resolution layer that the water
+ *   shader then sees through the surface. The textures are baked from height
+ *   fields (scripts/bake-creatures.py): skin colour with a soft coverage edge,
+ *   and a surface normal map. Lighting happens here, with the scene's sun and
+ *   the normals turned to follow the bending body. Deeper animals are drawn
+ *   from blurrier mip levels and fade toward the colour of the water above
+ *   them, which is what keeps their edges soft.
  * - BubbleLayer draws every bubble as an instanced quad shaded by a distance
  *   field: a thin bright rim, a faint body and a highlight up and to the left.
  */
 
 import { type Program, program } from "./gl";
 
-const SHAPE_VS = `#version 300 es
-in vec2 aPos;
+export type CreatureKind = "whale" | "shark" | "fish";
+
+/** Floats per vertex: position (2), texture coordinate (2), angle, lift. */
+export const CREATURE_STRIDE = 6;
+
+const CREATURE_VS = `#version 300 es
+layout(location = 0) in vec2 aPos;
+layout(location = 1) in vec2 aUv;
+layout(location = 2) in float aAngle;
+layout(location = 3) in float aLift;
 uniform vec2 uView;
+uniform vec2 uCam;
+uniform float uZoom;
+out vec2 vUv;
+out float vAngle;
+out float vLift;
 void main() {
-  vec2 c = aPos / uView * 2.0 - 1.0;
+  vUv = aUv;
+  vAngle = aAngle;
+  vLift = aLift;
+  vec2 screen = (aPos - uCam) * uZoom + uView * 0.5;
+  vec2 c = screen / uView * 2.0 - 1.0;
   gl_Position = vec4(c.x, -c.y, 0.0, 1.0);
 }`;
-const SHAPE_FS = `#version 300 es
-precision mediump float;
-uniform vec4 uColor;
-out vec4 o;
-void main() { o = uColor; }`;
 
-export class LifeLayer {
+const CREATURE_FS = `#version 300 es
+precision highp float;
+in vec2 vUv;
+in float vAngle;
+in float vLift;
+uniform sampler2D uAlbedo;
+uniform sampler2D uShape;
+uniform float uDepth;
+uniform float uFade;
+uniform vec3 uWater;
+out vec4 o;
+// toward the sun: up and to the left, as in the water shader
+const vec3 L = vec3(-0.42, -0.5, 0.76) / 1.0748;
+void main() {
+  float depth = clamp(uDepth + vLift, 0.0, 1.0);
+  // the deeper the animal, the blurrier: the water above it scatters the image
+  float bias = (1.0 - depth) * 2.6;
+  vec4 a = texture(uAlbedo, vUv, bias);
+  if (a.a < 0.003) discard;
+  vec4 sh = texture(uShape, vUv, bias);
+  vec3 albedo = a.rgb / a.a;
+  // the normal is baked in the body's frame; turn it with the bending spine
+  vec2 nb = sh.rg * 2.0 - 1.0;
+  float c = cos(vAngle);
+  float s = sin(vAngle);
+  vec3 N = normalize(vec3(c * nb.x - s * nb.y, s * nb.x + c * nb.y, sqrt(max(1.0 - dot(nb, nb), 0.0))));
+  float diffuse = max(dot(N, L), 0.0);
+  // light that has come through water arrives soft: wrap it round the body
+  vec3 lit = albedo * (0.38 + 0.8 * diffuse) * sh.a;
+  // a wet sheen on the shallow ones
+  vec3 H = normalize(L + vec3(0.0, 0.0, 1.0));
+  lit += vec3(0.75, 0.9, 1.0) * pow(max(dot(N, H), 0.0), 38.0) * 0.16 * depth * depth;
+  // water above the animal tints it toward the sea and lowers its contrast
+  vec3 col = mix(uWater, lit, mix(0.38, 0.94, depth));
+  float alpha = a.a * mix(0.62, 1.0, depth) * uFade;
+  o = vec4(col * alpha, alpha);
+}`;
+
+const KINDS: CreatureKind[] = ["whale", "shark", "fish"];
+
+type Pair = { albedo: WebGLTexture; shape: WebGLTexture };
+
+export class CreatureLayer {
   private gl: WebGL2RenderingContext;
   readonly prog: Program;
   private vao: WebGLVertexArrayObject;
   private buf: WebGLBuffer;
-  private verts = new Float32Array(2048);
+  readonly verts = new Float32Array(CREATURE_STRIDE * 4096);
   tex: WebGLTexture | null = null;
   private fbo: WebGLFramebuffer | null = null;
-  private rb: WebGLRenderbuffer | null = null;
   private w = 1;
   private h = 1;
-  private W = 1;
-  private H = 1;
+  private textures = new Map<CreatureKind, Pair>();
+  private pending = 0;
+  /** when the last texture arrived (performance.now), or -1 while loading */
+  loadedAt = -1;
 
-  constructor(gl: WebGL2RenderingContext) {
+  constructor(gl: WebGL2RenderingContext, base = "/voyage") {
     this.gl = gl;
-    this.prog = program(gl, SHAPE_VS, SHAPE_FS);
+    this.prog = program(gl, CREATURE_VS, CREATURE_FS);
     this.vao = gl.createVertexArray()!;
     this.buf = gl.createBuffer()!;
     gl.bindVertexArray(this.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
     gl.bufferData(gl.ARRAY_BUFFER, this.verts.byteLength, gl.DYNAMIC_DRAW);
+    const F = 4;
+    const stride = CREATURE_STRIDE * F;
     gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, stride, 0);
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, stride, 2 * F);
+    gl.enableVertexAttribArray(2);
+    gl.vertexAttribPointer(2, 1, gl.FLOAT, false, stride, 4 * F);
+    gl.enableVertexAttribArray(3);
+    gl.vertexAttribPointer(3, 1, gl.FLOAT, false, stride, 5 * F);
     gl.bindVertexArray(null);
+    for (const kind of KINDS) {
+      this.textures.set(kind, {
+        albedo: this.load(`${base}/${kind}-albedo.webp`, true),
+        shape: this.load(`${base}/${kind}-shape.webp`, false),
+      });
+    }
   }
 
-  /** A texture at `scale` of the W × H viewport, with a stencil buffer. */
-  size(W: number, H: number, scale: number) {
+  get ready() {
+    return this.pending === 0;
+  }
+
+  /** Starts loading an image into a mipmapped texture. */
+  private load(url: string, premultiply: boolean): WebGLTexture {
+    const gl = this.gl;
+    const tex = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    // a transparent texel until the image arrives
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+    this.pending++;
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => {
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+      // colour is stored premultiplied so mipmaps fade edges without dark fringes;
+      // the shape map keeps its alpha (occlusion) as data
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, premultiply);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      this.pending--;
+      if (this.pending === 0) this.loadedAt = performance.now();
+    };
+    img.onerror = () => {
+      this.pending--;
+      if (this.pending === 0) this.loadedAt = performance.now();
+    };
+    img.src = url;
+    return tex;
+  }
+
+  /** A full-resolution RGBA target the size of the canvas. */
+  size(w: number, h: number) {
     const gl = this.gl;
     if (this.tex) gl.deleteTexture(this.tex);
     if (this.fbo) gl.deleteFramebuffer(this.fbo);
-    if (this.rb) gl.deleteRenderbuffer(this.rb);
-    this.W = W;
-    this.H = H;
-    this.w = Math.max(1, Math.ceil(W * scale));
-    this.h = Math.max(1, Math.ceil(H * scale));
+    this.w = Math.max(1, w);
+    this.h = Math.max(1, h);
     this.tex = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, this.tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -71,70 +177,64 @@ export class LifeLayer {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, this.w, this.h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    this.rb = gl.createRenderbuffer()!;
-    gl.bindRenderbuffer(gl.RENDERBUFFER, this.rb);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, this.w, this.h);
     this.fbo = gl.createFramebuffer()!;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.tex, 0);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, this.rb);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
-  begin() {
+  /**
+   * Draws the ribbons laid out in `verts`: each entry of `draws` is one animal
+   * (its kind, how deep it swims, and its first vertex and count, as a strip).
+   * The camera maps world (CSS px) to the screen; W × H is the view in CSS px.
+   */
+  draw(
+    draws: { kind: CreatureKind; depth: number; first: number; count: number }[],
+    used: number,
+    W: number,
+    H: number,
+    cam: { x: number; y: number; zoom: number },
+    water: [number, number, number],
+    fade: number,
+  ) {
     const gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
     gl.viewport(0, 0, this.w, this.h);
-    gl.clearColor(0, 0, 0, 1);
-    gl.clearStencil(0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-    gl.useProgram(this.prog.prog);
-    gl.uniform2f(this.prog.u("uView"), this.W, this.H);
-    gl.bindVertexArray(this.vao);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
-    gl.enable(gl.BLEND);
-    gl.blendEquation(gl.MAX);
-    gl.enable(gl.STENCIL_TEST);
-  }
-
-  private upload(n: number) {
-    const gl = this.gl;
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.verts, 0, n * 2);
-  }
-
-  /** Fills a closed outline of `n` points (x, y pairs in CSS px). */
-  fill(pts: Float32Array, n: number, r: number, g: number, b: number) {
-    const gl = this.gl;
-    if (n < 3 || (n + 2) * 2 > this.verts.length) return;
-    const v = this.verts;
-    v[0] = pts[0];
-    v[1] = pts[1];
-    for (let i = 0; i < n; i++) {
-      v[2 + i * 2] = pts[i * 2];
-      v[3 + i * 2] = pts[i * 2 + 1];
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    if (fade > 0 && used > 0) {
+      const p = this.prog;
+      gl.useProgram(p.prog);
+      gl.uniform2f(p.u("uView"), W, H);
+      gl.uniform2f(p.u("uCam"), cam.x, cam.y);
+      gl.uniform1f(p.u("uZoom"), cam.zoom);
+      gl.uniform3f(p.u("uWater"), water[0], water[1], water[2]);
+      gl.uniform1f(p.u("uFade"), fade);
+      gl.uniform1i(p.u("uAlbedo"), 0);
+      gl.uniform1i(p.u("uShape"), 1);
+      gl.bindVertexArray(this.vao);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.verts, 0, used * CREATURE_STRIDE);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      let bound: CreatureKind | null = null;
+      for (const d of draws) {
+        if (d.kind !== bound) {
+          const t = this.textures.get(d.kind)!;
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, t.albedo);
+          gl.activeTexture(gl.TEXTURE1);
+          gl.bindTexture(gl.TEXTURE_2D, t.shape);
+          bound = d.kind;
+        }
+        gl.uniform1f(p.u("uDepth"), d.depth);
+        gl.drawArrays(gl.TRIANGLE_STRIP, d.first, d.count);
+      }
+      gl.disable(gl.BLEND);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindVertexArray(null);
     }
-    v[2 + n * 2] = pts[0];
-    v[3 + n * 2] = pts[1];
-    this.upload(n + 2);
-    // stencil: flip for every triangle a pixel is under
-    gl.colorMask(false, false, false, false);
-    gl.stencilFunc(gl.ALWAYS, 0, 0xff);
-    gl.stencilOp(gl.KEEP, gl.KEEP, gl.INVERT);
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, n + 2);
-    // cover: colour what ended up odd, and clear the stencil as we go
-    gl.colorMask(true, true, true, true);
-    gl.stencilFunc(gl.NOTEQUAL, 0, 0xff);
-    gl.stencilOp(gl.ZERO, gl.ZERO, gl.ZERO);
-    gl.uniform4f(this.prog.u("uColor"), r, g, b, 1);
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, n + 2);
-  }
-
-  end() {
-    const gl = this.gl;
-    gl.disable(gl.STENCIL_TEST);
-    gl.blendEquation(gl.FUNC_ADD);
-    gl.disable(gl.BLEND);
-    gl.bindVertexArray(null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 }
 

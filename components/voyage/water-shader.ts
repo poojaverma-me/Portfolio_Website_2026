@@ -9,8 +9,8 @@
  *   the slope and brightened where the surface is convex (intensity grows as
  *   the Laplacian of the height goes negative), which is why ripple rings show
  *   up as bright rings on the bed;
- * - what lies beneath (the whales) is seen through the surface, so it is
- *   refracted by the same slope;
+ * - what lies beneath (whales, sharks and fish, drawn by CreatureLayer) is
+ *   seen through the surface, so it is refracted by the same slope;
  * - glints are real specular reflection of a sun in the upper left;
  * - foam and calm slicks are dyes carried by the simulated current.
  *
@@ -73,8 +73,6 @@ const vec3 C_CAUSTIC = vec3(0.80, 0.97, 1.0);
 const vec3 C_SUN     = vec3(0.72, 0.93, 1.0);
 const vec3 C_FOAM    = vec3(0.96, 0.99, 1.0);
 const vec3 C_GLOW    = vec3(0.03, 0.55, 0.80);
-const vec3 C_WHALE   = vec3(0.05, 0.18, 0.34);
-const vec3 C_WHALE_LIT = vec3(0.20, 0.42, 0.58);
 // toward the sun: up and to the left, well above the horizon
 const vec3 SUN_DIR   = vec3(-0.42, -0.5, 0.76);
 
@@ -250,43 +248,16 @@ void main() {
   col += C_SUN * (sun * 0.22 + sun * smoothstep(0.55, 0.95, rays) * 0.2) * (1.0 - dpt * 0.4);
 
   // --- what lies beneath, seen through the moving surface ---------------------
-  // shallow bodies are crisp, deep ones are blurred by the water above them
-  // (the life layer is a GL texture, so its rows run bottom to top)
-  vec2 luv = vec2(p.x / uView.x, 1.0 - p.y / uView.y) + vec2(N.x, -N.y) * (4.0 + 6.0 * dpt) / uView;
-  vec2 near = 1.3 / uView;
-  vec2 far = 4.5 / uView;
+  // the creature layer is already lit, tinted by depth and soft-edged, in
+  // screen pixels (CreatureLayer); the surface slope bends the view of it
+  vec2 luv = gl_FragCoord.xy / uRes + vec2(N.x, -N.y) * (3.0 + 5.0 * dpt) * uScale * uZoom / uRes;
   vec4 lc = texture(uLife, luv);
-  vec4 ln = (texture(uLife, luv + near) + texture(uLife, luv - near)
-    + texture(uLife, luv + vec2(near.x, -near.y)) + texture(uLife, luv + vec2(-near.x, near.y))) * 0.25;
-  vec4 lf = (texture(uLife, luv + far) + texture(uLife, luv - far)
-    + texture(uLife, luv + vec2(far.x, -far.y)) + texture(uLife, luv + vec2(-far.x, far.y))) * 0.25;
-  float crisp = max(lc.b, ln.b);
-  vec4 lv = mix(lf * 0.55 + ln * 0.3 + lc * 0.15, lc * 0.45 + ln * 0.55, crisp);
-  // the layer is half resolution, so as the camera dives its texels would show
-  // as steps along the outline: trade sharpness for a wider blur instead
-  float zc = clamp((uZoom - 1.4) / 2.5, 0.0, 1.0);
-  if (zc > 0.0) {
-    vec2 wide = far * 2.4;
-    vec4 lw = (texture(uLife, luv + vec2(wide.x, 0.0)) + texture(uLife, luv - vec2(wide.x, 0.0))
-      + texture(uLife, luv + vec2(0.0, wide.y)) + texture(uLife, luv - vec2(0.0, wide.y))) * 0.25;
-    lv = mix(lv, lf * 0.5 + lw * 0.5, zc);
-    crisp *= 1.0 - zc;
-  }
-  // a whale is a rounded body lit from the sun: the slope of its blurred
-  // silhouette stands in for the surface normal, so the flank toward the sun
-  // is paler and the far flank falls into shadow
-  vec2 lg = vec2(
-    texture(uLife, luv + vec2(far.x, 0.0)).r - texture(uLife, luv - vec2(far.x, 0.0)).r,
-    texture(uLife, luv - vec2(0.0, far.y)).r - texture(uLife, luv + vec2(0.0, far.y)).r
-  );
-  float lit = clamp(0.5 - dot(lg, normalize(SUN_DIR.xy)) * 1.6, 0.0, 1.0);
-  vec3 body = mix(C_WHALE, C_WHALE_LIT, lit * crisp) * (0.8 + 0.2 * (1.0 - dpt));
-  col = mix(col, mix(col * 0.55, body, 0.55 + 0.45 * crisp), lv.r);
+  col = col * (1.0 - lc.a) + lc.rgb;
 
   // --- caustics, focused by the surface ----------------------------------------
   float focus = clamp(1.0 - curv * 12.0, 0.45, 2.0);
   float pool = smoothstep(0.2, 0.85, fbm(p / (uBoatLen * 0.8) + vec2(0.0, uTime * 0.06)));
-  float ci = mix(1.15, 0.16, dpt) * (0.4 + 0.6 * pool) * (1.0 + sun * 0.9) * (1.0 - lv.r * 0.45) * focus * (1.0 - 0.55 * calm);
+  float ci = mix(1.15, 0.16, dpt) * (0.4 + 0.6 * pool) * (1.0 + sun * 0.9) * (1.0 - lc.a * 0.4) * focus * (1.0 - 0.55 * calm);
   // light only nets where enough of it reaches the bed
   if (ci > 0.04) {
     float thread = 0.45 + 0.55 * noise(p / (uBoatLen * 0.06) + uTime * 0.4);
