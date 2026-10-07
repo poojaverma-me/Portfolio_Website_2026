@@ -198,31 +198,6 @@ def main():
         entries.append((name, *swimmer(part, 0.7)))
     atlas["fish"] = pack("fish", entries)
 
-    # --- turtle: body (shell, head, tail) and one front and one rear flipper;
-    # the other side's flippers are the same pictures mirrored
-    img, solid = key(os.path.join(RAW, "turtle.png"))
-    found = parts_of(solid)[:3]
-    body_sl, body_m = found[0]
-    flips = sorted(found[1:], key=lambda p: p[0][0].start)  # front is above rear
-    bw = body_sl[1].stop - body_sl[1].start
-    scale = 560 / bw
-    units = 210 / (bw * scale)  # body units per output px: head tip to tail tip = 210
-    entries = []
-    body = crop(img, body_m, body_sl, scale)
-    h, w = body.shape[:2]
-    row = spine_row(body)
-    entries.append(("body", body, shape_map(body, 0.75),
-                    (TAIL - PAD * units, SNOUT + PAD * units, -row * units, (h - row) * units)))
-    for name, (sl, m) in zip(["front", "rear"], flips):
-        part = crop(img, m, sl, scale)
-        h, w = part.shape[:2]
-        mid = spine_row(part)
-        # root at x = 0, the flipper running out along +x
-        entries.append((name, part, shape_map(part, 0.8),
-                        (-PAD * units, (w - PAD) * units, -mid * units, (h - mid) * units)))
-    atlas["turtle"] = pack("turtle", entries)
-    atlas["turtle"]["profile"] = body_profile(body, atlas_ext(atlas["turtle"], "body"))
-
     # --- jellyfish: the bell, four oral arms, and a painted tentacle strip
     img, solid = key(os.path.join(RAW, "jelly.png"))
     found = parts_of(solid)
@@ -245,8 +220,8 @@ def main():
     entries.append(("tentacle", *tentacle_strip(units)))
     atlas["jelly"] = pack("jelly", entries)
 
-    # the turtle's and orca's outlines, to place fins and flippers by
-    for kind in ("orca", "turtle"):
+    # the orca's outline, to place its fins by
+    for kind in ("orca",):
         prof = atlas[kind].pop("profile")
         with open(os.path.join(RAW, "..", f"{kind}-profile.json"), "w") as f:
             json.dump(prof, f)

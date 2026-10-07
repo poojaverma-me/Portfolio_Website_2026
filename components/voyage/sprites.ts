@@ -5,7 +5,7 @@
  * - CreatureLayer draws every animal into a full-resolution layer that the
  *   water shader then sees through the surface. The animals are painted
  *   character sprites (scripts/bake-cartoon.py), cut into parts: a swimmer's
- *   body is a ribbon bent along its spine, a turtle's flippers and a
+ *   body is a ribbon bent along its spine, a
  *   jellyfish's arms and tentacles are strips of their own. Each kind has a
  *   colour texture with a soft alpha edge and a shape texture: a surface
  *   normal raised from the silhouette, turned here to follow the bending body.
@@ -18,7 +18,7 @@
 
 import { type Program, program } from "./gl";
 
-export type CreatureKind = "orca" | "shark" | "fish" | "turtle" | "jelly";
+export type CreatureKind = "orca" | "shark" | "fish" | "jelly";
 
 /**
  * Floats per vertex: position (2), texture coordinate (2), the angle the part
@@ -94,7 +94,7 @@ void main() {
   o = vec4(col * alpha, alpha);
 }`;
 
-const KINDS: CreatureKind[] = ["orca", "shark", "fish", "turtle", "jelly"];
+const KINDS: CreatureKind[] = ["orca", "shark", "fish", "jelly"];
 
 type Pair = { albedo: WebGLTexture; shape: WebGLTexture };
 

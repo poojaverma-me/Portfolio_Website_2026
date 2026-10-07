@@ -12,7 +12,7 @@
  *   (swimmers.ts). Orcas surface to blow, throwing spray and cutting the
  *   surface with their dorsal fins; shallow ones leave fluke prints.
  * - Jellyfish drift on the simulated current, their tentacles too
- *   (jellies.ts); turtles row past with their front flippers (turtles.ts).
+ *   (jellies.ts).
  * - Bubbles and drips drift with the simulated current, read back from the GPU
  *   without stalling it.
  *
@@ -51,7 +51,6 @@ import { CATCH, FINISH, type Voyage, planVoyage } from "./rowing";
 import { type Jelly, makeJellies, stepJellies, writeJelly } from "./jellies";
 import { blowhole, makeSwimmers, stepSwimmers, type Swimmer, writeSwimmer } from "./swimmers";
 import { BubbleLayer, CreatureLayer, MAX_BUBBLES, StripWriter } from "./sprites";
-import { type Turtle, headOf, makeTurtles, stepTurtles, writeTurtle } from "./turtles";
 import { FRAG, MAX_DROPS, VERT } from "./water-shader";
 
 const TAU = Math.PI * 2;
@@ -207,7 +206,6 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
   let layout: Layout = makeLayout(1, 1);
   let voyage: Voyage = planVoyage(layout, 1);
   let swimmers: Swimmer[] = [];
-  let turtles: Turtle[] = [];
   let jellies: Jelly[] = [];
   let edgeDrops: EdgeDrop[] = [];
   let quality = 1;
@@ -229,7 +227,6 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     layout = makeLayout(W, H);
     voyage = planVoyage(layout, exitProgress(layout));
     swimmers = makeSwimmers(layout);
-    turtles = makeTurtles(layout);
     jellies = makeJellies(layout);
     breath = swimmers.map(() => 0.3 + rand() * 1.4);
     edgeDrops = makeEdgeDrops(layout);
@@ -436,14 +433,6 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
       if (rand() < dt * 10) ripples.push({ x: c.x, y: c.y, r: Math.max(c.r, minR), amp: -B * 0.004 * c.strength });
     }
     if (dt > 0) {
-      stepTurtles(turtles, dt, t);
-      // a turtle near the surface noses up through it now and then
-      for (const tu of turtles) {
-        if (tu.depth > 0.88 && rand() < dt * 0.6) {
-          const h = headOf(tu);
-          ripples.push({ x: h.x, y: h.y, r: Math.max(tu.L * 0.08, minR), amp: -B * 0.004 });
-        }
-      }
       stepJellies(jellies, dt, t, (x, y) => fluid!.velocityAt(x, y));
     }
     // the thrust wake of a shallow orca, pushed back off its flukes
@@ -608,7 +597,6 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     const all: { depth: number; write: () => void }[] = [];
     // the orca the camera dives into is drawn over everything else
     for (const s of swimmers) all.push({ depth: s === cam.target ? 2 : s.depth, write: () => writeSwimmer(s, strips) });
-    for (const tu of turtles) all.push({ depth: tu.depth, write: () => writeTurtle(tu, strips) });
     for (const j of jellies) all.push({ depth: j.depth, write: () => writeJelly(j, strips) });
     all.sort((a, b) => a.depth - b.depth);
     for (const a of all) a.write();

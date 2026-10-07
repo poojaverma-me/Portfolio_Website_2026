@@ -9,7 +9,7 @@
  *   the slope and brightened where the surface is convex (intensity grows as
  *   the Laplacian of the height goes negative), which is why ripple rings show
  *   up as bright rings on the bed;
- * - what lies beneath (orcas, sharks, turtles, jellyfish and fish, drawn by CreatureLayer) is
+ * - what lies beneath (orcas, sharks, jellyfish and fish, drawn by CreatureLayer) is
  *   seen through the surface, so it is refracted by the same slope;
  * - glints are real specular reflection of a sun in the upper left;
  * - foam and calm slicks are dyes carried by the simulated current.

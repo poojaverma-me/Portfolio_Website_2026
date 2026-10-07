@@ -15,13 +15,6 @@ orca2   Background #00FF00, fills ~85% of the width. An adult killer whale
         sides a third of the way back, flukes spread sideways like a
         swept-back crescent with a notch. Rounded blunt head at the right.
 
-turtle  Background #FF00FF. A green sea turtle character from directly above
-        as SEPARATE PARTS for a cut-out rig, none touching: (A) the body,
-        shell with large olive and amber scutes, head pointing right, short
-        tail, NO flippers; (B) one long wing-like front flipper lying
-        horizontally, root on the left; (C) one small rounded rear flipper,
-        root on the left.
-
 jelly   Background #00FF00, painted opaque. A moon jellyfish from directly
         above as SEPARATE PARTS: (A) the bell, a round glowing pink-lilac
         dome with a four-petal clover pattern and a scalloped rim; (B) four
