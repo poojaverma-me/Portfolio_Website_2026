@@ -9,13 +9,13 @@
  *   the slope and brightened where the surface is convex (intensity grows as
  *   the Laplacian of the height goes negative), which is why ripple rings show
  *   up as bright rings on the bed;
- * - what lies beneath (whales, sharks and fish, drawn by CreatureLayer) is
+ * - what lies beneath (orcas, sharks, turtles, jellyfish and fish, drawn by CreatureLayer) is
  *   seen through the surface, so it is refracted by the same slope;
  * - glints are real specular reflection of a sun in the upper left;
  * - foam and calm slicks are dyes carried by the simulated current.
  *
  * The palette follows the reference painting: a cyan and cobalt sea on black,
- * navy whales, white foam and near-white caustics.
+ * navy orcas, white foam and near-white caustics.
  */
 
 export const MAX_DROPS = 32;
@@ -64,7 +64,7 @@ uniform float uZoom;
 uniform float uDark;
 
 // the reference painting's sea: cyan shallows over a cobalt deep, with
-// near-white caustics and navy whales
+// near-white caustics and navy orcas
 const vec3 C_SHALLOW = vec3(0.26, 0.80, 0.95);
 const vec3 C_MID     = vec3(0.02, 0.52, 0.76);
 const vec3 C_DEEP    = vec3(0.015, 0.30, 0.52);

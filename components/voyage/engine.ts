@@ -8,13 +8,16 @@
  *   so the wake, the bow wave and the swirls each stroke leaves come out of
  *   the simulation. Blade catches and the drips flicked off at the release
  *   knock rings into the wave field where they land.
- * - Fish that find the hull or a blade too close do a C-start (swimmers.ts);
- *   shallow whales leave fluke prints.
+ * - Fish school, and scatter in a C-start from the hull or a blade
+ *   (swimmers.ts). Orcas surface to blow, throwing spray and cutting the
+ *   surface with their dorsal fins; shallow ones leave fluke prints.
+ * - Jellyfish drift on the simulated current, their tentacles too
+ *   (jellies.ts); turtles row past with their front flippers (turtles.ts).
  * - Bubbles and drips drift with the simulated current, read back from the GPU
  *   without stalling it.
  *
  * Once the boat has rowed out of the top right corner, the camera dives into
- * the dark body of the big whale in the middle until the screen is black, and
+ * the dark back of the big orca in the middle until the screen is black, and
  * then hands over to the page.
  */
 
@@ -45,8 +48,10 @@ import {
 } from "./geometry";
 import { bind, blit, canRenderHalfFloat, fullScreen, program, programsLinked, programsReady } from "./gl";
 import { CATCH, FINISH, type Voyage, planVoyage } from "./rowing";
-import { blowhole, layoutSwimmers, makeSwimmers, stepSwimmers, type Swimmer } from "./swimmers";
-import { BubbleLayer, CreatureLayer, MAX_BUBBLES } from "./sprites";
+import { type Jelly, makeJellies, stepJellies, writeJelly } from "./jellies";
+import { blowhole, makeSwimmers, stepSwimmers, type Swimmer, writeSwimmer } from "./swimmers";
+import { BubbleLayer, CreatureLayer, MAX_BUBBLES, StripWriter } from "./sprites";
+import { type Turtle, headOf, makeTurtles, stepTurtles, writeTurtle } from "./turtles";
 import { FRAG, MAX_DROPS, VERT } from "./water-shader";
 
 const TAU = Math.PI * 2;
@@ -56,7 +61,7 @@ const DEG = Math.PI / 180;
 const WATER_TINT: [number, number, number] = [0.02, 0.42, 0.66];
 /** how long to hold the black frame for the creature textures before starting anyway */
 const TEXTURE_WAIT = 1500;
-/** seconds the camera takes to dive into the whale */
+/** seconds the camera takes to dive into the orca */
 const DIVE = 1.3;
 /** the dive starts this long before the boat is out of sight, sweeping it out */
 const DIVE_LEAD = 0.8;
@@ -177,6 +182,7 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
   const view = program(gl, VERT, FRAG);
   fluid = new Fluid(gl);
   const life = new CreatureLayer(gl);
+  const strips = new StripWriter(life.verts);
   const bubbleLayer = new BubbleLayer(gl);
   const programs = [view, life.prog, bubbleLayer.prog, ...fluid.programs];
   const parallel = gl.getExtension("KHR_parallel_shader_compile");
@@ -201,6 +207,8 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
   let layout: Layout = makeLayout(1, 1);
   let voyage: Voyage = planVoyage(layout, 1);
   let swimmers: Swimmer[] = [];
+  let turtles: Turtle[] = [];
+  let jellies: Jelly[] = [];
   let edgeDrops: EdgeDrop[] = [];
   let quality = 1;
   let q = 1;
@@ -221,6 +229,8 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     layout = makeLayout(W, H);
     voyage = planVoyage(layout, exitProgress(layout));
     swimmers = makeSwimmers(layout);
+    turtles = makeTurtles(layout);
+    jellies = makeJellies(layout);
     breath = swimmers.map(() => 0.3 + rand() * 1.4);
     edgeDrops = makeEdgeDrops(layout);
     edgeDrops.forEach((d, i) => (d.born = born[i] ?? -1));
@@ -392,14 +402,53 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     // --- swimmers, who notice the boat
     const threats = [{ x: bx, y: by, r: B * 0.55 }];
     if (st.inWater > 0.5) for (const b of blades) threats.push({ x: b.x, y: b.y, r: B * 0.18 });
-    const prints = dt > 0 ? stepSwimmers(swimmers, dt, t, threats) : [];
+    const { prints, blows, cuts } =
+      dt > 0 ? stepSwimmers(swimmers, dt, t, l, threats) : { prints: [], blows: [], cuts: [] };
     for (const p of prints) {
       spots.push({ x: p.x, y: p.y, r: p.r, foam: 0, slick: 0.9 * p.strength });
       ripples.push({ x: p.x, y: p.y, r: Math.max(p.r * 0.6, minR), amp: B * 0.005 * p.strength });
     }
-    // the thrust wake of a shallow whale, pushed back off its flukes
+    // an orca's blow: a burst of spray that rains back down in rings, a
+    // patch of white water and a swell where the blowhole broke the surface
+    for (const b of blows) {
+      spots.push({ x: b.x, y: b.y, r: b.r * 1.6, foam: 1.4, slick: 0 });
+      ripples.push({ x: b.x, y: b.y, r: Math.max(b.r, minR), amp: -B * 0.014 });
+      for (let i = 0; i < 9; i++) {
+        const a = rand() * TAU;
+        const sp = b.r * (2 + rand() * 4);
+        splashes.push({
+          x: b.x,
+          y: b.y,
+          vx: Math.cos(a) * sp + Math.cos(b.heading) * b.U * 0.6,
+          vy: Math.sin(a) * sp + Math.sin(b.heading) * b.U * 0.6,
+          r: b.r * (0.18 + rand() * 0.22),
+          k: b.r * 0.3,
+          born: t + rand() * 0.08,
+          life: 0.45 + rand() * 0.4,
+          flick: true,
+        });
+      }
+      cluster(b.x, b.y, 10, b.r, t, 1.1);
+    }
+    // the dorsal fin slicing through the surface
+    for (const c of cuts) {
+      spots.push({ x: c.x, y: c.y, r: c.r, foam: 0.22 * c.strength, slick: 0 });
+      if (rand() < dt * 10) ripples.push({ x: c.x, y: c.y, r: Math.max(c.r, minR), amp: -B * 0.004 * c.strength });
+    }
+    if (dt > 0) {
+      stepTurtles(turtles, dt, t);
+      // a turtle near the surface noses up through it now and then
+      for (const tu of turtles) {
+        if (tu.depth > 0.88 && rand() < dt * 0.6) {
+          const h = headOf(tu);
+          ripples.push({ x: h.x, y: h.y, r: Math.max(tu.L * 0.08, minR), amp: -B * 0.004 });
+        }
+      }
+      stepJellies(jellies, dt, t, (x, y) => fluid!.velocityAt(x, y));
+    }
+    // the thrust wake of a shallow orca, pushed back off its flukes
     const jets = swimmers
-      .filter((s) => s.kind === "whale" && s.depth > 0.7)
+      .filter((s) => s.kind === "orca" && s.depth > 0.7)
       .map((s) => {
         const back = -0.55 * s.L;
         const push = s.U * 2.2 * (s.depth - 0.6);
@@ -455,7 +504,8 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
         cluster(p.x, p.y, 1, B * 0.02, t, 0.7);
       }
       swimmers.forEach((s, i) => {
-        if (s.kind !== "whale") return;
+        // under water, an orca lets a few bubbles go now and then
+        if (s.kind !== "orca" || s.rise > 0.4) return;
         breath[i] -= dt;
         if (breath[i] > 0) return;
         breath[i] = 1 + rand() * 2;
@@ -513,36 +563,37 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
   }
 
   // --- the camera ---------------------------------------------------------------------
-  // It holds still for the voyage, then dollies into the big whale nearest the
+  // It holds still for the voyage, then dollies into the big orca nearest the
   // middle of the screen. Zoom grows exponentially, so the push reads as a
-  // steady move toward the whale rather than a snap, and the frame darkens as
-  // it enters the body.
+  // steady move toward the orca rather than a snap, and the frame darkens as
+  // it enters its black back.
   const camera = (t: number) => {
     const l = layout;
     const mid = { x: l.W / 2, y: l.H / 2 };
     const k = clamp((t - (voyage.exit - DIVE_LEAD)) / DIVE, 0, 1);
-    if (k <= 0) return { x: mid.x, y: mid.y, zoom: 1, dark: 0, k };
-    let whale = swimmers[0];
+    if (k <= 0) return { x: mid.x, y: mid.y, zoom: 1, dark: 0, k, target: null as Swimmer | null };
+    let orca = swimmers[0];
     let best = Infinity;
     for (const s of swimmers) {
-      if (s.kind !== "whale" || s.L < l.boatLen) continue;
+      if (s.kind !== "orca" || s.L < l.boatLen) continue;
       const d = Math.hypot(s.x - mid.x, s.y - mid.y);
       if (d < best) {
         best = d;
-        whale = s;
+        orca = s;
       }
     }
-    // deep enough in that the body, about 22 units either side of the spine,
-    // overfills the screen
-    const half = (22 * whale.L) / 210;
+    // deep enough in that the black back, about 20 units either side of the
+    // spine, overfills the screen
+    const half = (20 * orca.L) / 210;
     const zMax = (1.3 * Math.hypot(l.W, l.H)) / 2 / half;
     const aim = smooth(0, 0.6, k);
     return {
-      x: lerp(mid.x, whale.x, aim),
-      y: lerp(mid.y, whale.y, aim),
+      x: lerp(mid.x, orca.x, aim),
+      y: lerp(mid.y, orca.y, aim),
       zoom: Math.pow(zMax, Math.pow(k, 1.7)),
       dark: smooth(0.62, 0.96, k),
       k,
+      target: orca as Swimmer | null,
     };
   };
 
@@ -552,10 +603,18 @@ export function startVoyage({ host, boat, onDone, onUnsupported, freezeAt = null
     const g = gl!;
     const f = fluid!;
     const cam = camera(t);
-    const laid = layoutSwimmers(swimmers, life.verts);
+    // every animal, deepest first, so nearer ones cover farther ones
+    strips.reset();
+    const all: { depth: number; write: () => void }[] = [];
+    // the orca the camera dives into is drawn over everything else
+    for (const s of swimmers) all.push({ depth: s === cam.target ? 2 : s.depth, write: () => writeSwimmer(s, strips) });
+    for (const tu of turtles) all.push({ depth: tu.depth, write: () => writeTurtle(tu, strips) });
+    for (const j of jellies) all.push({ depth: j.depth, write: () => writeJelly(j, strips) });
+    all.sort((a, b) => a.depth - b.depth);
+    for (const a of all) a.write();
     // animals that arrive after the start fade in rather than pop
     const fade = life.loadedAt < 0 ? 0 : Math.min(1, (performance.now() - life.loadedAt) / 400);
-    life.draw(laid.draws, laid.used, l.W, l.H, cam, WATER_TINT, fade);
+    life.draw(strips.draws, strips.used, l.W, l.H, cam, WATER_TINT, fade);
 
     g.bindVertexArray(screen);
     g.useProgram(view.prog);

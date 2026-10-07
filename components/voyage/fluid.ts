@@ -15,7 +15,7 @@
  *      h_tt = c² ∇²h - γ h_t,
  *    stepped explicitly within its stability limit. The hull presses a
  *    depression into the surface, blades and drips knock rings into it, and
- *    whale flukes lift it. A disturbance moving at speed U through waves of
+ *    orca flukes lift it. A disturbance moving at speed U through waves of
  *    speed c trails a V of half-angle asin(c / U); the engine sets c = U / 3,
  *    which gives Kelvin's 19.5°, the angle every real boat wake has.
  *

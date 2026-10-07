@@ -11,7 +11,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 /**
  * Opening scene: a rower crosses the screen from the bottom left corner and
  * rows out of the top right, the sea opening up behind the boat. The camera
- * then dives into the dark body of the whale in the middle, and the page
+ * then dives into the dark back of the orca in the middle, and the page
  * fades up out of that black. Plays on every load, and never for visitors who
  * prefer reduced motion (see lib/intro.ts).
  */

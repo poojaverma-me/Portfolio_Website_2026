@@ -1,0 +1,39 @@
+Prompts for the voyage intro's creature paintings. Each is style.txt plus one
+block below, run with gen.sh from ~/Projects/portfolio-projects/_cartoon
+(it asks Codex's image model for one image and saves it to raw/<name>.png).
+Then run scripts/bake-cartoon.py from the repo root.
+
+Fish and shark add: "IMPORTANT: this is a TOP-DOWN game sprite. The creature
+must be perfectly MIRROR-SYMMETRIC about the horizontal midline ... NOTHING
+seen from the side: no fin pokes out to only one side."
+
+orca2   Background #00FF00, fills ~85% of the width. An adult killer whale
+        (orca) character seen from directly above: glossy blue-black back,
+        white eye patches on both sides behind the eyes, pale grey saddle
+        patch behind the dorsal fin, dorsal fin seen from above as a narrow
+        dark blade on the midline, broad rounded pectoral flippers out to the
+        sides a third of the way back, flukes spread sideways like a
+        swept-back crescent with a notch. Rounded blunt head at the right.
+
+turtle  Background #FF00FF. A green sea turtle character from directly above
+        as SEPARATE PARTS for a cut-out rig, none touching: (A) the body,
+        shell with large olive and amber scutes, head pointing right, short
+        tail, NO flippers; (B) one long wing-like front flipper lying
+        horizontally, root on the left; (C) one small rounded rear flipper,
+        root on the left.
+
+jelly   Background #00FF00, painted opaque. A moon jellyfish from directly
+        above as SEPARATE PARTS: (A) the bell, a round glowing pink-lilac
+        dome with a four-petal clover pattern and a scalloped rim; (B) four
+        frilly ribbon-like oral arms lying horizontally, root on the left.
+
+fish    Background #FF00FF. Two schooling fish from directly above, pointing
+        right, one above the other: (A) golden-yellow with an orange spine
+        stripe and blue-edged fins; (B) silver-blue with a teal back. Forked
+        tails spread flat sideways.
+
+shark   Background #FF00FF, fills ~85% of the width. A friendly blue shark
+        from directly above: slate-blue back, lighter flanks, pointed snout at
+        the right with an eye each side, dorsal fin as a thin blade on the
+        midline, long swept-back pectoral fins, small pelvic fins, tail fin
+        edge-on at the left.
