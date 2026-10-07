@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked Issues</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+<style>
+  .issue { display:block; text-decoration:none; color:inherit; padding:18px 0 14px; border-bottom:1px solid var(--line); }
+  .issue:last-child { border-bottom:0; }
+  .issue h2 { margin:2px 0 6px; font-size:21px; color:var(--ink); }
+  .issue p { color:var(--muted); margin:0; font-size:15.5px; }
+  .issue:hover h2 { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>All issues</span></div>
+  <article class="paper">
+    <h1>Benchmarked</h1>
+    <p class="dek">The AI news, fact-checked. Every number is labelled by who reported it: the company, an independent tester, the press, or the community.</p>
+    <a class="issue" href="2026-10-03-ai-week-roundup/index.html"><div class="meta">3 Oct 2026 · Weekly roundup · Sep 27 – Oct 3, 2026 · about a 7-minute read</div><h2>The week Washington stepped into AI</h2><p>A voluntary White House accord, a reported FTC probe, Anthropic’s leaked IPO numbers and a turbulent week at OpenAI, plus where the model race stands.</p></a>
+    <a class="issue" href="2026-10-01-claude-fable-5-5/index.html"><div class="meta">1 Oct 2026 · Rumor check · about a 6-minute read</div><h2>Is Claude Fable 5.5 already here?</h2><p>Anthropic hasn’t announced it. Some users say chats labelled Fable 5.1 are behaving like a newer model, but the name, the quality and the release date are all unconfirmed.</p></a>
+    <a class="issue" href="2026-09-30-meta-muse/index.html"><div class="meta">30 Sep 2026 · Product launch · about a 6-minute read</div><h2>Meta’s Muse: the most polished consumer agent yet, after a rough first three weeks</h2><p>A free tier took Muse to #1 on both app stores. The model is mid-pack, and launch brought an Amazon block, a privacy dispute and a patched Mac flaw.</p></a>
+    <a class="issue" href="2026-09-30-gemini-4-argon/index.html"><div class="meta">30 Sep 2026 · Model launch · about a 6-minute read</div><h2>Gemini 4 Argon: is Google back on top?</h2><p>Google's own chart says it wins 12 of 18 benchmarks. Independent testers say it's top-tier, but not the best, and almost nobody can use it yet.</p></a>
+    <a class="issue" href="2026-09-29-openai-devday-2026/index.html"><div class="meta">29 Sep 2026 · Event recap · about a 6-minute read</div><h2>OpenAI DevDay 2026: three launches that matter, and a catch</h2><p>Always-on agents, a cheap near-flagship model and an up-to-8× speed tier led more than 20 announcements. Independent tests call the model a value pick, not the smartest, and the $200 plan shrank.</p></a>
+    <a class="issue" href="2026-09-28-claude-sonnet-5-5/index.html"><div class="meta">28 Sep 2026 · Model launch · about a 6-minute read</div><h2>Claude Sonnet 5.5: near-Opus scores at half the token price</h2><p>Independent tests confirm it sits two points behind Opus 5.5. The catch: at max effort it writes more output tokens per task than any model Artificial Analysis has measured.</p></a>
+    <a class="issue" href="2026-09-25-jev-typesafe-ai/index.html"><div class="meta">25 Sep 2026 · Product launch · about a 6-minute read</div><h2>Jev: the AI model that can’t write a sentence</h2><p>TypeSafe AI’s new model only makes typed decisions, fast and very cheaply. Early independent tests back the speed and cost, but its accuracy looks like a good small model’s, and it always answers, even when it shouldn’t.</p></a>
+    <a class="issue" href="2026-09-24-claude-opus-5-5/index.html"><div class="meta">24 Sep 2026 · Model launch · about a 6-minute read</div><h2>Claude Opus 5.5: a narrow lead at a lower price</h2><p>Independent leaderboards put Anthropic’s new mid-priced model first, but the margin shrinks outside Anthropic’s own tests, and at max effort the token bill climbs fast.</p></a>
+  </article>
+  <div class="foot"><b>Benchmarked</b> · 8 issues · 24 Sep – 3 Oct 2026</div>
+</div>
+</body>
+</html>

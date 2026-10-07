@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: OpenAI DevDay 2026</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 29 Sep 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Event recap · about a 6-minute read</div>
+    <h1>OpenAI DevDay 2026: three launches that matter, and a catch</h1>
+    <p class="dek">Always-on agents, a cheap near-flagship model and an up-to-8× speed tier led more than 20 announcements. Independent tests call the model a value pick, not the smartest, and the $200 plan shrank.</p>
+
+    <figure><img src="images/keynote-slide.jpg" alt="Sam Altman on stage in front of a slide listing dots, GPT-6.1 Sol, Ultrafast, Pro 500 and other launches"><figcaption>The keynote's launch slide, photographed in the room at Fort Mason, San Francisco. Source: @thsottiaux.</figcaption></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>Dots:</b> always-on agents powered by GPT-6 Astra, each with its own cloud computer. Paid plans only, from Pro 100. <span class="tag vendor">vendor</span></li>
+        <li><b>GPT-6.1 Sol:</b> $2 / $10 per million tokens, a fifth of Astra's price, launched a week after GPT-6 Sol. <span class="tag vendor">vendor</span></li>
+        <li><b>Value, not the top spot:</b> Artificial Analysis scores Sol 52 at $0.72 per task; Claude Sonnet 5.5 scores 56 at $7.60. <span class="tag independent">independent</span></li>
+        <li><b>Ultrafast:</b> up to 8× faster output in Codex, at 6× the API price, and only on the new $500 Pro plan in ChatGPT. <span class="tag vendor">vendor</span></li>
+        <li><b>The catch:</b> new Pro 200 subscribers get a lower allowance, about half in API-dollar terms, per OpenAI's Codex lead. <span class="tag vendor">vendor</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>What OpenAI announced</h2>
+    <p>OpenAI called its 29 September event “our biggest yet, with more than 20 major announcements,” and said ChatGPT now has 1.2 billion weekly users. <span class="tag vendor">vendor</span> It arrived after a difficult month: Anthropic's Opus 5.5 and Sonnet 5.5 had topped benchmarks, Meta's free Muse agent had launched on 8 September, and, according to the Wall Street Journal, OpenAI cancelled GPT-6.1 Astra after it regressed on deception and “scope authorization.” <span class="tag press">press</span></p>
+    <p>Beyond the three headline launches, the list included:</p>
+    <ul>
+      <li><b>For builders:</b> an Agents API with computer use, Bedrock Managed Agents on AWS, and a Decisions API preview. <span class="tag vendor">vendor</span></li>
+      <li><b>Codex:</b> cloud environments you can steer from a phone, voice in the CLI, Code Review and Codex Security Cloud. <span class="tag vendor">vendor</span></li>
+      <li><b>ChatGPT:</b> Space and Pages for teams and agents, collaborative slides (coming weeks) and @ChatGPT in Slack and Teams. <span class="tag vendor">vendor</span></li>
+      <li><b>Business:</b> Sign in with ChatGPT across 16 partners including Devin, Notion and Vercel, and an OpenAI Marketplace with 32 partners. <span class="tag vendor">vendor</span></li>
+    </ul>
+
+    <h2><span class="n">02</span>Dots: agents that never sleep</h2>
+    <figure><img src="images/hl-dots-computer.jpg" alt="OpenAI's dots page: they have their own cloud computer, learn from feedback over time, and can work towards your goals 24/7"><figcaption>OpenAI's description of dots, highlighted. Source: OpenAI, Introducing dots.</figcaption></figure>
+    <p>Each dot runs on GPT-6 Astra with its own cloud computer and browser, connects to 4,000+ apps through plugins, and learns from feedback. Users reach it in ChatGPT, Slack, Teams or by voice call; texting is “coming soon.” <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li><b>Who gets it:</b> all Pro plans (including Pro 100) and Business Premium, with an Enterprise beta. The first dot costs nothing extra, and chatting with it doesn't count toward usage limits. <span class="tag vendor">vendor</span></li>
+      <li><b>Guardrails:</b> custom rules, auto-review of consequential actions and an activity view. OpenAI's own page warns that “Dots can still make mistakes.” <span class="tag vendor">vendor</span></li>
+      <li><b>Early reactions:</b> early-access testers @DeryaTR_ and @antonioleivag were positive. A live-demo hiccup spread widely via @ns123abc, and @birdabo pointed out that Dot.com redirects to xAI's Grok Bot download page. <span class="tag community">community</span></li>
+    </ul>
+    <p>Watch the <a href="https://x.com/OpenAI/status/2104984504133918973">dots launch film on X</a>.</p>
+
+    <h2><span class="n">03</span>GPT-6.1 Sol: OpenAI's numbers</h2>
+    <figure><img src="images/sol-lineup.jpg" alt="OpenAI's model cards: GPT-6 Astra $10 / $50, GPT-6.1 Sol $2 / $10, GPT-6 Luna $0.10 / $0.50"><figcaption>OpenAI's lineup with per-million-token prices; Sol is highlighted. Source: OpenAI.</figcaption></figure>
+    <p>OpenAI pitches Sol as nearly matching Astra on agentic coding, computer use and professional work at one-fifth of Astra's token prices: $2 input, $0.10 cached and $10 output per million tokens. It's in ChatGPT Work, Codex and the API, but “not yet available in Chat.” <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li><b>DeepSWE v1.1:</b> matches Astra at roughly a fifth of the cost; 6.4 points above GPT-6 Sol's best. <span class="tag vendor">vendor</span></li>
+      <li><b>AutomationBench:</b> 2.2 points above Opus 5.5 at medium effort, for about a third of the cost. <span class="tag vendor">vendor</span></li>
+      <li><b>Factual errors on hard prompts (low effort):</b> down from 11.4% to 7.7%. <span class="tag vendor">vendor</span></li>
+    </ul>
+    <figure><img src="images/chart-tbsci.jpg" alt="Terminal-Bench Science chart: GPT-6.1 Sol at $5.47 per task versus more than $23 for Astra and Opus 5.5"><figcaption>Terminal-Bench Science 0.1 at max effort: $5.47 per task for Sol vs $23.21 for Opus 5.5 and $23.80 for Astra. Source: OpenAI.</figcaption></figure>
+    <p>The same chart shows the limit: Astra still tops it at 68.1%. These are OpenAI's charts, and some Anthropic costs include fallbacks, so the comparisons aren't strictly like for like. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">04</span>What independent testers found</h2>
+    <figure><img src="images/x-theo-aa.jpg" alt="Artificial Analysis chart of Intelligence Index versus cost per task, shared by Theo"><figcaption>Artificial Analysis's index vs cost per task, as shared by @theo. Data: Artificial Analysis.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Test</th><th>Result</th><th>Kind</th></tr>
+      <tr><td>AA Intelligence Index, Sol max</td><td class="num">52, #10 of 221, $0.72/task</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA, Sol high / medium</td><td class="num">50 ($0.32) / 48 ($0.21)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA, Claude Sonnet 5.5 max / high</td><td class="num">56 ($7.60) / 47 ($1.08)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA, Opus 5.5 max / GPT-6 Astra</td><td class="num">58 / 53</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA speed and verbosity</td><td class="num">~67 tokens/s; 67M tokens vs 82M median</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>JetBrains, same Three.js prompt</td><td class="num">$0.553, 17 min (GPT-6 Sol $1.01, 22 min)</td><td><span class="tag community">community</span></td></tr>
+    </table></div>
+    <p>The value case holds up. At medium effort, Sol (48, $0.21) edges Sonnet 5.5 at high (47, $1.08) for about a fifth of the cost. At max, it is 4 points behind Sonnet 5.5 at roughly a tenth of the cost per task. <span class="tag independent">independent</span> Theo reported that his own Terminal-Bench 4 run beat Opus 5.5 for about 1/30th of the price; that result is unverified. <span class="tag community">community</span></p>
+
+    <h2><span class="n">05</span>Ultrafast: speed at 6× the price</h2>
+    <p>Ultrafast generates up to 8× faster in Codex (300 tokens per second) and up to 6× faster in the API. Only Astra has it today; Sol Ultrafast is “coming soon.” In OpenAI's demo, the same build took 30.3 seconds on standard and 6.4 seconds on Ultrafast. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/ultrafast-price.jpg" alt="OpenAI API pricing: gpt-6-astra Ultrafast at $60 input, $6 cached, $75 cache writes, $300 output"><figcaption>Astra Ultrafast API prices per million tokens, exactly 6× standard ($10 / $50). Source: OpenAI API pricing.</figcaption></figure>
+    <p>In ChatGPT, Ultrafast comes only with Pro 500. Sam Altman called it “so fast I do not ever want to go back.” <span class="tag vendor">vendor</span> Watch the <a href="https://x.com/OpenAI/status/2104993966043320759">side-by-side demo on X</a>.</p>
+
+    <h2><span class="n">06</span>The Pro 200 cut and the $500 plan</h2>
+    <figure><img src="images/x-tibo-pro200.jpg" alt="Tibo's post: the new Pro $200 plan will net out at half the dollar in API spend"><figcaption>Posted the night before DevDay; 13.5M views and 6.8K replies at the time of capture. Source: @thsottiaux.</figcaption></figure>
+    <p>The night before the keynote, Codex lead Tibo said the reopened Pro $200 plan “will net out at half the dollar in API spend” compared with the old one, and that OpenAI won't bring back the five-hour limit. OpenAI's help center confirms new Pro 200 subscribers get a lower allowance; existing subscribers keep theirs through 29 October 2026, and the price stays $200. <span class="tag vendor">vendor</span></p>
+    <p>Press reports put specific numbers on it: Engadget says usage drops from 20× to 10× the Plus allowance, and The Next Web reports a one-time $2,500 usage credit. Neither figure appears on OpenAI's page. <span class="tag press">press</span></p>
+    <figure><img src="images/pro-tiers.jpg" alt="OpenAI help center table: Pro 100 $100, Pro 200 $200, Pro 500 $500, Ultrafast included only in Pro 500"><figcaption>The three Pro tiers; only Pro 500 includes Ultrafast. Source: OpenAI Help Center.</figcaption></figure>
+    <p>The new Pro 500 costs $500 a month for 25× the Plus allowance. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">07</span>Decisions API: OpenAI's take on Jev</h2>
+    <p>The Decisions API uses GPT-6 Luna to pick from answers a developer defines, using text or image context, to classify, route or choose an agent's next step. It's in limited preview, and pricing hasn't been announced. In OpenAI's demo of 10,000 routing requests, each took 150 ms versus 1.6 s. <span class="tag vendor">vendor</span> Watch the <a href="https://x.com/OpenAIDevs/status/2105003318917697873">demo on X</a>.</p>
+    <figure><img src="images/x-clone-war.jpg" alt="Diogo Almeida's post: begun, the clone war has, with a Yoda meme"><figcaption>TypeSafe founder Diogo Almeida reacts to a product shaped like his company's Jev. Source: @CompleteSkeptic.</figcaption></figure>
+    <p>Builders quickly called it a “Jev killer” (@theo, @birdabo, @mreflow), after TypeSafe's tool launched 15 September. Its founder later posted that it “seems to be luna with constrained decoding.” <span class="tag community">community</span></p>
+
+    <h2><span class="n">08</span>Where it falls short</h2>
+    <ul>
+      <li><b>Paywalls:</b> dots need a paid plan while Muse is free, and Ultrafast needs Pro 500 or 6× API pricing. <span class="tag press">press</span> <span class="tag vendor">vendor</span></li>
+      <li><b>Availability:</b> dots aren't offered in the EEA, Switzerland or the UK, per Fortune. <span class="tag press">press</span> Specialist dots are limited to enterprise pilots. <span class="tag vendor">vendor</span></li>
+      <li><b>Not the smartest:</b> Sol trails Sonnet 5.5 and Opus 5.5 at max effort on Artificial Analysis. <span class="tag independent">independent</span></li>
+      <li><b>Churn:</b> GPT-6 Sol was replaced after one week. <span class="tag vendor">vendor</span></li>
+      <li><b>Mood:</b> @LyraInTheFlesh called the day “a lot of let down.” <span class="tag community">community</span></li>
+    </ul>
+
+    <h2><span class="n">09</span>How it stacks up</h2>
+    <div class="tablewrap"><table>
+      <tr><th>OpenAI launch</th><th>Rival</th><th>How they compare</th></tr>
+      <tr><td>Dots</td><td>Meta Muse, xAI Grok Bot</td><td>Same always-on idea. Dots bring Astra, 4,000+ apps and Slack/Teams, but Muse is free.</td></tr>
+      <tr><td>GPT-6.1 Sol</td><td>Claude Sonnet 5.5</td><td>Same $2 / $10 list price. Sol is cheaper per task; Sonnet scores higher at max (56 vs 52).</td></tr>
+      <tr><td>Decisions API</td><td>TypeSafe Jev</td><td>Same idea; OpenAI's adds image inputs. Its price isn't announced.</td></tr>
+    </table></div>
+
+    <h2><span class="n">10</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>The Pro 200 figures (20× → 10×, the $2,500 credit, the 30 October date) are press-reported, not on OpenAI's page.</li>
+      <li>The claim that OpenAI cut the stream's audio to hide the dots demo hiccup is unverified.</li>
+      <li>“Sol beats Opus 5.5” holds only on some of OpenAI's charts and one creator's run; on Artificial Analysis it scores lower.</li>
+      <li>GPT-6.1 Astra's cancellation is reported by the WSJ, not announced by OpenAI.</li>
+      <li>Artificial Analysis's Sol numbers were only hours old on 29 September, and its Sonnet 5.5 scores came from a pre-release build with a bug; both may change.</li>
+    </ul></div>
+
+    <h2><span class="n">11</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://openai.com/index/devday-2026-recap/">OpenAI: DevDay 2026 recap</a> · <a href="https://openai.com/index/introducing-dots/">Introducing dots</a> · <a href="https://openai.com/index/introducing-gpt-6-1-sol/">Introducing GPT-6.1 Sol</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://developers.openai.com/api/docs/pricing">OpenAI API pricing</a> · <a href="https://help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers">About ChatGPT Pro tiers</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://x.com/OpenAI/status/2104984504133918973">@OpenAI</a> · <a href="https://x.com/OpenAIDevs/status/2105003318917697873">@OpenAIDevs</a> · <a href="https://x.com/sama/status/2104994601140711896">@sama</a> · <a href="https://x.com/thsottiaux/status/2104823812042940713">@thsottiaux</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://artificialanalysis.ai/models/releases/gpt-6-1-sol">Artificial Analysis: GPT-6.1 Sol</a> · <a href="https://artificialanalysis.ai/models/releases/claude-sonnet-5-5">Claude Sonnet 5.5</a></li>
+      <li><span class="tag press">press</span> <a href="https://www.engadget.com/2272106/openai-adds-dollar500-pro-subscription-nerfs-its-existing-dollar200-tier/">Engadget</a> · <a href="https://thenextweb.com/news/openai-devday-pro-200-usage-cut-pro-500-plan">The Next Web</a> · <a href="https://fortune.com/2026/09/29/openai-takes-on-metas-muse-with-new-dot-agents-and-unveils-a-potential-google-workspace-competitor/">Fortune</a> · <a href="https://gizmodo.com/openai-cancels-release-of-gpt-6-1-astra-because-it-regressed-on-safety-2000818566">Gizmodo (WSJ)</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/theo/status/2105005625726099473">@theo</a> · <a href="https://x.com/jetbrains/status/2104987776550633684">@jetbrains</a> · <a href="https://x.com/DeryaTR_/status/2104988586299085147">@DeryaTR_</a> · <a href="https://x.com/mreflow/status/2104987943085736367">@mreflow</a> · <a href="https://x.com/ns123abc/status/2104997638462652838">@ns123abc</a> · <a href="https://x.com/birdabo/status/2104987275813917076">@birdabo</a> · <a href="https://x.com/CompleteSkeptic/status/2105000685209313736">@CompleteSkeptic</a> · <a href="https://x.com/LyraInTheFlesh/status/2105001917818552417">@LyraInTheFlesh</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 29 Sep 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

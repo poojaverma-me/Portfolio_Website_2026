@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: Claude Fable 5.5</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 1 Oct 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Rumor check · about a 6-minute read</div>
+    <h1>Is Claude Fable 5.5 already here?</h1>
+    <p class="dek">Anthropic hasn’t announced it. Some users say chats labelled Fable 5.1 are behaving like a newer model, but the name, the quality and the release date are all unconfirmed.</p>
+
+    <figure><img src="images/lead-chet-label-51.jpg" alt="Community graphic: “label says 5.1. knows the reset guy.” next to a Claude chat screenshot"><figcaption>From the 1 Oct routing post: a chat labelled Fable 5.1 answering a question only a newer model should know. Unverified. Source: @chetaslua.</figcaption></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>Not announced:</b> as of 1 Oct there is no Fable 5.5 post on Anthropic’s newsroom or @AnthropicAI. Its stated plan names Sonnet 5.5 (shipped) and Haiku 5.5 as next. <span class="tag vendor">vendor</span></li>
+        <li><b>The signal:</b> X users report chats labelled “Fable 5.1” passing a knowledge test that only a newer model should pass. <span class="tag community">community</span></li>
+        <li><b>The demos:</b> viral one-shot animations are credited to Fable 5.5 by their posters. None shows a model name. <span class="tag community">community</span></li>
+        <li><b>Mixed track record:</b> similar reports came before Opus 5.5 and Sonnet 5.5, but September’s “Fable 5.2” never shipped. <span class="tag community">community</span></li>
+        <li><b>The case for one:</b> Fable 5.1 ($10 / $50) scores 53 on Artificial Analysis, behind the newer, cheaper Opus 5.5 (58) and Sonnet 5.5 (56). <span class="tag independent">independent</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>What’s being claimed</h2>
+    <p>At about 18:56 UTC on 1 Oct, @chetaslua posted that “Fable 5.5 is auto routing on web” (377K views): the claim is that some requests to Fable 5.1 are quietly being answered by an unreleased model. <span class="tag community">community</span></p>
+    <p>The evidence offered is the “Tibo test”: asking Claude, with web search off, who “Tibo the reset guy” is. The reasoning is that only a model with a newer knowledge cutoff would know him from memory. <span class="tag community">community</span></p>
+    <ul>
+      <li>@cherry_mx_reds shared a Claude Code session labelled “Fable 5.1 with low effort” that named Thibault Sottiaux without web search. <span class="tag community">community</span></li>
+      <li>@Ananth7e, quoting @notjazii, showed two answers under the same 5.1 label: one named a different Tibo, the other named Sottiaux. <span class="tag community">community</span></li>
+    </ul>
+    <figure><img src="images/x-ananth-tibo.jpg" alt="Two Claude answers under the same Fable 5.1 label, one naming the wrong Tibo and one the right one"><figcaption>Same label, two different answers. Screenshots shared on X, not independently verified. Source: @Ananth7e, quoting @notjazii.</figcaption></figure>
+
+    <h2><span class="n">02</span>What Anthropic has actually said</h2>
+    <p>Nothing about a Fable 5.5. When Opus 5.5 launched on 22 Sep, Anthropic said Sonnet 5.5 and Haiku 5.5 would follow “in the coming weeks”; no Fable was named. Sonnet 5.5 shipped on 28 Sep. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/hl-anthropic-next-models.jpg" alt="Anthropic: Claude Sonnet 5.5 and Claude Haiku 5.5 will follow in the coming weeks"><figcaption>The only roadmap Anthropic has published for the 5.5 family. Source: Anthropic, Opus 5.5 announcement.</figcaption></figure>
+    <p>What Anthropic did ship on 1 Oct was a promotion: through 15 Oct, designs, decks and docs started in the Claude app use 50% less of Pro, Max and Team usage limits. <span class="tag vendor">vendor</span></p>
+    <p>Routing between models does exist. Claude’s Help Center says that when safety classifiers block a Fable 5 or Fable 5.1 request, Claude re-runs it on an Opus model. That routing is labelled, though; what users describe is not. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/hl-support-model-switch.jpg" alt="Claude Help Center: blocked Fable requests re-run on an Opus model, labelled with the model that answered"><figcaption>Documented routing tells you which model answered. Source: Claude Help Center.</figcaption></figure>
+
+    <h2><span class="n">03</span>The demos</h2>
+    <p>The posts below were credited to Fable 5.5 by the poster. None shows a model name on screen, and none can be traced to a specific model. <span class="tag community">community</span></p>
+    <ul>
+      <li><b>Superman in about 20 art styles</b> (251K views), from @chetaslua. <a href="https://x.com/chetaslua/status/2105757136219504862">Watch the demo on X</a></li>
+      <li><b>Marvel and DC “Head Cases” heroes in pure JavaScript</b>, also from @chetaslua. <a href="https://x.com/chetaslua/status/2105792187200147541">Watch the demo on X</a></li>
+      <li><b>“I asked for a dot”</b>, a Pixar-style animation (67K views), from @cherry_mx_reds. <a href="https://x.com/cherry_mx_reds/status/2105825930799432073">Watch the demo on X</a></li>
+      <li><b>A voxel island</b>, labelled Fable 5.5 “(maybe)” by @blueemi99. <a href="https://x.com/blueemi99/status/2105804692811137242">Watch the demo on X</a></li>
+      <li><b>A steampunk octopus SVG</b>, from @SEO. <a href="https://x.com/SEO/status/2105812236774297943">Watch the demo on X</a></li>
+    </ul>
+    <figure><img src="images/x-chet-superman.jpg" alt="X post by @chetaslua showing a grid of Superman drawings in different art styles"><figcaption>Credited to Fable 5.5 by the poster; the model is unconfirmed. Source: @chetaslua.</figcaption></figure>
+    <p class="callout">Demos like these don’t prove much on their own: Anthropic’s own Sonnet 5.5 launch thread showcased JavaScript animations of the same kind.</p>
+
+    <h2><span class="n">04</span>The track record</h2>
+    <p>This kind of signal has been right about timing and wrong about names.</p>
+    <ul>
+      <li><b>18–20 Sep:</b> @chetaslua posted “Fable 5.2 routed from 5.1” demos, one with 972K views. The footer of the quoted clip reads “made by Claude Fable 5.1”. <span class="tag community">community</span></li>
+      <li><b>21 Sep:</b> TestingCatalog reported Anthropic testing “Fable 5.2 and Opus 5.5” and tied the stealth tests to an Opus 5.5 codename, claude-wafer-eap. <span class="tag press">press</span></li>
+      <li><b>22 Sep:</b> Opus 5.5 launched. No Fable 5.2 ever did. <span class="tag vendor">vendor</span></li>
+      <li>@aGim_asf notes the pattern: Opus 5.5 was stealth-tested two days before launch, and Sonnet 5.5 routing appeared the day it dropped. They call the new reports “unconfirmed for now”. <span class="tag community">community</span></li>
+    </ul>
+    <figure><img src="images/x-chet-52-footer.jpg" alt="September post claiming Fable 5.2, with a clip footer reading made by Claude Fable 5.1"><figcaption>19 Sep: a post credits “Fable 5.2”; the clip’s own footer says Fable 5.1. Source: @chetaslua.</figcaption></figure>
+    <figure><img src="images/web-testingcatalog.jpg" alt="TestingCatalog headline: Anthropic tests Fable 5.2 and Opus 5.5 ahead of the release"><figcaption>The stealth model turned out to be Opus 5.5. Source: TestingCatalog, 21 Sep.</figcaption></figure>
+
+    <h2><span class="n">05</span>Why a new Fable would make sense</h2>
+    <p>Fable is Anthropic’s largest and most expensive line. Fable 5 launched on 9 Jun, was suspended on 12 Jun under a US export-control directive and redeployed on 1 Jul. Fable 5.1 arrived on 1 Sep alongside Mythos 5.1 (“same model, different levels of safeguards”), priced at $10 / $50 per million tokens. <span class="tag vendor">vendor</span></p>
+    <p>Three weeks later, Anthropic described Opus 5.5 as “at the level of Fable 5.1 for most tasks” at $4 / $20. Independent scores go further: the newer, cheaper models now rank higher. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/chart-aa-fable.jpg" alt="Artificial Analysis leaderboard: Opus 5.5 at 58, Fable 5.1 rows at 53"><figcaption>Artificial Analysis Intelligence Index v4.3.2, 1 Oct 2026. Fable 5.1 rows highlighted; cropped to the score and price columns.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Model (setting)</th><th>AA index</th><th>Cost per task</th><th>Kind</th></tr>
+      <tr><td>Claude Opus 5.5 (max)</td><td class="num">58</td><td class="num">$5.98</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Claude Sonnet 5.5 (max)</td><td class="num">56</td><td class="num">$7.62</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Claude Opus 5.5 (high)</td><td class="num">54</td><td class="num">$1.82</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Claude Fable 5.1 (max)</td><td class="num">53</td><td class="num">$7.63</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>GPT-6 Astra (max)</td><td class="num">53</td><td class="num">$3.26</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Gemini 4 Argon (high)</td><td class="num">53</td><td class="num">$1.99</td><td><span class="tag independent">independent</span></td></tr>
+    </table></div>
+    <p>That gap is the logic for a new Fable. It is an inference, not evidence that one is coming.</p>
+
+    <h2><span class="n">06</span>The pacing question</h2>
+    <p>On 12 Sep, Anthropic CEO Dario Amodei wrote: “We must slow the pace at which we improve the capabilities of AI models.” The same essay says pacing “does not mean halting model training or technical progress”. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/hl-dario-halting.jpg" alt="Dario Amodei essay: pacing does not mean halting model training or technical progress"><figcaption>Source: Dario Amodei, “We Must Pace the Frontier”.</figcaption></figure>
+    <p>Anthropic called Opus 5.5 its first model since that call, tested before release by external evaluators including METR and Frontier Design. That is the awkward part for the rumor: a new top-end model weeks after a call to slow down, even though the essay says training continues. <span class="tag vendor">vendor</span></p>
+    <p>Rivals are moving carefully too. OpenAI cancelled GPT-6.1 Astra’s October release after it was dishonest about its own actions in testing, according to the WSJ via Engadget. Google’s Gemini 4 Argon, announced 30 Sep, is limited to cyber defenders for now. <span class="tag press">press</span></p>
+
+    <h2><span class="n">07</span>When?</h2>
+    <p>No date is sourced. @chetaslua wrote on 29 Sep: “next week haiku then after a week fable”. @imjustnewatai said they were “hearing of a Tuesday release”, without naming a source. Neither has been confirmed by Anthropic. <span class="tag community">community</span></p>
+
+    <h2><span class="n">08</span>How it stacks up</h2>
+    <div class="tablewrap"><table>
+      <tr><th></th><th>Fable 5.5</th><th>Fable 5.1</th><th>Opus 5.5</th><th>Sonnet 5.5</th></tr>
+      <tr><td>Status</td><td>Rumored, not announced</td><td>Released 1 Sep</td><td>Released 22 Sep</td><td>Released 28 Sep</td></tr>
+      <tr><td>AA index (max)</td><td class="num">Unknown</td><td class="num">53</td><td class="num">58</td><td class="num">56</td></tr>
+      <tr><td>API price (in / out per 1M)</td><td class="num">Unknown</td><td class="num">$10 / $50</td><td class="num">$4 / $20</td><td class="num">$2 / $10</td></tr>
+    </table></div>
+
+    <h2><span class="n">09</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>Fable 5.5 is rumored, not announced. Treat every claim about it as unconfirmed.</li>
+      <li>There is no sourced release date; the “Tuesday” claim has no named source.</li>
+      <li>The demos are credited to Fable 5.5 by their posters. Nothing on screen shows which model made them.</li>
+      <li>Knowledge-cutoff tests like the Tibo question are noisy, and the label users see still says 5.1.</li>
+      <li>These facts date from 1 Oct, about six hours after the rumor spread. Check Anthropic’s newsroom for anything newer.</li>
+    </ul></div>
+
+    <h2><span class="n">10</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://www.anthropic.com/news">Anthropic newsroom</a> · <a href="https://www.anthropic.com/claude-fable-and-mythos-5-1">Fable 5.1 and Mythos 5.1</a> · <a href="https://www.anthropic.com/claude-opus-5-5">Opus 5.5</a> · <a href="https://www.anthropic.com/claude-sonnet-5-5">Sonnet 5.5</a> · <a href="https://www.anthropic.com/news/redeploying-fable-5">Redeploying Fable 5</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://support.claude.com/en/articles/15363606-why-claude-switched-models-in-your-conversation-with-fable-5-or-fable-5-1">Claude Help Center: model switching</a> · <a href="https://darioamodei.com/post/we-must-pace-the-frontier">Dario Amodei: We Must Pace the Frontier</a> · <a href="https://x.com/DarioAmodei/status/2098773920774074715">@DarioAmodei</a></li>
+      <li><span class="tag vendor">vendor</span> @claudeai: <a href="https://x.com/claudeai/status/2102435511222890900">Opus 5.5</a> · <a href="https://x.com/claudeai/status/2102435514855158124">pacing</a> · <a href="https://x.com/claudeai/status/2104633115620823187">Sonnet 5.5</a> · <a href="https://x.com/claudeai/status/2105721630051692804">usage promotion</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://artificialanalysis.ai/leaderboards/models">Artificial Analysis: models leaderboard</a></li>
+      <li><span class="tag press">press</span> <a href="https://www.testingcatalog.com/anthropic-tests-fable-5-2-and-opus-5-5-ahead-of-the-release/">TestingCatalog</a> · <a href="https://www.engadget.com/2271626/openai-cancels-gpt-6-1-astra-release-deceptive-behavior/">Engadget (via WSJ)</a></li>
+      <li><span class="tag community">community</span> @chetaslua: <a href="https://x.com/chetaslua/status/2105733677003292983">routing claim</a> · <a href="https://x.com/chetaslua/status/2105757136219504862">Superman</a> · <a href="https://x.com/chetaslua/status/2105792187200147541">heroes</a> · <a href="https://x.com/chetaslua/status/2100911207519801573">Sep 18</a> · <a href="https://x.com/chetaslua/status/2101376238703333883">Sep 19</a> · <a href="https://x.com/chetaslua/status/2104860366669058442">Sep 29</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/cherry_mx_reds/status/2105758325887365382">@cherry_mx_reds</a> (<a href="https://x.com/cherry_mx_reds/status/2105825930799432073">dot</a>) · <a href="https://x.com/Ananth7e/status/2105736286929895841">@Ananth7e</a> · <a href="https://x.com/blueemi99/status/2105804692811137242">@blueemi99</a> · <a href="https://x.com/SEO/status/2105812236774297943">@SEO</a> · <a href="https://x.com/aGim_asf/status/2105749284390043743">@aGim_asf</a> · <a href="https://x.com/imjustnewatai/status/2105761198989828259">@imjustnewatai</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 1 Oct 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

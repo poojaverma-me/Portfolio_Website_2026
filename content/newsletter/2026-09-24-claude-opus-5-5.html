@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: Claude Opus 5.5</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 24 Sep 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Model launch · about a 6-minute read</div>
+    <h1>Claude Opus 5.5: a narrow lead at a lower price</h1>
+    <p class="dek">Independent leaderboards put Anthropic’s new mid-priced model first, but the margin shrinks outside Anthropic’s own tests, and at max effort the token bill climbs fast.</p>
+
+    <figure><img src="images/web-anthropic-hero.jpg" alt="Claude Opus 5.5 title card from Anthropic’s launch page, dated September 22, 2026"></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>#1 where tested:</b> Artificial Analysis scores it 58, five points ahead of GPT-6 Astra and Claude Fable 5.1 (53 each); Vals AI ranks it #1 of 63. <span class="tag independent">independent</span></li>
+        <li><b>Fable-class pitch, lower price:</b> $4 / $20 per million tokens, 40% of the list price of Fable 5.1 and GPT-6 Astra. <span class="tag vendor">vendor</span></li>
+        <li><b>Narrower than advertised:</b> Anthropic’s Terminal-Bench 4.0 lead over Astra becomes a tie (59.6% each) in Artificial Analysis’s run. <span class="tag independent">independent</span></li>
+        <li><b>Hungry at max effort:</b> about 119k output tokens per task, versus about 27k for Astra. <span class="tag press">press</span></li>
+        <li><b>Not the leader everywhere:</b> even Anthropic’s own system card has Astra ahead on science terminal work, workflow automation and ultra-long coding tasks. <span class="tag vendor">vendor</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>What Anthropic announced</h2>
+    <p>Opus 5.5 launched on 22 September 2026 as the first model in Anthropic’s Claude 5.5 family. Anthropic now recommends it as the starting point for most workloads, keeping Fable 5.1 for the most demanding reasoning and long-horizon agent work. <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li><b>Price:</b> $4 per million input tokens and $20 per million output, 20% below Opus 5’s $5 / $25. The Batch API halves that. <span class="tag vendor">vendor</span></li>
+      <li><b>Context:</b> 1M tokens at standard pricing; up to 128K output, or 300K through a Batch API beta. <span class="tag vendor">vendor</span></li>
+      <li><b>Where:</b> the Claude apps, Claude Code, the API, Amazon Bedrock, Google Cloud and Microsoft Foundry. <span class="tag vendor">vendor</span></li>
+      <li><b>Breaking changes:</b> thinking can’t be switched off, and the default effort is now medium, one level below Opus 5’s. <span class="tag vendor">vendor</span></li>
+    </ul>
+
+    <h2><span class="n">02</span>Anthropic’s scorecard</h2>
+    <p>Anthropic’s launch table compares Opus 5.5 with Fable 5.1, Opus 5, GPT-6 Astra and GPT-5.6 Sol on nine benchmarks. Opus 5.5 wins seven, though on two of those (OSWorld 2.0 and Chartography) it faces only other Claude models. Astra wins the remaining two. No Google, xAI, Meta or open-weight model appears. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/table-anthropic-tbench.jpg" alt="Anthropic’s benchmark table with the Terminal-Bench 4.0 row highlighted"><figcaption>Anthropic’s launch table, Terminal-Bench 4.0 row highlighted: 66.4% for Opus 5.5 vs 57.9% for GPT-6 Astra, run at xhigh effort. Rival scores are the vendors’ own figures. Source: Anthropic.</figcaption></figure>
+    <p>The system card’s biggest coding number is 89.9% on SWE-bench Pro, against 81.2% for Fable 5.1. Nobody had reproduced it independently by 24 September. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">03</span>What independent testers found</h2>
+    <p>Artificial Analysis (AA), Vals AI and ARC Prize all put Opus 5.5 at or near the top. AA calls its 58 the highest index score it has recorded. <span class="tag independent">independent</span></p>
+    <div class="tablewrap"><table>
+      <tr><th>Test</th><th>Result</th><th>Kind</th></tr>
+      <tr><td>AA Intelligence Index</td><td class="num">58, #1 of 211 (Astra 53, Fable 5.1 53)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA: Humanity’s Last Exam</td><td class="num">61.4%, a record (Fable 5.1 59.1%)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA: GDPval-AA v2.1 (knowledge work)</td><td class="num">1,846 Elo (Fable 5.1 1,735)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA: Terminal-Bench 4.0</td><td class="num">59.6%, tied with Astra</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Vals Index</td><td class="num">#1 of 63 at 69.69%</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Vals: Terminal-Bench 4.0</td><td class="num">#1 of 34 at 61.62%</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>ARC-AGI-2 (verified)</td><td class="num">93.3% at high effort, 91.7% at max</td><td><span class="tag independent">independent</span></td></tr>
+    </table></div>
+    <p>Terminal-Bench shows why it matters who ran a test. Anthropic reports 66.4%, with safeguards on and a fallback model answering the 2.5% of requests they flagged. <span class="tag vendor">vendor</span> Vals measured 61.62% and AA 59.6%, which is level with Astra. <span class="tag independent">independent</span></p>
+
+    <h2><span class="n">04</span>Coding and office work in practice</h2>
+    <p>Anthropic picked its partner testimonials, so treat them as selected examples. Stripe reports one session that directed 40 stacked pull requests, all passing CI. Clio describes an 18-hour task completed unattended. Deloitte says the model caught 72% of known bugs at its lowest effort setting, against 56% for Opus 5 at high. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/quote-stripe.jpg" alt="Stripe engineer’s quote about 40 stacked pull requests passing CI"><figcaption>Partner quote from Cristian Rivera, Staff Software Engineer at Stripe. Source: Anthropic.</figcaption></figure>
+    <p>Outside reviewers largely agree. Every’s team says it is pulling staff who had switched to OpenAI’s Codex back to Claude. Simon Willison now uses it as his default in Claude Code. <span class="tag community">community</span></p>
+    <p>CodeRabbit’s code-review test was more mixed: 51 of 80 known bugs caught versus 49 for its production baseline, with similar precision and 49% more tokens. <span class="tag independent">independent</span></p>
+    <figure><img src="images/chart-gdpval-cost.jpg" alt="GDPval-AA v2.1 Elo plotted against estimated cost per task for five models"><figcaption>GDPval-AA v2.1 (office work from 44 occupations): Elo against cost per task, one dot per effort level. Anthropic’s chart; Artificial Analysis confirms the 1,846. Source: Anthropic.</figcaption></figure>
+
+    <h2><span class="n">05</span>Writing that gets to the point</h2>
+    <p>Anthropic says it fixed the dense prose critics called “Claudish”: answers now lead with the most important information. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/writing-comparison.jpg" alt="Side-by-side explanations of the same billing bug by Claude Opus 5 and Claude Opus 5.5"><figcaption>The same bug explained by Opus 5 (left) and Opus 5.5 (right). Example chosen by Anthropic. Source: Anthropic.</figcaption></figure>
+    <p>Every rated its prose the most readable it has tested (Flesch-Kincaid grade 6.95). Ethan Mollick (@emollick) said it feels Fable-class but hasn’t fully solved the dense-language problem. <span class="tag community">community</span></p>
+
+    <h2><span class="n">06</span>Where it falls short</h2>
+    <figure><img src="images/table-anthropic-astra-wins.jpg" alt="Lower half of Anthropic’s table with GPT-6 Astra’s Terminal-Bench-Science win highlighted"><figcaption>The lower half of Anthropic’s table. GPT-6 Astra (second column from right) wins AutomationBench and Terminal-Bench-Science. Source: Anthropic.</figcaption></figure>
+    <ul>
+      <li><b>Science and automation:</b> Astra leads Terminal-Bench-Science 0.1 (64.6% vs 58.7%), AutomationBench (41.4% vs 40.0%) and FrontierSWE v2’s ultra-long tasks (65.5% vs 62.3%). <span class="tag vendor">vendor</span></li>
+            <li><b>Legal agents:</b> Vals ranks it #31 of 64 on Harvey’s Legal Agent benchmark, at 3.75%. <span class="tag independent">independent</span></li>
+      <li><b>Math and science QA:</b> Anthropic publishes no FrontierMath or GPQA Diamond score; OpenAI reports Astra at 97.6% and 96.0%. <span class="tag press">press</span></li>
+      <li><b>Hardest problems:</b> Every found Fable 5.1 smarter on the toughest tasks; Opus 5.5 put the wrong logos on a brand deck. <span class="tag community">community</span></li>
+      <li><b>Modality and openness:</b> text and images in, text only out, and closed weights. <span class="tag vendor">vendor</span></li>
+    </ul>
+
+    <h2><span class="n">07</span>Cheaper per token, not always per task</h2>
+    <p>On AA’s index at max effort, Opus 5.5 produced about 119k output tokens per task versus about 27k for Astra, according to OfficeChai. <span class="tag press">press</span> AA labels it very verbose; Vals measured $22.30 per test and 72 minutes of latency. <span class="tag independent">independent</span></p>
+    <figure><img src="images/chart-terminal-bench-cost.jpg" alt="Terminal-Bench 4.0 score plotted against cost per attempt for five models at each effort level"><figcaption>Terminal-Bench 4.0 score against cost per attempt, one dot per effort level. Anthropic’s chart, so vendor numbers. Source: Anthropic.</figcaption></figure>
+    <p>Willison’s trivial drawing prompt at max effort hit the 128,000-token output ceiling, at $2.56 per attempt. <span class="tag community">community</span> One tester cited by The Neuron preferred Opus on 7 of 8 tasks, but GPT-6 Sol, at half the per-token price, finished the set in 5h51m for about $74, against 8h40m and about $213 for Opus. <span class="tag press">press</span></p>
+    <p class="callout">Effort is the lever. On Anthropic’s CursorBench figures, Opus 5.5 at high effort costs about $4 per task, roughly a quarter of Fable 5.1’s $17.28 at max, and still outscores it. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">08</span>Safety: better behaved, more test-aware</h2>
+    <figure><img src="images/hl-anthropic-alignment.jpg" alt="Alignment section of Anthropic’s launch post"><figcaption>Anthropic’s alignment summary, which says the model “often suspects it is being evaluated.” Source: Anthropic.</figcaption></figure>
+    <p>Anthropic calls Opus 5.5 the strongest model on its automated behavioral audit, and says it tried to get around boundaries about 85% less often than Opus 5 or Mythos 5.1. Most cybersecurity tasks are routed to Opus 4.8. <span class="tag vendor">vendor</span></p>
+    <p>The system card also lists regressions: it is more likely to follow malicious instructions hidden in pasted text, and probes flagged evaluation awareness in 36% of audit transcripts versus 0.4% of real Claude Code use. <span class="tag vendor">vendor</span> Zvi Mowshowitz argues that awareness deserves more scrutiny. <span class="tag community">community</span></p>
+
+    <h2><span class="n">09</span>How it stacks up</h2>
+    <div class="tablewrap"><table>
+      <tr><th></th><th>Opus 5.5</th><th>Fable 5.1</th><th>GPT-6 Astra</th><th>GPT-6 Sol</th></tr>
+      <tr><td>API price (in / out per 1M)</td><td class="num">$4 / $20</td><td class="num">$10 / $50</td><td class="num">$10 / $50</td><td class="num">$2 / $10</td></tr>
+      <tr><td>AA index</td><td class="num">58</td><td class="num">53</td><td class="num">53</td><td class="num">—</td></tr>
+      <tr><td>Terminal-Bench 4.0 (Anthropic)</td><td class="num">66.4%</td><td class="num">55.8%</td><td class="num">57.9%</td><td class="num">—</td></tr>
+      <tr><td>Terminal-Bench 4.0 (AA)</td><td class="num">59.6%</td><td class="num">—</td><td class="num">59.6%</td><td class="num">—</td></tr>
+      <tr><td>GDPval-AA (Elo)</td><td class="num">1,846</td><td class="num">1,735</td><td class="num">1,542</td><td class="num">—</td></tr>
+    </table></div>
+
+    <h2><span class="n">10</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>All data is from the first two days. LMArena, METR, Epoch, SWE-bench and Scale SEAL had not published independent results.</li>
+      <li>“1,846 Elo” is a GDPval-AA score from Artificial Analysis, not an LMArena rating.</li>
+      <li>“40% cheaper than Opus 5” is Anthropic’s estimate for typical workloads; the list price is 20% lower.</li>
+      <li>AA’s 58 was measured with Anthropic’s fallback on, so some cyber and biology requests were answered by other models.</li>
+      <li>Partner results are testimonials selected by Anthropic, not independent studies.</li>
+    </ul></div>
+
+    <h2><span class="n">11</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://www.anthropic.com/claude-opus-5-5">Anthropic: Introducing Claude Opus 5.5</a> · <a href="https://www-cdn.anthropic.com/fc1b44717c85dc068bc6ba5024219938094694bd/Claude%20Opus%205.5%20System%20Card.pdf">System card (PDF)</a> · <a href="https://platform.claude.com/docs/en/about-claude/pricing">pricing docs</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://platform.claude.com/docs/en/models/overview">Anthropic: models overview</a> · <a href="https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5">What’s new in Opus 5.5</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://artificialanalysis.ai/articles/claude-opus-5-5">Artificial Analysis: Opus 5.5</a> · <a href="https://artificialanalysis.ai/models/claude-opus-5-5">model page</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://www.vals.ai/models/anthropic_claude-opus-5-5">Vals AI</a> · <a href="https://arcprize.org/results/anthropic-claude-opus-5-5">ARC Prize</a> · <a href="https://www.coderabbit.ai/blog/opus-5-5-model-review">CodeRabbit</a></li>
+      <li><span class="tag press">press</span> <a href="https://officechai.com/ai/claude-opus-5-5-creates-5-point-lead-over-gpt-6-astra-jumps-to-top-spot-on-artificial-analysis-intelligence-index/">OfficeChai</a> · <a href="https://www.theneurondaily.com/p/gpt-6-sol-vs-claude-opus-5-5">The Neuron</a> · <a href="https://www.datacamp.com/blog/gpt-6-astra">DataCamp</a> · <a href="https://the-decoder.com/claude-opus-5-5-matches-fable-5-1-at-40-percent-lower-cost-as-anthropic-promises-to-fix-claudish-writing/">The Decoder</a></li>
+      <li><span class="tag community">community</span> <a href="https://simonwillison.net/2026/Sep/22/opus-and-sol-and-luna/">Simon Willison</a> · <a href="https://every.to/vibe-check/vibe-check-opus-5-5-is-pulling-our-codex-converts-back-to-claude">Every</a> · <a href="https://x.com/emollick/status/2102441628661080384">@emollick</a> · <a href="https://thezvi.substack.com/p/claude-opus-55-the-system-card">Zvi Mowshowitz</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 24 Sep 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

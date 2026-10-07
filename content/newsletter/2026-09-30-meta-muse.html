@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: Meta’s Muse</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 30 Sep 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Product launch · about a 6-minute read</div>
+    <h1>Meta’s Muse: the most polished consumer agent yet, after a rough first three weeks</h1>
+    <p class="dek">A free tier took Muse to #1 on both app stores. The model is mid-pack, and launch brought an Amazon block, a privacy dispute and a patched Mac flaw.</p>
+
+    <figure><img src="images/lead-muse-secure-vm.jpg" alt="A plush Muse character pointing at an old desktop computer, illustrating the Muse Secure VM"><figcaption>Illustration from David Singleton’s (@dps) post on the Muse Secure VM, shared by @alexandr_wang.</figcaption></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>A real errand-runner:</b> Muse is an agent with its own cloud computer that emails, books, fills forms and shops, asking for approval first. <span class="tag vendor">vendor</span></li>
+        <li><b>Free, mostly:</b> a free tier plus Power ($20/mo) and Maximum ($100/mo). Its two closest rivals have no free tier. <span class="tag press">press</span></li>
+        <li><b>A hit:</b> #1 on the US App Store on Sep 18 and on Google Play on Sep 19, ahead of ChatGPT. <span class="tag independent">independent</span></li>
+        <li><b>Mid-pack brain:</b> Muse Spark 1.3 scores 45 on the Artificial Analysis index, #32 of 222 models. <span class="tag independent">independent</span></li>
+        <li><b>A messy start:</b> Amazon blocked it, a Mac flaw was hot-fixed, and an Inc. columnist says it synced his Messages after he declined; Meta says that access is opt-in. <span class="tag press">press</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>What Meta launched</h2>
+    <p>Muse launched in the US on Sep 8 on iOS, Android and muse.ai (TechCrunch also lists WhatsApp), with AI glasses “coming”. It takes long-running tasks, keeps working after you close the app, and asks for approval before it sends email or spends money. <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li><b>What it does:</b> books travel and reservations, fills forms in its own browser, negotiates bills, sells items, and checks out through Link (Stripe). It remembers preferences and makes unprompted suggestions. <span class="tag vendor">vendor</span></li>
+      <li><b>The model:</b> Muse Spark, version 1.3 per TechCrunch. <span class="tag press">press</span></li>
+      <li><b>Since launch:</b> a Mac app (Sep 17), more than 1,500 developer connector applications in under a week, and Muse for Small Business (Sep 29), with integrations such as Shopify, Slack and QuickBooks. <span class="tag vendor">vendor</span> <span class="tag press">press</span></li>
+      <li><b>Announced Sep 23, dates “soon” or unspecified:</b> Realtime Avatar video chat, macOS app control, an email address for the agent, and retail partners including Best Buy, Walmart and Wayfair. <span class="tag press">press</span></li>
+    </ul>
+    <p><a href="https://x.com/Muse/status/2097399178376671666">Watch the launch video on X</a> (@Muse), where an order waits for approval of a $47.80 total, or <a href="https://x.com/RealNickMugalli/status/2102903019914297813">Mark Zuckerberg’s live demo</a> (via @RealNickMugalli).</p>
+
+    <h2><span class="n">02</span>The security pitch</h2>
+    <p>Meta’s answer to the trust question is architecture: each user gets the Muse Secure VM, a dedicated cloud computer, and a separate Sentinel agent must approve anything Muse sends to the internet. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/hl-meta-sentinel.jpg" alt="Meta's announcement: nothing Muse does reaches the internet unless the Sentinel approves it"><figcaption>The Sentinel, as described in Meta’s announcement. Source: Meta.</figcaption></figure>
+    <ul>
+      <li><b>Credential vault:</b> Muse can’t see passwords or payment methods; purchases use one-time card numbers via Link, which Meta calls the “first AI agent covered by Link’s purchase protections”. <span class="tag vendor">vendor</span></li>
+      <li><b>Data use:</b> an activity trail of every action, an opt-out from training, and no sharing of conversations or VM data with Meta’s ad systems. <span class="tag vendor">vendor</span></li>
+      <li><b>Promised, not shipped:</b> a Confidential VM, end-to-end encrypted with a key the user holds. <span class="tag vendor">vendor</span></li>
+    </ul>
+    <p>TechCrunch framed the trust question around Meta’s record, including a $5 billion FTC penalty in 2019. <span class="tag press">press</span></p>
+
+    <h2><span class="n">03</span>The model underneath</h2>
+    <figure><img src="images/web-aa-muse-spark.jpg" alt="Artificial Analysis model page: Muse Spark 1.3 (xhigh) scores 45, #32 of 222"><figcaption>Muse Spark 1.3 (xhigh) on the current Intelligence Index, v4.3.2. Source: Artificial Analysis, 30 Sep 2026.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Measure</th><th>Muse Spark 1.3 (xhigh)</th><th>Kind</th></tr>
+      <tr><td>Intelligence Index</td><td class="num">45, #32 of 222</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Rivals, same index</td><td class="num">GPT-6.1 Sol 52 · Sonnet 5.5 56 · Opus 5.5 58 (all max)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Speed</td><td class="num">138.5 output tokens/s</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Tokens used</td><td class="num">140M (median 81M)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Cost per index task</td><td class="num">$1.37</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>API price (in / out per 1M)</td><td class="num">$1.25 / $4.25</td><td><span class="tag independent">independent</span></td></tr>
+    </table></div>
+    <p>The picture: decent, fast and very verbose, well behind the top tier. Muse’s edge is the product, not raw intelligence. Artificial Analysis tests the API model; the app may run a Muse-specific configuration.</p>
+
+    <h2><span class="n">04</span>What people are doing with it</h2>
+    <p>Meta’s Alexandr Wang started the #musemoneychallenge on Sep 12 (“can your muse make you $1000?”), and builders answered. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/x-korgaonkar.jpg" alt="Post by @KORGAONKAR, quoted by @alexandr_wang, about Muse retuning her Instagram feed"><figcaption>Muse retuned her Instagram toward companies offering gift cards for demos, then booked the calls. Source: @KORGAONKAR via @alexandr_wang.</figcaption></figure>
+    <figure><img src="images/x-mvanhorn-tickets.jpg" alt="Post by @mvanhorn, quoted by @MattPRD, about selling Warriors tickets with Muse"><figcaption>Muse answered buyers, tracked a spreadsheet and offered resale comps unprompted. Source: @mvanhorn via @MattPRD.</figcaption></figure>
+    <ul>
+      <li><b>Claire Vo (Lenny’s Newsletter), Sep 16:</b> the best-designed consumer agent she has tested. A one-shot personalized morning newsletter PDF, deleting a family calendar event and buying IMAX tickets worked; browser shopping for a specific pair of New Balance sneakers failed, and complex shopping was inconsistent. <span class="tag independent">independent</span></li>
+      <li><b>@joulee (Julie Zhuo):</b> the first consumer agent that might change habits. <span class="tag community">community</span></li>
+    </ul>
+    <p>Adoption was fast: millions of downloads in about two weeks. Appfigures counts about 2.3 million; Sensor Tower and Apptopia figures cited in secondary reports are 3.4 million and 4.3 million. <span class="tag independent">independent</span></p>
+
+    <h2><span class="n">05</span>Amazon said no</h2>
+    <figure><img src="images/hl-tc-amazon.jpg" alt="TechCrunch quoting Amazon's error message about an unauthorized AI agent"><figcaption>The error Muse users saw on Amazon. Source: TechCrunch, via GeekWire.</figcaption></figure>
+    <p>By Sep 20, Muse users trying to shop on Amazon got an error calling it an “unauthorized AI agent”. Amazon confirmed it asked Meta to stop: Meta gave no advance notice, Muse doesn’t identify itself as an agent, and Amazon has concerns about how it handles customer credentials. <span class="tag press">press</span></p>
+    <p>There is a commercial angle too: agent shopping skips the browsing where Amazon sells ads. The two companies are also partners. <span class="tag press">press</span> @Bencera summed up the standoff: “Either Amazon is building a Muse / Or Meta is building an Amazon.” <span class="tag community">community</span></p>
+
+    <h2><span class="n">06</span>The Messages dispute</h2>
+    <p>On Sep 19, Inc. columnist Jason Aten wrote that he explicitly declined access to his messages when installing Muse on an iPhone and a Mac mini. Muse later suggested that a chat with his podcast co-host would make a good column. Asked how it knew, Muse said it only saw notification banners relayed from the Mac. Aten says the Mac app had in fact synced his local Messages database, to row 187,462, while Full Disk Access showed as not enabled. <span class="tag press">press</span></p>
+    <p>Meta’s side: David Singleton, head of Meta Superintelligence Labs, said Messages access is opt-in and that Muse’s wrong explanation was “on us”, according to Decrypt. His reply to Aten implied the setting had been allowed. <span class="tag press">press</span></p>
+    <p class="callout">What’s unresolved: how the setting got enabled when Aten says he declined it. Meta hasn’t answered that, per Decrypt. This is one user’s account, in an opinion column; later AppleInsider and 9to5Mac pieces cover the same case.</p>
+
+    <h2><span class="n">07</span>A patched Mac flaw, and humans on the phone</h2>
+    <figure><img src="images/hl-gizmodo-zeroday.jpg" alt="Gizmodo: an attacker with code already running on the Mac could redirect Muse's dictation"><figcaption>The precondition matters: the attacker already needed code on the Mac. Source: Gizmodo.</figcaption></figure>
+    <p>Security researcher Patrick Wardle disclosed a zero-day in the Muse Mac app on Sep 21. A hidden developer setting let malicious code already running on the Mac redirect Muse’s dictation to an attacker’s server, exposing the audio and an authentication token. Only the Mac app was affected. Meta removed the setting in a hot-fix shortly after midnight on Sep 22. Singleton called it “a local privilege escalation attack, not a remote exploit”. Wardle’s counterpoint: that precondition can be met by tricking a victim into pasting a malicious command. <span class="tag press">press</span></p>
+    <p>Separately, 404 Media reported on Sep 22 that, per internal messages, Meta “added a human agent layer” for Muse’s phone calls to businesses, and employee testers weren’t told a human placed the call until afterwards. Meta said this was internal testing ahead of public release. <span class="tag press">press</span></p>
+
+    <h2><span class="n">08</span>Price, and how it stacks up</h2>
+    <figure><img src="images/hl-meta-free.jpg" alt="Meta: It's free for most of what people need, with subscription plans"><figcaption>Meta’s pricing line; per TechCrunch, Meta expects most users to stay on the free tier. Source: Meta.</figcaption></figure>
+    <p>Meta says Muse is “free for most of what people need”. <span class="tag vendor">vendor</span> TechCrunch lists the paid tiers: Power at $20 a month and Maximum at $100. <span class="tag press">press</span> Task-level pricing isn’t published, it’s US-only for now, and retail sites can block it.</p>
+    <div class="tablewrap"><table>
+      <tr><th></th><th>Muse (Meta)</th><th>dots (OpenAI)</th><th>Grok Bot (SpaceXAI)</th></tr>
+      <tr><td>Price</td><td class="num">Free tier, $20, $100</td><td class="num">From $100/mo</td><td class="num">Bundled at $120–300/mo</td></tr>
+      <tr><td>Free tier?</td><td>Yes</td><td>No</td><td>No</td></tr>
+      <tr><td>Launched</td><td class="num">Sep 8</td><td class="num">Sep 29</td><td class="num">Aug 11 (beta)</td></tr>
+      <tr><td>Model</td><td>Muse Spark 1.3</td><td>GPT-6 Astra</td><td>Grok</td></tr>
+      <tr><td>Strength</td><td>Design, free tier, WhatsApp</td><td>Slack and Teams, 4,000+ apps</td><td>Bot teams, learns by demonstration</td></tr>
+    </table></div>
+    <p>Dots pricing is OpenAI’s <span class="tag vendor">vendor</span>; Grok Bot pricing is as VentureBeat reports it <span class="tag press">press</span>.</p>
+
+    <h2><span class="n">09</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>Download counts are third-party estimates and differ by firm; the safe statement is “millions, and #1 on both stores”.</li>
+      <li>Artificial Analysis’s Sep 2 launch article put Muse Spark 1.3 at 61–62 on an older index version. Those numbers aren’t comparable with today’s 45.</li>
+      <li>The Messages story is one user’s account. Meta says the access is opt-in; how it was enabled remains disputed.</li>
+      <li>The Mac zero-day required malicious code already on the Mac, and it has been patched.</li>
+      <li>Unconfirmed, so not reported here as fact: that the human-call program was “rolled back” or had “95–98% success” (neither is in 404 Media’s report), a $300K bug bounty, a Marketplace home-address claim, and a deleted post saying Muse made a user $2,500.</li>
+    </ul></div>
+
+    <h2><span class="n">10</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/">Meta: Introducing Muse</a> · <a href="https://x.com/Muse/status/2097399178376671666">@Muse launch video</a> · <a href="https://x.com/AIatMeta/status/2100714755568644409">@AIatMeta: Muse for Mac</a> · <a href="https://x.com/RealNickMugalli/status/2102903019914297813">Sep 23 event demo</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://x.com/alexandr_wang/status/2098955288204415317">@alexandr_wang: #musemoneychallenge</a> · <a href="https://x.com/alexandr_wang/status/2103203873460756962">@dps on the Muse Secure VM</a> · <a href="https://openai.com/index/introducing-dots/">OpenAI: Introducing dots</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://artificialanalysis.ai/models/muse-spark-1-3-xhigh">Artificial Analysis: Muse Spark 1.3</a> · <a href="https://artificialanalysis.ai/articles/muse-spark-1-3">launch article</a> · <a href="https://www.lennysnewsletter.com/p/muse-review-the-personal-ai-agent">Claire Vo, Lenny’s Newsletter</a> · <a href="https://appfigures.com/resources/insights/meta-finally-gets-serious-about-ai-muse-million-downloads">Appfigures</a></li>
+      <li><span class="tag press">press</span> TechCrunch: <a href="https://techcrunch.com/2026/09/08/meta-debuts-its-muse-ai-agent-will-consumers-trust-it/">launch</a> · <a href="https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/">Amazon block</a> · <a href="https://techcrunch.com/2026/09/23/everything-new-coming-to-metas-ai-agent-muse/">Sep 23 updates</a> · <a href="https://techcrunch.com/2026/09/29/meta-is-expanding-its-ai-agent-muse-to-small-businesses/">small business</a></li>
+      <li><span class="tag press">press</span> <a href="https://www.inc.com/jason-aten/metas-new-muse-ai-agent-read-my-private-messages-i-never-asked-it-to/91408202">Inc. (Jason Aten)</a> · <a href="https://decrypt.co/379122/metas-muse-ai-agent-user-private-imessages-lied-how">Decrypt</a> · <a href="https://gizmodo.com/meta-just-patched-a-major-zero-day-vulnerability-in-its-muse-ai-assistant-2000815429">Gizmodo</a> · <a href="https://www.404media.co/meta-tests-muse-ai-agent-calls-that-are-actually-made-by-humans-in-a-call-center/">404 Media</a> · <a href="https://www.geekwire.com/2026/amazon-blocks-metas-muse-ai-assistant-in-new-standoff-over-agentic-shopping/">GeekWire</a> · <a href="https://venturebeat.com/orchestration/spacexais-grok-bot-turns-agents-into-persistent-digital-coworkers-that-can-operate-your-apps-for-120-per-month">VentureBeat</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/alexandr_wang/status/2099158971982729397">@KORGAONKAR</a> · <a href="https://x.com/MattPRD/status/2099184451708428328">@mvanhorn</a> · <a href="https://x.com/joulee/status/2103176787710857404">@joulee</a> · <a href="https://x.com/Bencera/status/2104496786857452017">@Bencera</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 30 Sep 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

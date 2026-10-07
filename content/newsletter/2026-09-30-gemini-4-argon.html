@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: Gemini 4 Argon</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 30 Sep 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Model launch · about a 6-minute read</div>
+    <h1>Gemini 4 Argon: is Google back on top?</h1>
+    <p class="dek">Google's own chart says it wins 12 of 18 benchmarks. Independent testers say it's top-tier, but not the best, and almost nobody can use it yet.</p>
+
+    <figure><img src="images/web-google-keyart.jpg" alt="Gemini 4 Argon key art from Google's announcement"></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>Top tier again:</b> Artificial Analysis scores it 53, tied with GPT-6 Astra; Claude Opus 5.5 still leads at 58. <span class="tag independent">independent</span></li>
+        <li><b>Best at:</b> knowledge work, long context, and admitting what it doesn't know (15% hallucination rate vs 51% for Astra). <span class="tag independent">independent</span></li>
+        <li><b>Not best at:</b> coding. It's #8 in Arena's WebDev ranking, where Opus 5.5 is #1. <span class="tag independent">independent</span></li>
+        <li><b>Cheap only for now:</b> the $2 / $10 launch price is a promo; full price matches Opus 5.5. <span class="tag vendor">vendor</span></li>
+        <li><b>Not available:</b> cyber defenders get it first; no date for anyone else. <span class="tag vendor">vendor</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>What Google announced</h2>
+    <p>Argon is Google's first new flagship above its Flash line in more than seven months, after Gemini 3.5 Pro never shipped. The headline spec is a 1 million token output limit, up from 64K, so an agent can work on one long task without being cut off. <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li><b>Price:</b> $2 per million input tokens and $10 per million output during an introductory period (cached input 95% off). After that: $4 / $20. No end date given. <span class="tag vendor">vendor</span></li>
+      <li><b>Inside Google:</b> Argon agents freed 300+ TiB of data-center memory and rewrote a video decoder in Rust that runs 2.7× faster than the previous Rust port. <span class="tag vendor">vendor</span></li>
+      <li><b>Safety:</b> the lowest prompt-injection success rate in Google's comparison (0.7% vs Opus 5.5 1.0%, Astra 8.5%, per VentureBeat). <span class="tag press">press</span></li>
+    </ul>
+
+    <h2><span class="n">02</span>Google's scorecard</h2>
+    <p>Across the 18 benchmarks Google published, Argon leads 12 outright and ties one. The biggest gap is legal work: on Harvey's legal agent benchmark it scores 19.6%, while every rival is under 7%. On DeepSWE (long software-engineering tasks) it's about four points ahead of Opus 5.5 and Astra. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/chart-google-harvey.jpg" alt="Google's benchmark table with the Harvey legal row highlighted"><figcaption>Google's own table, so read it as the vendor's best case. Claude Sonnet 5.5 isn't included. Source: Google.</figcaption></figure>
+    <p>The rows Google doesn't win are telling: Terminal-bench 4.0 and PostTrainBench go to Opus 5.5, and FrontierSWE goes to OpenAI. Those are the hands-on coding and engineering tests.</p>
+
+    <h2><span class="n">03</span>What independent testers found</h2>
+    <figure><img src="images/chart-aa-tied.jpg" alt="Artificial Analysis leaderboard with Gemini 4 Argon and GPT-6 Astra both at 53"><figcaption>Artificial Analysis Intelligence Index v4.3.2, 30 Sep 2026.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Test</th><th>Result</th><th>Kind</th></tr>
+      <tr><td>Artificial Analysis Intelligence Index</td><td class="num">53, #8 of 223 (Astra 53, Opus 5.5 58)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Vals Index (finance, legal, tax, coding)</td><td class="num">#1 at 68.9% (Sonnet 5.5 67.0%)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Arena, text</td><td class="num">#1 at 1525</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Arena, WebDev</td><td class="num">#8 at 1679 (Opus 5.5 #1 at 1818)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA hallucination rate</td><td class="num">15% (Astra 51%)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Vending-Bench 2</td><td class="num">#3, $13,718 ± $3,100</td><td><span class="tag independent">independent</span></td></tr>
+    </table></div>
+
+    <h2><span class="n">04</span>Coding is the weak spot</h2>
+    <figure><img src="images/chart-arena-webdev-opus.jpg" alt="Arena WebDev leaderboard: Claude Opus 5.5 first, Gemini 4 Argon eighth"><figcaption>Arena Code (WebDev): people vote on the apps models build. Source: @arena.</figcaption></figure>
+    <p>Bloomberg reported on launch day that some Google employees say Argon does worse on real work than its benchmarks suggest, and struggles with certain coding tasks. Google called that inaccurate. The sources are anonymous, and nobody outside Google can test it yet. <span class="tag press">press</span></p>
+
+    <h2><span class="n">05</span>The price is a promo</h2>
+    <figure><img src="images/web-aa-cost.jpg" alt="Artificial Analysis cost card: $1.99 per task"><figcaption>Artificial Analysis, cost to run its index.</figcaption></figure>
+    <p>At launch pricing, Artificial Analysis's tests cost $1.99 per task, about 60% of GPT-6 Astra's $3.26. At full price that becomes $3.98, roughly 1.2× Astra. Part of the reason: Argon writes about 62K output tokens per task, versus 27K for Astra. <span class="tag independent">independent</span></p>
+
+    <h2><span class="n">06</span>The vending machine test</h2>
+    <p>Andon Labs' Vending-Bench 2 gives an AI a simulated vending business for a year, starting with $500. Argon finished third. In its runs, Andon Labs documented it inventing a FedEx confirmation to get almost 2,000 units reshipped free, refusing refunds on defective items, and staying quiet when suppliers undercharged. <span class="tag independent">independent</span></p>
+    <figure><img src="images/fedex-lie.jpg" alt="Argon's reasoning and the email it sent to a supplier"><figcaption>Argon's reasoning (top) and the email it sent (bottom). Source: @andonlabs.</figcaption></figure>
+    <p class="callout">Context: it's a simulation, the model was told to maximise profit, and Andon Labs says other models have shown the same behaviour.</p>
+
+    <h2><span class="n">07</span>Why you can't use it yet</h2>
+    <figure><img src="images/hl-google-no-guardrails.jpg" alt="Google: releasing Argon without cyber guardrails for trusted defenders"><figcaption>Source: Google.</figcaption></figure>
+    <p>Argon is going first to vetted cyber defenders (governments, hospitals, infrastructure) through Google's Fairwind Program, without the usual cyber guardrails. Google is also in the US government's voluntary pre-release testing. Paid API customers and Google AI Ultra subscribers are next, with no date. Anthropic follows the same pattern with Mythos 5.1. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">08</span>How it stacks up</h2>
+    <div class="tablewrap"><table>
+      <tr><th></th><th>Gemini 4 Argon</th><th>GPT-6 Astra</th><th>Claude Opus 5.5</th></tr>
+      <tr><td>AA index</td><td class="num">53</td><td class="num">53</td><td class="num">58</td></tr>
+      <tr><td>API price (in / out per 1M)</td><td class="num">$2 / $10 promo, $4 / $20</td><td class="num">$10 / $50</td><td class="num">$4 / $20</td></tr>
+      <tr><td>Arena WebDev</td><td class="num">#8</td><td class="num">#2</td><td class="num">#1</td></tr>
+      <tr><td>Available now?</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+    </table></div>
+
+    <h2><span class="n">09</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>All data is from launch day; leaderboard scores for new models move.</li>
+      <li>"60% of Astra's cost" only holds at promo pricing.</li>
+      <li>The Bloomberg claims are anonymous and disputed by Google.</li>
+      <li>Google never announced cancelling Gemini 3.5 Pro; it simply never shipped.</li>
+    </ul></div>
+
+    <h2><span class="n">10</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/">Google: Gemini 4 Argon announcement</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://deepmind.google/fairwind-program/">Google DeepMind: Fairwind Program</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://artificialanalysis.ai/models/gemini-4-argon">Artificial Analysis: Gemini 4 Argon</a> · <a href="https://x.com/ArtificialAnlys/status/2105392625788637299">benchmark thread</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://x.com/ValsAI/status/2105388446844072033">Vals AI</a> · <a href="https://x.com/arena/status/2105394855644139908">Arena</a> · <a href="https://andonlabs.com/evals/vending-bench-2">Andon Labs Vending-Bench 2</a></li>
+      <li><span class="tag press">press</span> <a href="https://venturebeat.com/technology/google-unveils-gemini-4-argon-retaking-benchmark-lead-over-openai-and-anthropic-but-in-limited-release">VentureBeat</a> · <a href="https://www.bloomberg.com/news/articles/2026-09-30/google-grapples-with-employee-skepticism-about-new-gemini-model">Bloomberg</a> · <a href="https://thenextweb.com/news/google-gemini-4-argon-cyber-defenders-fairwind">The Next Web</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/firstadopter/status/2105389006678577395">@firstadopter</a> · <a href="https://x.com/andonlabs/status/2105391380973617644">@andonlabs</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 30 Sep 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

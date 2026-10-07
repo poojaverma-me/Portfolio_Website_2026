@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: Claude Sonnet 5.5</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 28 Sep 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Model launch · about a 6-minute read</div>
+    <h1>Claude Sonnet 5.5: near-Opus scores at half the token price</h1>
+    <p class="dek">Independent tests confirm it sits two points behind Opus 5.5. The catch: at max effort it writes more output tokens per task than any model Artificial Analysis has measured.</p>
+
+    <figure><img src="images/web-anthropic-hero.jpg" alt="Claude Sonnet 5.5 title over a view of Earth from Anthropic’s launch page"></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>Near-Opus, confirmed:</b> Artificial Analysis scores it 56 on its Intelligence Index, two points behind Opus 5.5’s 58 and #2 at launch. <span class="tag independent">independent</span></li>
+        <li><b>Same price as Sonnet 5:</b> $2 / $10 per million input/output tokens, half of Opus 5.5’s $4 / $20 per token. <span class="tag vendor">vendor</span></li>
+        <li><b>Token-hungry at max:</b> about 193K output tokens per task, the most AA has measured, so a max-effort task costs about 50% more than with Sonnet 5. <span class="tag independent">independent</span></li>
+        <li><b>Cheaper at lower effort:</b> at Medium it beats Sonnet 5’s best Terminal-Bench score for less than a tenth of the cost per task, per Anthropic. <span class="tag vendor">vendor</span></li>
+        <li><b>Opus still leads on hard work:</b> Anthropic itself says Opus 5.5 “remains clearly stronger” at complex, open-ended tasks. <span class="tag vendor">vendor</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>What Anthropic announced</h2>
+    <p>Sonnet 5.5 launched on 28 September as the second model in the Claude 5.5 family, six days after Opus 5.5. Anthropic pitches it as a faster, cheaper complement to Opus, “strongest at well-scoped everyday tasks, fixing bugs, and creating polished documents, slides, and spreadsheets.” <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li><b>Specs:</b> 30%+ faster output than Sonnet 5, a 1M-token context window, a June 2026 knowledge cutoff. <span class="tag vendor">vendor</span></li>
+      <li><b>Effort:</b> five levels, low to max. Default is Medium in the Claude apps and Claude Code, High on the API. <span class="tag vendor">vendor</span></li>
+      <li><b>Safety:</b> the first Sonnet with Opus-style cyber safeguards and anti-distillation classifiers. <span class="tag vendor">vendor</span></li>
+    </ul>
+
+    <h2><span class="n">02</span>Anthropic’s scorecard</h2>
+    <p>On Anthropic’s table, Sonnet 5.5 sits within a few points of Opus 5.5 almost everywhere and beats it on one row: Terminal-Bench 4.0 (multi-step command-line work), at 70.6% vs 66.4% for Opus at Xhigh effort. Sonnet 5 scored 10.3% on the same test. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/chart-anthropic-benchmarks.jpg" alt="Anthropic’s benchmark table with the Sonnet 5.5 and Opus 5.5 columns highlighted"><figcaption>Anthropic’s own table, so read it as the vendor’s best case. GPT-6 Sol is missing from several rows. Source: Anthropic.</figcaption></figure>
+    <p>Elsewhere Opus keeps a small lead: CursorBench 4.0 (55.5% vs 57.8%), OSWorld 2.1 (80.1% vs 81.8%) and FrontierCode 1.1 (52.1% at Xhigh vs 54.4%). <span class="tag vendor">vendor</span></p>
+    <p>Sonnet 5’s Terminal-Bench score looks suspiciously low, but Artificial Analysis’s own run also shows a jump of about 50 points. <span class="tag independent">independent</span></p>
+
+    <h2><span class="n">03</span>What independent testers found</h2>
+    <p>Artificial Analysis (AA) backs up the near-Opus claim: 56 on its Intelligence Index at max effort, two points behind Opus 5.5 and 18 ahead of Sonnet 5. <span class="tag independent">independent</span></p>
+    <figure><img src="images/chart-aa-index.jpg" alt="Artificial Analysis Intelligence Index bar chart with Claude Opus 5.5 at 58 and Claude Sonnet 5.5 at 56"><figcaption>Artificial Analysis Intelligence Index v4.3.2 at launch. The arrow marks the jump from Sonnet 5 (38) to Sonnet 5.5 (56). Source: Artificial Analysis.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Test</th><th>Result</th><th>Kind</th></tr>
+      <tr><td>AA Intelligence Index (max)</td><td class="num">56, #2 at launch (Opus 5.5 58)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Terminal-Bench 4.0, AA’s run</td><td class="num">64% (Opus 5.5, GPT-6 Astra 60%)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>GDPval-AA v2.1 (Elo)</td><td class="num">1844 (Opus 5.5 1846)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA-Briefcase v1.1 (Elo)</td><td class="num">1811 (Opus 5.5 1822)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AA-Omniscience accuracy</td><td class="num">54% (Opus 5.5 66%)</td><td><span class="tag independent">independent</span></td></tr>
+    </table></div>
+
+    <h2><span class="n">04</span>The catch: tokens</h2>
+    <p>Price per token is not price per task. At max effort, AA measured about 193K output tokens per Intelligence Index task, the highest it has seen: roughly 60% more than Opus 5.5 or Sonnet 5 at max, and about 7× GPT-6 Astra. <span class="tag independent">independent</span></p>
+    <figure><img src="images/x-aa-most-tokens.jpg" alt="Artificial Analysis post: Sonnet 5.5 uses about 193K output tokens per task, the most it has measured"><figcaption>Artificial Analysis on output tokens per task, with the Sonnet 5.5 (max) bar on the far right. Source: @ArtificialAnlys.</figcaption></figure>
+    <p>A max-effort task cost $7.60, about 50% more than with Sonnet 5. <span class="tag independent">independent</span> A chart of AA’s data from @haider1 puts Opus 5.5 (max) at 119K tokens, GPT-6 Sol at 31K and Astra at 27K. <span class="tag community">community</span></p>
+    <p>A widely shared claim of “150% more tokens” than Opus is wrong: AA’s figure is about 60%, and only at max effort, as @neamtuz noted. <span class="tag community">community</span></p>
+
+    <h2><span class="n">05</span>Cheaper or pricier? It depends on effort</h2>
+    <p>Anthropic says Sonnet 5.5 “costs up to 30% less per task” than Sonnet 5 <span class="tag vendor">vendor</span>; AA says about 50% more <span class="tag independent">independent</span>. Both hold. They describe different effort settings.</p>
+    <figure><img src="images/chart-tbench-medium.jpg" alt="Anthropic’s Terminal-Bench 4.0 accuracy-versus-cost chart, with Sonnet 5.5 at Medium circled"><figcaption>Terminal-Bench 4.0, score vs cost per attempt. Medium clears Sonnet 5’s best score for less than a tenth of the cost. Source: Anthropic.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Effort</th><th>AA Intelligence Index</th><th>Cost per AA task</th></tr>
+      <tr><td>Max</td><td class="num">56</td><td class="num">$7.60</td></tr>
+      <tr><td>Xhigh</td><td class="num">52</td><td class="num">$2.74</td></tr>
+      <tr><td>High</td><td class="num">47</td><td class="num">$1.08</td></tr>
+      <tr><td>Medium</td><td class="num">41</td><td class="num">$0.59</td></tr>
+      <tr><td>Low</td><td class="num">36</td><td class="num">$0.41</td></tr>
+    </table></div>
+    <p>AA calls High the most competitive setting: very narrowly behind GPT-6 Sol on intelligence at effectively the same cost per task. <span class="tag independent">independent</span></p>
+
+    <h2><span class="n">06</span>Real use cases and demos</h2>
+    <p>In a Claude Code bug-fix race posted by Anthropic’s Boris Cherny (median of 7 runs), Sonnet 5.5 finished in 12.3 s for $0.05 and 13.3K tokens, against 17.5 s, $0.08 and 18.2K for Sonnet 5. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/x-bcherny-bug-fix.jpg" alt="Boris Cherny’s post: Sonnet 5 and Sonnet 5.5 fixing failing tests side by side in Claude Code"><figcaption>Both models get the same repo and failing tests. Source: @bcherny (Anthropic). <a href="https://x.com/bcherny/status/2104638725317923228">Watch the race on X</a>.</figcaption></figure>
+    <ul>
+      <li><b>GitHub:</b> “matched Sonnet 5 on coding tasks while using fewer steps, tokens, and tool calls.” <span class="tag independent">independent</span></li>
+      <li><b>Cognition:</b> 64.4% on FrontierCode 1.1 in its Devin harness, vs 56.2% for Sonnet 5. A different setup from Anthropic’s, so not comparable. <span class="tag independent">independent</span></li>
+      <li><b>Quoted by Anthropic:</b> Base44, apps level with Opus 5 in 3.6 iterations vs 7.7; Zendesk, tickets 20% faster; Balyasny, about 121K tokens per answer vs 497K for Sonnet 5; Box, 2.4× faster. Two experts judged a 10-slide review it drafted “ready to send as is.” <span class="tag vendor">vendor</span></li>
+    </ul>
+    <figure><img src="images/chart-zapier.jpg" alt="Zapier AutomationBench chart: Sonnet 5.5 at 44.7% and $1.08 per task, above Opus 5.5 at 40% and $1.28"><figcaption>Zapier’s own AutomationBench; Zapier is a launch partner. Source: @wadefoster.</figcaption></figure>
+    <p>On Zapier’s test it scored 44.7% at Max vs 40% for Opus 5.5, at about $1.08 a task vs $1.28. It was strongest in Operations (59%) and weakest in HR (31.7%). <span class="tag independent">independent</span></p>
+    <p>Builders posted one-shot games and sims, including a Fall Guys clone and a Starship sim from early tester @MatthewBerman and a kart racer from @matthewmillerai. @joeldev_ said his five-hour usage limit “has barely budge[d].” These are first-day showcases, not controlled tests. <span class="tag community">community</span> <a href="https://x.com/MatthewBerman/status/2104634635234005025">Watch the demos on X</a> · <a href="https://x.com/claudeai/status/2104674987164782598">Anthropic’s thread</a></p>
+
+    <h2><span class="n">07</span>Where it falls short</h2>
+    <figure><img src="images/hl-opus-stronger.jpg" alt="Anthropic: Opus 5.5 remains clearly stronger at complex, open-ended work requiring sustained judgment"><figcaption>Anthropic’s own caveat, from the launch post. Source: Anthropic.</figcaption></figure>
+    <ul>
+      <li><b>Hard, open-ended work:</b> Anthropic says Opus 5.5 is still clearly stronger. <span class="tag vendor">vendor</span></li>
+      <li><b>Facts:</b> 54% accuracy on AA-Omniscience vs 66% for Opus 5.5, and about 6 points lower on Humanity’s Last Exam and SciCode. <span class="tag independent">independent</span> AA measured a lower hallucination rate than Opus (47% vs 59%), yet Anthropic’s system card says it “hallucinates more” on its own honesty evals. <span class="tag vendor">vendor</span></li>
+      <li><b>More effort isn’t always better:</b> on FrontierCode, Max scored below Xhigh (46.2% vs 52.1%). Anthropic blames timeouts and out-of-scope edits by code-review subagents. <span class="tag vendor">vendor</span></li>
+      <li><b>Cyber fallback:</b> some security tasks are handed to Sonnet 5; AA saw this on about 0.1% of its index tasks, mostly in Terminal-Bench. <span class="tag independent">independent</span></li>
+    </ul>
+
+    <h2><span class="n">08</span>Price and how it stacks up</h2>
+    <figure><img src="images/chart-pricing.jpg" alt="Pricing table: Sonnet 5.5 $2 input, $10 output; Opus 5.5 $4 input, $20 output"><figcaption>Price per million tokens. Source: Anthropic.</figcaption></figure>
+    <p>Pricing is unchanged from Sonnet 5: $2 per million input tokens, $10 per million output, $0.20 for cache reads and $2.50 for cache writes. It’s on the Claude Platform, AWS, Google Cloud and Microsoft Azure, and in GitHub Copilot and Devin. <span class="tag vendor">vendor</span></p>
+    <div class="tablewrap"><table>
+      <tr><th></th><th>Sonnet 5.5</th><th>Opus 5.5</th><th>GPT-6 Sol</th><th>GPT-6 Astra</th></tr>
+      <tr><td>API price (in / out per 1M)</td><td class="num">$2 / $10</td><td class="num">$4 / $20</td><td class="num">$2 / $10</td><td class="num">n/a</td></tr>
+      <tr><td>Output tokens per AA task (max)</td><td class="num">~193K</td><td class="num">119K</td><td class="num">31K</td><td class="num">27K</td></tr>
+      <tr><td>Terminal-Bench 4.0 (AA)</td><td class="num">64%</td><td class="num">60%</td><td class="num">n/a</td><td class="num">60%</td></tr>
+      <tr><td>GDPval-AA (Elo)</td><td class="num">1844</td><td class="num">1846</td><td class="num">1487</td><td class="num">n/a</td></tr>
+    </table></div>
+    <p>Against GPT-6 Sol, at High effort the two are roughly tied on intelligence and cost per task. OpenAI’s models use far fewer tokens. <span class="tag independent">independent</span></p>
+
+    <h2><span class="n">09</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>“Up to 30% less per task” (Anthropic) and “about 50% more” (AA) are both accurate; they refer to different effort settings.</li>
+      <li>“50% cheaper than Opus” is true per token, not necessarily per task.</li>
+      <li>AA ranked it #2 in its launch post; its model page later showed #3 of 216.</li>
+      <li>Posts saying it’s free for everyone in Claude Code are unverified; the release notes don’t list plans.</li>
+      <li>GPT-6 Sol’s GDPval-AA score may not yet reflect a fix for an image bug.</li>
+      <li>VentureBeat reports that Google’s Gemini 3.8 Flash undercuts it on introductory pricing; that hasn’t been checked against Google’s own pricing.</li>
+      <li>All figures are from launch day. AA tested a pre-release build with a structured-outputs bug and is re-running some evals.</li>
+    </ul></div>
+
+    <h2><span class="n">10</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://www.anthropic.com/claude-sonnet-5-5">Anthropic: Introducing Claude Sonnet 5.5</a> · <a href="https://www.anthropic.com/claude-sonnet-5-5-system-card">System card</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://x.com/claudeai/status/2104633115620823187">@claudeai launch thread</a> · <a href="https://x.com/claudeai/status/2104674987164782598">early experiments</a> · <a href="https://x.com/bcherny/status/2104638725317923228">@bcherny</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://x.com/ArtificialAnlys/status/2104640155843989864">Artificial Analysis thread</a> · <a href="https://artificialanalysis.ai/models/releases/claude-sonnet-5-5">releases page</a> · <a href="https://artificialanalysis.ai/models/claude-sonnet-5-5">model page</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://x.com/wadefoster/status/2104679847863767531">Zapier (@wadefoster)</a> · <a href="https://x.com/cognition/status/2104670026770919586">Cognition</a> · <a href="https://x.com/github/status/2104637226336538862">GitHub</a> · <a href="https://x.com/code/status/2104645688663343514">VS Code</a></li>
+      <li><span class="tag press">press</span> <a href="https://venturebeat.com/technology/anthropic-launches-claude-sonnet-5-5-with-30-cost-reduction-per-task-due-to-faster-speeds-and-fewer-tool-calls">VentureBeat</a> · <a href="https://thenewstack.io/claude-sonnet-55-launch/">The New Stack</a> · <a href="https://siliconangle.com/2026/09/28/anthropic-debuts-claude-sonnet-5-5-running-30-faster-than-the-previous-generation-ai-model/">SiliconANGLE</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/haider1/status/2104647359351423342">@haider1</a> · <a href="https://x.com/neamtuz/status/2104653815790088203">@neamtuz</a> · <a href="https://x.com/MatthewBerman/status/2104634635234005025">@MatthewBerman</a> · <a href="https://x.com/matthewmillerai/status/2104668017258872907">@matthewmillerai</a> · <a href="https://x.com/joeldev_/status/2104679924116115825">@joeldev_</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 28 Sep 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

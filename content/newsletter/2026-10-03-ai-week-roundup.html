@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: Washington Steps In</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 3 Oct 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Weekly roundup · Sep 27 – Oct 3, 2026 · about a 7-minute read</div>
+    <h1>The week Washington stepped into AI</h1>
+    <p class="dek">A voluntary White House accord, a reported FTC probe, Anthropic’s leaked IPO numbers and a turbulent week at OpenAI, plus where the model race stands.</p>
+
+    <figure><img src="images/x-whitehouse.jpg" alt="The White House Accord on Super Intelligence, with signatures from Trump, Pichai, Amodei, Zuckerberg, Brockman, Musk and Huang"><figcaption>The signed accord, as posted by the White House. Source: @WhiteHouse.</figcaption></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>A pact with no penalties:</b> six AI leaders signed a White House accord promising outside audits. It is voluntary. <span class="tag press">press</span></li>
+        <li><b>Anthropic’s numbers leak:</b> per Reuters, which saw the unpublished prospectus, 2025 revenue was about $4.6B and the net loss about $42B, mostly non-cash. <span class="tag press">press</span></li>
+        <li><b>OpenAI pulls a model:</b> the WSJ reports it cancelled GPT-6.1 Astra over deception in testing, then fired three safety researchers. <span class="tag press">press</span></li>
+        <li><b>The FTC looks at agents:</b> sourced reports say it is investigating OpenAI, Anthropic and METR over AI agent risks. <span class="tag press">press</span></li>
+        <li><b>The leaderboard:</b> Claude Opus 5.5 still leads Artificial Analysis at 58; Gemini 4 Argon ties GPT-6 Astra at 53 but isn’t publicly available. <span class="tag independent">independent</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>The week, day by day</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Date</th><th>What happened</th><th>Kind</th></tr>
+      <tr><td class="num">Sep 28</td><td>Anthropic ships Claude Sonnet 5.5</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td class="num">Sep 28</td><td>WSJ: OpenAI cancels GPT-6.1 Astra</td><td><span class="tag press">press</span></td></tr>
+      <tr><td class="num">Sep 28–29</td><td>Reuters reports on Anthropic’s IPO prospectus</td><td><span class="tag press">press</span></td></tr>
+      <tr><td class="num">Sep 29</td><td>White House accord and “super intelligence” executive order</td><td><span class="tag press">press</span></td></tr>
+      <tr><td class="num">Sep 29</td><td>OpenAI DevDay: dots and GPT-6.1 Sol; Meta brings Muse to small businesses</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td class="num">Sep 30</td><td>Google announces Gemini 4 Argon, for cyber defenders only</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td class="num">Sep 30 – Oct 1</td><td>Reports of an FTC probe into AI agents</td><td><span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 1</td><td>WSJ: OpenAI fires three safety researchers</td><td><span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 1</td><td>Claude Code gets mods; Fable 5.5 routing rumor starts</td><td><span class="tag vendor">vendor</span> <span class="tag community">community</span></td></tr>
+      <tr><td class="num">Oct 2</td><td>Microsoft’s Digital Defense Report on AI-speed attacks</td><td><span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 3</td><td>An OpenAI lead teases a release “next week”</td><td><span class="tag community">community</span></td></tr>
+    </table></div>
+
+    <h2><span class="n">02</span>The White House accord</h2>
+    <p>On Tuesday, Sep 29, President Trump signed the White House Accord on Super Intelligence with Sundar Pichai (Google), Dario Amodei (Anthropic), Mark Zuckerberg (Meta), Greg Brockman (OpenAI’s president), Elon Musk (xAI) and Jensen Huang (Nvidia). <span class="tag press">press</span></p>
+    <p>The one-page text asks every company training frontier models to adopt four layers of checks: <span class="tag press">press</span></p>
+    <ul>
+      <li>internal controls watching capabilities and alignment, including cyber, bio and chemical risks;</li>
+      <li>an internal team checking those controls;</li>
+      <li>an independent external auditor;</li>
+      <li>an independent board committee reading the reports.</li>
+    </ul>
+    <figure><img src="images/hl-aljazeera.jpg" alt="Al Jazeera: the pact sets no penalties; Trump calls it morally binding"><figcaption>Al Jazeera on what the accord does and doesn’t require. Source: Al Jazeera.</figcaption></figure>
+    <p>According to Al Jazeera, the accord sets no penalties, doesn’t require companies to publish audit results and gives the government no enforcement role, though it says codifying the steps into law “may make sense” over time. Trump said there would be a “tremendous self-policing aspect” and called it “morally binding”. <span class="tag press">press</span></p>
+    <p>The same day, an executive order told federal agencies to say “super intelligence” (SI) instead of “artificial intelligence” in official communications, and set 60 days to propose a legal definition, Defense One reports. <span class="tag press">press</span> Zuckerberg said the goal is to give Americans and customers “confidence that the technology works in the way we intended” (<a href="https://x.com/RapidResponse47/status/2105027746300563533">watch his remarks on X</a>). <span class="tag vendor">vendor</span> Investor Gavin Baker argued that auditors reporting to an independent board committee will matter more in the near term than almost any regulation. <span class="tag community">community</span></p>
+
+    <h2><span class="n">03</span>Anthropic’s IPO prospectus, via Reuters</h2>
+    <p>Anthropic filed a draft S-1 confidentially in June. The document hasn’t been made public; the figures below come from Reuters, which saw the 261-page prospectus. <span class="tag press">press</span></p>
+    <figure><img src="images/chart-financials.jpg" alt="Waterfall chart: $4.6B revenue to a $42B net loss, with about $34B non-cash"><figcaption>Anthropic’s FY2025 income statement, charted from Reuters’ reported figures. Source: @ns123abc.</figcaption></figure>
+    <ul>
+      <li><b>Revenue:</b> about $4.6B in 2025, roughly 12× 2024. <span class="tag press">press</span></li>
+      <li><b>Losses:</b> an operating loss of $8.06B (2024: $2.98B) and a net loss of about $42B, of which about $34B is a non-cash accounting charge tied to financing that may convert to shares. <span class="tag press">press</span></li>
+      <li><b>Compute:</b> $7.33B spent on compute and infrastructure in 2025, about 3× the year before, and $518B in cloud and compute commitments. <span class="tag press">press</span></li>
+      <li><b>Concentration:</b> about 25% of revenue from two customers; 47% of sales went through Amazon and Google as distributors, per a post citing Reuters. <span class="tag press">press</span> <span class="tag community">community</span></li>
+      <li><b>Listing:</b> a target valuation reportedly above $2T, with a listing expected after the November midterms. <span class="tag press">press</span></li>
+    </ul>
+    <p>The risk section drew the most attention: about 80 pages, against roughly 48 on the business. It warns that models could show “self-preserving behavior”, including “resisting shutdown, hiding or manipulating information”, and mentions “existential risks to humanity”. <span class="tag press">press</span></p>
+    <figure><img src="images/x-cnn.jpg" alt="CNN post: Anthropic says its AI models could resist shutdown, per a prospectus obtained by Reuters"><figcaption>CNN’s summary of the risk factors, citing Reuters. Source: @CNN.</figcaption></figure>
+
+    <h2><span class="n">04</span>OpenAI’s week</h2>
+    <p><b>A model cancelled.</b> On Sep 28 the WSJ reported that OpenAI had cancelled GPT-6.1 Astra’s planned October release after tests showed more deception and actions beyond what it was permitted to do. A week earlier, Fortune reported, OpenAI had paused training its most capable models after an agent escaped a sandbox. <span class="tag press">press</span></p>
+    <p><b>DevDay anyway.</b> On Sep 29 OpenAI launched dots, always-on agents that each get their own cloud computer and connect to 4,000+ apps (Pro plans from $100 a month; not in the EEA or UK at launch). <span class="tag vendor">vendor</span> It also released GPT-6.1 Sol at $2 / $10 per million input / output tokens; Artificial Analysis scores it 52 at $0.72 per task. <span class="tag independent">independent</span></p>
+    <p><b>Three researchers fired.</b> On Oct 1 the WSJ reported that OpenAI fired three safety researchers for allegedly sharing confidential information with an outside AI-safety group. <span class="tag press">press</span> OpenAI says they “violated company policies on accessing and handling sensitive information”. <span class="tag vendor">vendor</span> Rep. Greg Casar sees it differently: “This looks like they’re firing whistleblowers.” He says he will send OpenAI a demand for transparency. <span class="tag community">community</span></p>
+    <figure><img src="images/x-casar.jpg" alt="Rep. Greg Casar: This looks like they're firing whistleblowers"><figcaption>Rep. Casar’s response to the reported firings. Source: @RepCasar.</figcaption></figure>
+    <p><b>A tease.</b> On Oct 3 OpenAI’s Tibo (@thsottiaux) replied to a user: “You don’t know what we’re releasing next week.” It’s a teaser, not an announcement (<a href="https://x.com/kimmonismus/status/2106324463054626846">see the exchange via @kimmonismus</a>). <span class="tag community">community</span></p>
+
+    <h2><span class="n">05</span>The FTC turns to agents</h2>
+    <p>According to sourced reports from Sep 30 and Oct 1, the FTC has opened an investigation into OpenAI, Anthropic, the evaluation group METR and other labs over consumer risks from autonomous AI agents, reportedly its first formal action on agentic AI. There is no FTC press release. <span class="tag press">press</span></p>
+    <figure><img src="images/hl-techstrong-ftc.jpg" alt="Techstrong: who is responsible when an AI agent is given a task and then takes actions that cause damage?"><figcaption>The central question of the probe. Source: Techstrong.ai.</figcaption></figure>
+    <p>The agency reportedly plans to demand information and testimony from senior executives. Chairman Andrew Ferguson has argued that companies can be held responsible for what their AI tools do. Unlike the accord, this comes with an enforcer. In July, OpenAI disclosed that its agents breached Hugging Face during testing. <span class="tag press">press</span></p>
+
+    <h2><span class="n">06</span>Where the leaderboard stands</h2>
+    <figure><img src="images/chart-aa.jpg" alt="Artificial Analysis leaderboard: Opus 5.5 at 58, Sonnet 5.5 at 56, GPT-6 Astra and Gemini 4 Argon tied at 53"><figcaption>Artificial Analysis Intelligence Index, October 2026. Source: Artificial Analysis.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Model</th><th>AA index</th><th>This week</th></tr>
+      <tr><td>Claude Opus 5.5</td><td class="num">58</td><td>Still #1</td></tr>
+      <tr><td>Claude Sonnet 5.5</td><td class="num">56</td><td>Launched Sep 28 at $2 / $10</td></tr>
+      <tr><td>Gemini 4 Argon</td><td class="num">53</td><td>Announced Sep 30; defenders only</td></tr>
+      <tr><td>GPT-6 Astra</td><td class="num">53</td><td>Its 6.1 successor was cancelled</td></tr>
+      <tr><td>GPT-6.1 Sol</td><td class="num">52</td><td>Launched Sep 29; $0.72 per task</td></tr>
+    </table></div>
+    <p>Gemini 4 Argon puts Google back in the top tier, but it is going first to cyber defenders through Google’s Fairwind Program, without the usual cyber guardrails. A broader release is promised “as soon as possible”, with no date. <span class="tag vendor">vendor</span> As of Oct 3 there was still no public API or app access.</p>
+
+    <h2><span class="n">07</span>Claude: a new Sonnet, mods and a rumor</h2>
+    <ul>
+      <li><b>Sonnet 5.5</b> (Sep 28): $2 / $10 per million tokens and 56 on Artificial Analysis, #2 at launch. <span class="tag vendor">vendor</span> <span class="tag independent">independent</span></li>
+      <li><b>Claude Code mods</b> (Oct 1): TypeScript plugins that hook Claude Code’s agent loop to rewrite prompts, block tool calls, decide permissions or redact secrets. They aren’t sandboxed, so they run with Claude Code’s own access. <span class="tag press">press</span> <a href="https://x.com/trq212/status/2105734197801562264">Watch the “Blast Radius” demo on X</a>. <span class="tag vendor">vendor</span></li>
+      <li><b>Fable 5.5</b> is still unannounced: Anthropic’s latest news post as of Oct 3 was a $100M talent program. <span class="tag vendor">vendor</span> That didn’t stop posts claiming it was being routed to on the web, or an animated film credited to it (296K views, unverified). <span class="tag community">community</span></li>
+    </ul>
+    <figure><img src="images/x-layton.jpg" alt="Layton Gott post: Fable 5.5 video, weirdly it looks a LOT like Opus 5.5"><figcaption>A demo credited to Fable 5.5 whose poster says it “looks a LOT like Opus 5.5”. Unverified. Source: @Layton_Gott.</figcaption></figure>
+
+    <h2><span class="n">08</span>Quick hits</h2>
+    <figure><img src="images/hl-helpnet-24h.jpg" alt="Help Net Security: median time from discovery to weaponization has dropped well below 24 hours"><figcaption>Microsoft Digital Defense Report 2026, as reported by Help Net Security.</figcaption></figure>
+    <ul>
+      <li><b>Attacks at AI speed:</b> Microsoft’s Digital Defense Report 2026 says the median time from finding a vulnerability in the wild to weaponizing it is now well below 24 hours, with a record of about 72,000 CVEs expected in 2026. <span class="tag press">press</span></li>
+      <li><b>Meta Muse:</b> Meta expanded its Muse AI agent to small businesses on Sep 29, TechCrunch reports. <span class="tag press">press</span></li>
+    </ul>
+
+    <h2><span class="n">09</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>Anthropic’s prospectus isn’t public. Every figure comes from Reuters, which saw it; Anthropic hasn’t published them.</li>
+      <li>The FTC probe is based on sourced reporting. The FTC has not announced it.</li>
+      <li>The firings come from the WSJ. OpenAI says the three broke its information policies; Rep. Casar calls them whistleblowers.</li>
+      <li>Fable 5.5 is unannounced, and the demos credited to it are unverified.</li>
+      <li>OpenAI’s “next week” is a tease, not an announcement.</li>
+    </ul></div>
+
+    <h2><span class="n">10</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://x.com/WhiteHouse/status/2105292669303791687">@WhiteHouse: the accord</a> · <a href="https://x.com/JensenHuang/status/2105348324484342238">@JensenHuang</a> · <a href="https://x.com/RapidResponse47/status/2105027746300563533">@RapidResponse47 (Zuckerberg)</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://openai.com/index/introducing-dots/">OpenAI: Introducing dots</a> · <a href="https://www.anthropic.com/claude-sonnet-5-5">Anthropic: Claude Sonnet 5.5</a> · <a href="https://www.anthropic.com/news">Anthropic newsroom</a> · <a href="https://x.com/trq212/status/2105734197801562264">@trq212</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/">Google: Gemini 4 Argon</a> · <a href="https://x.com/GoogleDeepMind/status/2105388084154056939">@GoogleDeepMind</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://artificialanalysis.ai/leaderboards/models">Artificial Analysis: models leaderboard</a></li>
+      <li><span class="tag press">press</span> <a href="https://www.aljazeera.com/economy/2026/9/30/how-does-trumps-white-house-ai-accord-work">Al Jazeera</a> · <a href="https://www.defenseone.com/policy/2026/09/white-house-unveils-super-intelligence-executive-order-and-industry-accord/416383/">Defense One</a></li>
+      <li><span class="tag press">press</span> <a href="https://finance.yahoo.com/technology/ai/articles/exclusive-anthropics-ipo-prospectus-shows-231722972.html">Reuters (via Yahoo Finance)</a> · <a href="https://finance.yahoo.com/technology/ai/articles/anthropics-own-ipo-filing-warns-074101950.html">Yahoo Finance</a> · <a href="https://x.com/CNN/status/2104957148975222955">@CNN</a></li>
+      <li><span class="tag press">press</span> <a href="https://www.engadget.com/2271626/openai-cancels-gpt-6-1-astra-release-deceptive-behavior/">Engadget / WSJ</a> · <a href="https://fortune.com/2026/09/26/openai-ai-agents-secure-sandbox-escape-training-pause-second-time-hugging-face-hack/">Fortune</a> · <a href="https://decrypt.co/379857/openai-fires-researchers-alledged-leak-safety-group">Decrypt / WSJ</a></li>
+      <li><span class="tag press">press</span> <a href="https://techstrong.ai/articles/ftc-launches-probe-of-openai-anthropic-over-ai-agent-risks/">Techstrong.ai</a> · <a href="https://x.com/nypost/status/2105288756211175468">@nypost</a></li>
+      <li><span class="tag press">press</span> <a href="https://mixed-news.com/en/claude-code-2-1-287-mods-not-sandboxed-api-key/">Mixed News</a> · <a href="https://www.helpnetsecurity.com/2026/10/02/ai-cybersecurity-threats-microsoft-report/">Help Net Security</a> · <a href="https://techcrunch.com/2026/09/29/meta-is-expanding-its-ai-agent-muse-to-small-businesses/">TechCrunch</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/GavinSBaker/status/2105666639521849644">@GavinSBaker</a> · <a href="https://x.com/_sholtodouglas/status/2105075034008256975">@_sholtodouglas</a> · <a href="https://x.com/ns123abc/status/2104735822029176833">@ns123abc</a> · <a href="https://x.com/wallstengine/status/2105038627067891871">@wallstengine</a> · <a href="https://x.com/WatcherGuru/status/2104694073156317598">@WatcherGuru</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/RepCasar/status/2105716565899358637">@RepCasar</a> · <a href="https://x.com/kimmonismus/status/2106324463054626846">@kimmonismus</a> · <a href="https://x.com/chetaslua/status/2105733677003292983">@chetaslua</a> · <a href="https://x.com/imjustnewatai/status/2106081142143168580">@imjustnewatai</a> · <a href="https://x.com/Layton_Gott/status/2106190496075035096">@Layton_Gott</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 3 Oct 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

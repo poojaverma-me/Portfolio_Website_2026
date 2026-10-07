@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: Jev by TypeSafe AI</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 25 Sep 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Product launch · about a 6-minute read</div>
+    <h1>Jev: the AI model that can’t write a sentence</h1>
+    <p class="dek">TypeSafe AI’s new model only makes typed decisions, fast and very cheaply. Early independent tests back the speed and cost, but its accuracy looks like a good small model’s, and it always answers, even when it shouldn’t.</p>
+
+    <figure><img src="images/llm-vs-jev.jpg" alt="Diagram: an LLM writes a paragraph about an invoice, while Jev returns scored options: fraud 0.07, clean 0.88, review 0.05"><figcaption>An LLM writes its answer out; Jev returns only the decision, with a probability for each option. Source: LangChain.</figcaption></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>A new kind of model:</b> Jev picks options, gives scores and estimates probabilities, but produces no text, code or chat. <span class="tag vendor">vendor</span></li>
+        <li><b>Very cheap:</b> $0.042 per million input tokens, with output free; TypeSafe says replies take 70–500 ms. <span class="tag vendor">vendor</span></li>
+        <li><b>Speed and consistency hold up:</b> LangChain measured 0.44 s and $0.00035 per judge call, with score variance 92–913× lower than the LLM judges. <span class="tag independent">independent</span></li>
+        <li><b>Not smarter than LLMs:</b> on 791 decisions, AY Automate found it roughly level with small models. <span class="tag independent">independent</span></li>
+        <li><b>It always answers:</b> without a “none of these” option, it flagged 0 of 30 out-of-scope messages, at 0.99 confidence. <span class="tag independent">independent</span></li>
+        <li><b>Hard to get:</b> new signups have been paused since 21 Sep (US Pacific). <span class="tag vendor">vendor</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>What TypeSafe launched</h2>
+    <p>TypeSafe AI, founded by former OpenAI researcher Diogo Almeida with Erik Gafni and Sasha Sheng, released Jev in early access on 15 Sep 2026. A paid press release announced a $40M seed round led by DCVC. <span class="tag press">press</span></p>
+    <p>TypeSafe calls Jev a “System One model”, after Daniel Kahneman’s fast, intuitive thinking. You send a <i>state</i> (text or JSON) plus any mix of three question types, and all of them are answered in parallel in one call: <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li><b>Choice:</b> pick one of up to 255 options.</li>
+      <li><b>Score:</b> rate something on a rubric you define.</li>
+      <li><b>Noul:</b> the probability that a statement is true.</li>
+    </ul>
+    <figure><img src="images/three-questions.jpg" alt="Choice, Score and Noul examples, each with a confidence value"><figcaption>The three question types. Every answer comes back typed, with probabilities and a confidence score. Source: LangChain.</figcaption></figure>
+    <p>Underneath is a new architecture, a “parallel sampler” that doesn’t generate token by token, and a training method TypeSafe calls RLCD (Reinforcement Learning for Calibrated Decisions). The name nods to economist William Stanley Jevons: cheaper intelligence means far more use. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">02</span>TypeSafe’s own numbers</h2>
+    <p>The headline claims don’t agree with each other. The launch post says “20–200x faster” and “40–400x cheaper”; the blog says 40–200× faster; the home page says 193.6× faster and 444.6× cheaper. TypeSafe’s own blog says the home-page figures are “on the higher end of real world gains”. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/accuracy-vs-cost.jpg" alt="Scatter chart of accuracy against cost per workflow: Jev at about 68% and the lowest cost, top models at about 74%"><figcaption>TypeSafe’s chart across its own four workflows: Jev agrees with the reference answer about 68% of the time, against roughly 73–74% for the top models, at a fraction of the cost. Source: TypeSafe.</figcaption></figure>
+    <p>The takeaway: Jev isn’t smarter than frontier models, but lands near mid-tier ones for far less. TypeSafe notes that its own team wrote the workflows, so “some bias could exist”, and that the reference answer averages GPT-6 Astra and Fable 5.1. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">03</span>What independent testers found</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Test</th><th>Result</th><th>Kind</th></tr>
+      <tr><td>LangChain, agent-eval judge (5 runs, each scored 100×)</td><td class="num">Pass/fail agreement with a human: Jev 100%,<br>Terra 99.8%, Luna 96.4%, Claude Sonnet 4.6 80.0%</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>LangChain, cost and speed</td><td class="num">0.44 s, $0.00035 per call;<br>$0.34 total vs $28.17 for Claude</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>AY Automate, intent routing and injection detection (791 items)</td><td class="num">78.8–87.0%, about small-model level;<br>3.6× faster than GPT-5.6 Terra</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>PriorBench, zero-shot on 400 items</td><td class="num">95.9% (keywords 77.2%, TF-IDF 66.0%)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>HiringCafe, resume–job matching</td><td class="num">Spearman 0.79 (cheap LLMs 0.72–0.77)</td><td><span class="tag community">community</span></td></tr>
+      <tr><td>@fazxes, safety classifier</td><td class="num">98.6% vs GPT-5.6 Luna 96.7%;<br>4.7× faster at the median</td><td><span class="tag community">community</span></td></tr>
+    </table></div>
+    <figure><img src="images/lc-consistency.jpg" alt="LangChain chart: Jev's score is a flat line across 100 repeats, while three LLM judges swing up and down"><figcaption>The same five cases, scored 100 times each: Jev’s line is flat, while the LLM judges wobble. Only five test cases in one domain, so promising rather than proof. Source: LangChain.</figcaption></figure>
+    <figure><img src="images/hiringcafe.jpg" alt="Post listing Spearman scores: Gemini 3.1 Flash-Lite 0.72, DeepSeek V4 Flash 0.73 and 0.77, Jev 0.79 at $0.02"><figcaption>HiringCafe’s test compared Jev only with cheap LLMs, at about a tenth of the cost of the next-cheapest option (the thread gives no cost unit). Source: @h_nilforoshan.</figcaption></figure>
+    
+    <h2><span class="n">04</span>What builders are doing with it</h2>
+    <p>Unless marked otherwise, these are the builders’ own claims. <span class="tag community">community</span></p>
+    <ul>
+      <li><b>Computer use:</b> Browser Use’s jev-ultrafast (@gregpr07) ran a Google Flights search in about 7 s for $0.0039. <a href="https://x.com/gregpr07/status/2100411066966749359">Watch the demo on X</a>.</li>
+      <li><b>Cheaper AI tools:</b> @tamarajtran’s “instant compaction” for Claude Code drops irrelevant tool calls instead of re-summarizing. OpenRouter launched a Jev-powered model router on 25 Sep and says it solved 237 of 423 agent tasks, against 130 for its Auto Router. <span class="tag vendor">vendor</span></li>
+      <li><b>New interfaces:</b> smart copy/paste (@marcus_lowe), semantic ⌘F (@Saboo_Shubham_), and real-time virtual try-on for Drape (@nailthy62) at about 620 ms and $0.0011 per decision (<a href="https://x.com/nailthy62/status/2101388186916454439">watch on X</a>).</li>
+      <li><b>Real-time control:</b> TypeSafe’s own Doom bot makes about 10 calls a second, roughly $7 an hour, from game data rather than pixels <span class="tag vendor">vendor</span>. A community Minecraft agent beat the game in 8:43, with GPT-6 Astra planning and Jev picking the actions.</li>
+      <li><b>Big, boring data:</b> a DuckDB extension (@hamiltonulmer) handles about 1,000 rows in 10 s, and @ryanvogel scored 1,700 emails for 18 cents (via a @Roxx_0x clip).</li>
+    </ul>
+    <figure><img src="images/tax-zero-wrong.jpg" alt="Results table: 314 filled and 753 blank IRS form pages, 0 wrong"><figcaption>A tax-form classifier covering 261 IRS forms: 0 wrong across 1,067 pages, at about $0.001 per page. Source: kyotofin/tax-doc-classifier on GitHub.</figcaption></figure>
+    <p>Builders have converged on one pattern, summed up by @thegreatest_sv: “the big model plans, Jev picks, code does the rest.”</p>
+
+    <h2><span class="n">05</span>Where it falls short</h2>
+    <ul>
+      <li><b>It can’t write.</b> There is no text, code or chat, and TypeSafe’s docs say it isn’t a replacement for the model behind a coding agent. <span class="tag vendor">vendor</span></li>
+      <li><b>It always answers.</b> PriorBench found a cake recipe classified as a “technical issue” at 0.94 confidence. <span class="tag independent">independent</span></li>
+      <li><b>Broad questions hurt it.</b> In one phishing test, reported second-hand by beri.net, a single “is this phishing?” question scored 62.6% against Claude Haiku 4.5’s 81.3%. Split into five narrow questions plus a regression trained on labeled emails, it reached 95.0% against 93.2%. <span class="tag independent">independent</span></li>
+      <li><b>Known weak spots:</b> TypeSafe lists literal reading, math and counting, dates, prompt injection and contradictory criteria, among others. PriorBench found numbers, dates and negation fine. <span class="tag vendor">vendor</span></li>
+      <li><b>Text only:</b> no image, audio or video input yet; context is 64K tokens. <span class="tag vendor">vendor</span></li>
+    </ul>
+    <figure><img src="images/priorbench-always-answers.jpg" alt="PriorBench note that Jev always answers, above a chart of accuracy by confidence threshold"><figcaption>PriorBench’s takeaway: accuracy is flat between the 0.50 and 0.95 confidence thresholds, then hits 100% at 0.99, covering 60.2% of traffic. Anonymous author, one day, one version. Source: PriorBench.</figcaption></figure>
+
+    <h2><span class="n">06</span>Price and access</h2>
+    <p>Jev costs $0.042 per million input tokens ($42 per billion), and output is free. Rate limits (250K tokens a second, 1,200 requests a minute) are “adjusting dynamically”. Servers are on the US West Coast; PriorBench saw a floor of about 430 ms from Europe through OpenRouter. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/subsidized.jpg" alt="TypeSafe blog: “We can’t prove it isn’t subsidized”"><figcaption>TypeSafe on its own pricing, which it expects to go down. Source: TypeSafe.</figcaption></figure>
+    <p>Access has been bumpy. A waitlist on 15 Sep gave way to open access on 20 Sep, then new signups were paused on 21 Sep (US Pacific) “due to demand”. Existing users keep working, and no reopening had been announced as of 25 Sep. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">07</span>How it compares</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Option</th><th>What the evidence says</th><th>Kind</th></tr>
+      <tr><td>LLMs (GPT-5.6, Claude, Gemini Flash)</td><td>Smarter and can write; slower and pricier for fixed-choice decisions</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Jev first, Terra for unsure cases</td><td>Terra-level accuracy at 26–28% of Terra’s cost (AY Automate)</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Fine-tuned classifier</td><td>Needs training data, but may match Jev on one narrow task</td><td><span class="tag community">community</span></td></tr>
+      <tr><td>Laya (open weights, local)</td><td>Claimed 11× faster decisions than Jev at Tetris, unverified</td><td><span class="tag community">community</span></td></tr>
+      <tr><td>Span-01 (Respan)</td><td>Claims “18% better than Jev” on its own benchmark</td><td><span class="tag community">community</span></td></tr>
+    </table></div>
+    <figure><img src="images/nathanflurry-switch.jpg" alt="Post by Nathan Flurry: “jev is just a *really* smart switch statement”"><figcaption>The skeptic’s summary, and the pattern he suggests: an LLM proposes options, Jev decides, code executes. Source: @NathanFlurry.</figcaption></figure>
+    <p>The interface is easy to copy: @tinkerapi says a $5 fine-tune of an open model can offer something similar (unverified). The open question is whether Jev’s quality and calibration hold up at this price. <span class="tag community">community</span></p>
+
+    <h2><span class="n">08</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>“100× faster and cheaper” gets repeated widely, but TypeSafe’s own multiples range from 20× to 444.6×, and it calls the top ones “the higher end”. “Often tens to hundreds of times cheaper” is safer.</li>
+      <li>“Can’t hallucinate” is narrow: Jev always returns a valid option, but it can still pick the wrong one.</li>
+      <li>The Deel results (expense categorization 50% → 86%, 20–59× cheaper) were published by TypeSafe, not Deel, and the comparison LLM is unnamed.</li>
+      <li>LangChain co-hosted a livestream with TypeSafe, so its test isn’t fully arm’s-length.</li>
+      <li>Some secondary coverage gets basics wrong, including the founder’s name and crediting TypeSafe with the Minecraft demo, which was a community project.</li>
+      <li>A valuation figure attributed to Forbes in secondary coverage is unverified, so it isn’t reported here.</li>
+      <li>Signup status may have changed since 25 Sep.</li>
+    </ul></div>
+
+    <h2><span class="n">09</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">TypeSafe: Introducing System One Models &amp; Jev</a> · <a href="https://docs.typesafe.ai/models">TypeSafe docs</a> · <a href="https://x.com/CompleteSkeptic/status/2099925682726002904">@CompleteSkeptic launch thread</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://x.com/typesafeai/status/2101786156572823624">@typesafeai: no waitlist</a> · <a href="https://x.com/typesafeai/status/2102281508950307159">signups paused</a> · <a href="https://x.com/typesafeai/status/2103321890190491710">Deel results</a> · <a href="https://x.com/OpenRouter/status/2103610898690855161">OpenRouter Jev Router</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://x.com/LangChain/status/2101454284927959080">LangChain: Jev-as-a-Judge</a> · <a href="https://github.com/danielgshea/jev-as-a-judge">code</a> · <a href="https://github.com/priorbench/jev">PriorBench</a> · <a href="https://www.ayautomate.com/blog/jev-vs-llm-benchmark">AY Automate</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://www.beri.net/article/typesafe-jev-typed-decision-model-calibration-decomposition-shadow-eval">beri.net phishing report</a> · <a href="https://github.com/search?q=typesafe+jev+created%3A%3E%3D2026-09-15&amp;type=repositories">GitHub repository search</a></li>
+      <li><span class="tag press">press</span> <a href="https://finance.yahoo.com/technology/ai/articles/typesafe-ai-emerges-stealth-40m-190000776.html">Business Wire release (via Yahoo Finance)</a> · <a href="https://www.therundown.ai/news/typesafe-jev-ai-decisions-software">The Rundown AI</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/h_nilforoshan/status/2100409794276520341">@h_nilforoshan</a> · <a href="https://x.com/fazxes/status/2100300097695232164">@fazxes</a> · <a href="https://x.com/gregpr07/status/2100411066966749359">@gregpr07</a> · <a href="https://x.com/instantricecook/status/2100814590300889426">@instantricecook</a> · <a href="https://x.com/tamarajtran/status/2100694549362553153">@tamarajtran</a> · <a href="https://x.com/marcus_lowe/status/2101476399488160013">@marcus_lowe</a> · <a href="https://x.com/anishfn/status/2102327334485557422">@anishfn</a> · <a href="https://x.com/Saboo_Shubham_/status/2101576462042366114">@Saboo_Shubham_</a> · <a href="https://x.com/nailthy62/status/2101388186916454439">@nailthy62</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/thegreatest_sv/status/2103546576186560710">@thegreatest_sv</a> · <a href="https://github.com/rmalde/minecraft-agent">minecraft-agent</a> · <a href="https://github.com/kyotofin/tax-doc-classifier">tax-doc-classifier</a> · <a href="https://x.com/hamiltonulmer/status/2100370557405667768">@hamiltonulmer</a> · <a href="https://x.com/Roxx_0x/status/2101607491234582761">@Roxx_0x</a> · <a href="https://x.com/NathanFlurry/status/2100036101809619314">@NathanFlurry</a> · <a href="https://x.com/atomic_chat_hq/status/2102160983409955244">@atomic_chat_hq</a> · <a href="https://x.com/tinkerapi/status/2102565243331490261">@tinkerapi</a> · <a href="https://x.com/RespanAI/status/2103530005720637860">@RespanAI</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 25 Sep 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>
