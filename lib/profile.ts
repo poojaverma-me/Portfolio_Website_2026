@@ -6,12 +6,30 @@ export const profile = {
   email: "pooja32verma@gmail.com",
   phone: "778-586-7091",
   github: "https://github.com/poojaverma-me",
-  linkedin: "https://www.linkedin.com/in/poojav3rma",
+  linkedin: "https://www.linkedin.com/in/poojav3rma/",
+  x: "https://x.com/Poojav3rma",
+  youtube: "https://www.youtube.com/@BeyondPromptOfficial",
   leetcode: "https://leetcode.com/sugaryeuphoria/",
-  headline: ["I don't just write code.", "I ship experiences."],
+  // the hero line: lead-in, the part set in the accent colour, then the rest
+  headline: ["Delivering", "scalable, agentic AI solutions", "that plug into real workflows and drive measurable results."],
   intro:
-    "AI developer and computing science student at Thompson Rivers University in Kamloops, British Columbia, working across applied machine learning, LLMs, and full-stack development. I shipped a PDF rendering engine for a construction estimating platform, trained models for post-wildfire recovery research, and built systems that serve 3,000+ students and 4,000+ retailers.",
+    "AI developer and researcher building LLM systems, machine learning models and full-stack products, from wildfire-recovery research to tools used by 3,000+ students and 4,000+ retailers.",
   skills: [
+    "RAG Systems",
+    "RLHF",
+    "LLM Evaluation",
+    "Benchmark Design",
+    "Gemini API",
+    "Semantic Search",
+    "Embeddings",
+    "PyTorch",
+    "scikit-learn",
+    "XGBoost",
+    "LightGBM",
+    "SHAP",
+    "Optuna",
+    "CNNs",
+    "Transfer Learning",
     "Python",
     "JavaScript",
     "TypeScript",
@@ -20,14 +38,6 @@ export const profile = {
     "Apex",
     "SQL",
     "MATLAB",
-    "PyTorch",
-    "scikit-learn",
-    "XGBoost",
-    "LightGBM",
-    "SHAP",
-    "Optuna",
-    "RAG Systems",
-    "RLHF",
     "pandas",
     "NumPy",
     "SciPy",
@@ -45,7 +55,21 @@ export const profile = {
     "Git",
     "GitHub Actions",
     "LaTeX",
+    "Next.js",
+    "Tailwind CSS",
+    "Framer Motion",
+    "Firebase",
+    "Three.js",
+    "React Three Fiber",
+    "WebGL",
+    "MapLibre",
+    "Web Speech API",
+    "PWAs",
+    "Blender",
+    "Vitest",
+    "Vercel",
   ],
+
 };
 
 export type Experience = {
@@ -65,9 +89,9 @@ export const experience: Experience[] = [
     period: "Jan 2026 – Sep 2026",
     location: "Remote",
     points: [
-      "Spearheaded end to end development of a high-performance PDF rendering engine for the core construction estimating platform, shipping key features ahead of target milestones.",
-      "Integrated the Nutrient (PSPDFKit) SDK into the enterprise JavaScript codebase, working directly with external vendor engineers to diagnose defects and land upstream fixes.",
-      "Built automated data pipelines and training scripts to deploy an AI-driven takeoff and stamp detection model, streamlining estimation workflows for platform users.",
+      "Built the PDF rendering engine at the core of a construction estimating platform, owning it end to end and shipping key features ahead of milestones.",
+      "Integrated the Nutrient (PSPDFKit) SDK into the production JavaScript codebase, working directly with the vendor's engineers to diagnose defects and land fixes upstream.",
+      "Automated the data pipelines and training scripts that deploy an AI model for take-off and stamp detection, streamlining how estimators process drawings.",
     ],
     tags: ["JavaScript", "PDF Rendering", "PSPDFKit", "Data Pipelines"],
   },
@@ -77,9 +101,10 @@ export const experience: Experience[] = [
     period: "Apr 2026 – Present",
     location: "Kamloops, BC (Remote)",
     points: [
-      "Won a competitive $2,500 grant to develop AI-Driven Post-Wildfire Ecosystem Recovery, a machine learning framework predicting vegetation regrowth and optimizing reforestation planning.",
-      "Harmonized six environmental datasets into a 2,600 sample master dataset with 32 engineered features across six BEC zones.",
-      "Benchmarked five classifiers with SMOTE and Optuna tuning, landing on LightGBM at 0.707 weighted F1 with SHAP interpretability, then engineered a native species recommender and authored the LaTeX paper.",
+      "Won a competitive $2,500 grant to predict how burned land in the Thompson-Okanagan recovers, and which native species to replant.",
+      "Merged six environmental datasets into a 2,600-sample master set with 32 engineered features across six BEC zones.",
+      "Benchmarked five classifiers with SMOTE and Optuna, selected LightGBM at 0.707 weighted F1, and used SHAP to show that burn severity drives recovery.",
+      "Turned the study into After Fire, an interactive atlas, simulator and species recommender, and presented it at the TRU Sustainability Conference.",
     ],
     tags: ["LightGBM", "Optuna", "SHAP", "SMOTE", "Geospatial data"],
   },
@@ -89,9 +114,9 @@ export const experience: Experience[] = [
     period: "Oct 2025 – Present",
     location: "San Francisco, CA (Remote)",
     points: [
-      "Designed complex coding benchmarks and multi-turn reasoning prompts to fine-tune frontier LLMs through reinforcement learning from human feedback.",
-      "Red-teamed model reasoning chains across advanced algorithmic problems, judging responses on hallucination resistance, factual correctness and alignment.",
-      "Curated synthetic datasets and step by step code rationales in Python and JavaScript to sharpen supervised fine-tuning workflows.",
+      "Design coding benchmarks and multi-turn reasoning prompts used to fine-tune frontier LLMs through reinforcement learning from human feedback.",
+      "Red-team model reasoning on advanced algorithmic problems, grading responses for hallucination, factual correctness and alignment.",
+      "Write step-by-step code rationales and synthetic datasets in Python and JavaScript that feed supervised fine-tuning.",
     ],
     tags: ["RLHF", "LLM evaluation", "Python", "JavaScript"],
   },
@@ -101,9 +126,8 @@ export const experience: Experience[] = [
     period: "May 2025 – Jun 2026",
     location: "Kamloops, BC",
     points: [
-      "Delivered individualized mathematics instruction to 25+ students across algebra, geometry and calculus.",
-      "Designed diagnostic assessments and personalized learning plans, yielding measurable gains in test scores and problem-solving confidence.",
-      "Tracked progress and reported milestones and growth areas directly to academic directors and parents.",
+      "Taught algebra, geometry and calculus to 25+ students, each on a plan built from their own diagnostic assessment.",
+      "Raised test scores and problem-solving confidence, tracking every student's progress and reporting it to academic directors and parents.",
     ],
     tags: ["Mathematics", "Assessment design", "Mentoring"],
   },
@@ -113,9 +137,9 @@ export const experience: Experience[] = [
     period: "Jan 2026 – May 2026",
     location: "Kamloops, BC (Hybrid)",
     points: [
-      "Mentored undergraduate researchers on scientific methodology, data preparation pipelines and literature reviews across STEM disciplines.",
-      "Guided students on experimental design, statistical validation and reproducibility standards for grant-funded institutional projects.",
-      "Ran technical writing workshops and presentation rehearsals to prepare cohorts for academic conferences and grant competitions.",
+      "Coached undergraduate researchers across STEM on methodology, data pipelines and literature reviews.",
+      "Guided grant-funded projects on experimental design, statistical validation and reproducibility.",
+      "Ran technical writing workshops and presentation rehearsals that prepared cohorts for conferences and grant competitions.",
     ],
     tags: ["Research methods", "Mentoring", "Technical writing"],
   },
@@ -125,9 +149,9 @@ export const experience: Experience[] = [
     period: "Jan 2024 – Apr 2026, three terms",
     location: "Kamloops, BC",
     points: [
-      "Mentored 150+ undergraduate students across core computing science coursework in Python, Java, data structures and web development, focusing on algorithmic logic and clean architecture.",
-      "Ran weekly lab sessions and code reviews that enforced Git version control, test-driven logic and documentation practice.",
-      "Marked weekly programming assignments and midterms, giving feedback specific enough to act on.",
+      "Mentored 150+ students in Python, Java, data structures and web development, with a focus on algorithmic thinking and clean design.",
+      "Ran weekly labs and code reviews that made Git, testing and documentation everyday habits.",
+      "Graded assignments and midterms with feedback specific enough to act on.",
     ],
     tags: ["Teaching", "Python", "Java", "Data structures"],
   },
@@ -137,11 +161,11 @@ export const experience: Experience[] = [
     period: "Apr 2025 – Nov 2025",
     location: "Kamloops, BC (Hybrid)",
     points: [
-      "Won a $6,000 UREAP scholarship to develop CNN architectures for automated diabetic retinopathy detection from fundus imagery.",
-      "Implemented domain-specific image preprocessing, contrast normalization and transfer learning architectures to lift multi-class classification accuracy.",
-      "Authored the technical documentation, experiment tracking logs and reproducible repositories that keep the results checkable.",
+      "Won a $6,000 UREAP award to detect diabetic retinopathy in retinal fundus images with deep learning.",
+      "Fused CNN (AlexNet) and Swin Transformer features to reach 98.2% accuracy on APTOS 2019, published as first author in the Inspire Health Journal (2026).",
+      "Kept every experiment reproducible with tracked logs, technical documentation and versioned repositories.",
     ],
-    tags: ["CNNs", "PyTorch", "Transfer learning", "Medical imaging"],
+    tags: ["CNNs", "Vision Transformers", "PyTorch", "Medical imaging"],
   },
   {
     company: "Outlier",
@@ -149,9 +173,9 @@ export const experience: Experience[] = [
     period: "Nov 2024 – Oct 2025",
     location: "San Francisco, CA (Remote)",
     points: [
-      "Benchmarked and debugged 100+ code submissions, isolating edge-case failures, runtime bugs and algorithmic inefficiencies across diverse language tasks.",
-      "Authored test suites, reference implementations and corrective feedback to train generative models on strict execution standards.",
-      "Evaluated model outputs on accuracy, precision and F1 to surface systemic training regressions.",
+      "Debugged and benchmarked 100+ code submissions, isolating edge-case failures, runtime bugs and inefficient algorithms.",
+      "Wrote test suites, reference solutions and corrective feedback that trained generative models to meet strict execution standards.",
+      "Tracked model accuracy, precision and F1 to surface regressions across training runs.",
     ],
     tags: ["Debugging", "Test suites", "Model evaluation"],
   },
@@ -161,9 +185,9 @@ export const experience: Experience[] = [
     period: "May 2025 – Jul 2025",
     location: "Kamloops, BC (Hybrid)",
     points: [
-      "Engineered an end to end Retrieval-Augmented Generation system using semantic search and transformer-based retrieval, increasing response relevance by 40%.",
-      "Scaled the deployment to 3,000+ university students, deflecting 35% of repetitive instructor questions through context-aware answers.",
-      "Benchmarked vector embeddings and chunking strategies to cut retrieval latency while keeping answers aligned to the course curriculum.",
+      "Built an end-to-end retrieval-augmented generation assistant for course questions, raising answer relevance by 40% with semantic search and transformer-based retrieval.",
+      "Rolled it out to 3,000+ students, where it answered 35% of the repetitive questions instructors had been handling by hand.",
+      "Benchmarked embeddings and chunking strategies to cut retrieval latency while keeping answers aligned with the curriculum.",
     ],
     tags: ["RAG", "Semantic search", "Transformers", "Vector DB"],
   },
@@ -173,9 +197,9 @@ export const experience: Experience[] = [
     period: "May 2024 – Jan 2025",
     location: "Kamloops, BC (Hybrid)",
     points: [
-      "Developed scalable enterprise solutions using Apex, SOQL, Lightning Web Components and automated flows for 4,000+ lottery retailers across Canada.",
-      "Automated licensing and operational reporting workflows with Power Apps and Power BI, cutting manual processing overhead by 30%.",
-      "Co-engineered and launched an internal employee check-in platform with fellow co-op engineers, supporting 1,000+ staff.",
+      "Developed Salesforce solutions in Apex, SOQL, Lightning Web Components and automated flows for BCLC's network of 4,000+ lottery retailers.",
+      "Automated licensing and operational reporting with Power Apps and Power BI, cutting manual processing by 30%.",
+      "Co-built and launched an internal employee check-in platform with fellow co-op engineers, built for 1,000+ staff.",
     ],
     tags: ["Salesforce", "Apex", "SOQL", "LWC", "Power Apps", "Power BI"],
   },
@@ -185,48 +209,88 @@ export const experience: Experience[] = [
     period: "Aug 2018 – Dec 2023",
     location: "India",
     points: [
-      "Handled customer inquiries and account service requests across 50+ daily client interactions, resolving most on first contact.",
-      "Maintained digital record-keeping systems and database entries with strict data integrity, speeding up record retrieval.",
-      "Coordinated between clients and operational teams to resolve service escalations.",
+      "Resolved 50+ customer inquiries a day, closing most of them on first contact.",
+      "Kept digital records and databases accurate, which made information faster to find.",
+      "Coordinated between clients and operations teams to resolve service escalations.",
     ],
     tags: ["Customer service", "Data entry", "Coordination"],
   },
 ];
 
+export type ResearchKind = "Paper" | "Presentation" | "Research project" | "Technical work";
+
 export type ResearchItem = {
   title: string;
+  /** what form the work took; an item can be several, e.g. a project that was also presented */
+  kinds: ResearchKind[];
+  /** funding, course, supervisor or venue, as one line */
   venue: string;
   year: string;
-  status: string;
+  status: "Published" | "Presented" | "In progress" | "Completed" | "Deployed";
+  /** the question that started it, told first */
+  hook: string;
   summary: string;
+  links?: { label: string; href: string }[];
+  /** the card's cover photo */
+  cover: { src: string; alt: string };
+  /** a screen of the work, layered over the cover */
+  screen?: string;
 };
 
+// Unsplash photos, cropped to the card's 4:3 cover by Unsplash's image CDN
+const unsplash = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=1100&h=825&fit=crop&q=70&auto=format`;
+
+/**
+ * Research, published work first, then newest first. Papers and presentations
+ * go here too: add an item with kinds ["Paper"] and a link to the PDF or DOI
+ * when one is published.
+ */
 export const research: ResearchItem[] = [
   {
-    title: "AI-Driven Post-Wildfire Ecosystem Recovery",
+    title:
+      "Optimized Deep Learning Framework for Diabetic Retinopathy Detection and Classification Using Fundus Imaging",
+    kinds: ["Paper", "Research project"],
     venue:
-      "TRU Student Sustainability Research Grant ($2,500) · Supervised by Dr. Ghazanfar Latif",
+      "Inspire Health Journal 1(1), 42\u201362 · First author, with Ghazanfar Latif, Jaspreet Kaur and Mohsin Butt · UREAP Research Award ($6,000)",
+    year: "2026",
+    status: "Published",
+    hook: "Can one photograph of the eye flag diabetic retinopathy before it costs someone their sight?",
+    summary:
+      "CNNs catch the small lesions; vision transformers see the whole retina. I fused features from both, AlexNet and a Swin Transformer, and a Random Forest trained on them reached 98.2% accuracy on the public APTOS 2019 dataset, ahead of every single-model baseline. Funded by a $6,000 UREAP award and published as first author.",
+    links: [{ label: "Paper", href: "https://doi.org/10.65718/inspireHealth.2026.2005" }],
+    cover: { src: unsplash("1617339860632-f53c5b5dce4d"), alt: "Close-up of a human eye with an amber iris" },
+  },
+  {
+    title: "AI-Driven Post-Wildfire Ecosystem Recovery",
+    kinds: ["Research project", "Presentation"],
+    venue:
+      "TRU Student Sustainability Research Grant ($2,500) · Supervised by Dr. Ghazanfar Latif · TRU Sustainability Conference",
     year: "2026",
     status: "In progress",
+    hook: "Which burned land comes back on its own, and what should we plant where it doesn't?",
     summary:
-      "Won a competitive $2,500 grant to build a machine learning framework for vegetation recovery and reforestation planning across the Thompson-Okanagan. Merged six environmental datasets into a reproducible 2,600 record master set with 32 engineered features over six BEC zones, benchmarked five classifiers with SMOTE oversampling and Optuna tuning, and landed on LightGBM at 0.707 weighted F1. SHAP named burn severity the dominant predictor. Shipped a native species recommender, wrote the paper in LaTeX, and presented it at the TRU Sustainability Conference.",
+      "After Canada's worst fire season on record, I merged six environmental datasets and trained gradient-boosted models to predict three-year recovery across the Thompson-Okanagan. SHAP showed that burn severity tells most of the story, and in the dry Okanagan, moisture tells the rest. The answer became a public atlas with a native-species planting guide.",
+    links: [{ label: "Case study", href: "/projects/after-fire" }],
+    cover: { src: unsplash("1556591800-e6056f222197"), alt: "A burned forest of bare trunks beside a gravel road" },
+    screen: "/projects/after-fire/home.webp",
   },
   {
     title:
-      "Automated Diabetic Retinopathy Detection from Fundus Images using CNNs",
-    venue: "UREAP Research Award ($6,000) · Thompson Rivers University",
-    year: "2025",
+      "Simulating Human Keystroke Dynamics: Can LLM-Generated Text Be Made Indistinguishable from Human Typing?",
+    kinds: ["Paper"],
+    venue: "COMP 4980 Behavioural Biometrics · Thompson Rivers University",
+    year: "2026",
     status: "Completed",
+    hook: "If a language model can write like us, can it type like us too?",
     summary:
-      "Won a $6,000 UREAP scholarship to develop CNN architectures that flag diabetic retinopathy in fundus imagery. Applied domain-specific preprocessing and contrast normalization, benchmarked transfer learning architectures, and kept experiment logs and repositories reproducible.",
-  },
-  {
-    title: "Pedagogy-Aligned RAG for Student Support at Scale",
-    venue: "Thompson Rivers University",
-    year: "2025",
-    status: "Deployed",
-    summary:
-      "A Retrieval-Augmented Generation system combining semantic search with transformer-based retrieval. Improved response relevance by 40% and cut repetitive instructor questions by 35% across 3,000+ students.",
+      "I modelled the rhythm of 99 real typists, key pair by key pair, built a simulator from it and set three detectors loose on the result. The strongest still caught most of the fakes, and the paper examines where the illusion breaks.",
+    links: [
+      { label: "Case study", href: "/projects/keystroke-dynamics" },
+      { label: "Code", href: "https://github.com/poojaverma-me/BehaviouralBiometrics_ResearchPaper" },
+    ],
+    cover: { src: unsplash("1560457079-9a6532ccb118"), alt: "Backlit keys of a black keyboard" },
+    screen: "/projects/keystroke-dynamics/demo-run.webp",
   },
 ];
 

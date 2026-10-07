@@ -1,4 +1,5 @@
 import { profile } from "@/lib/profile";
+import { socials } from "@/lib/socials";
 
 /**
  * The canonical origin, with no trailing slash. Canonical links, the sitemap,
@@ -131,7 +132,7 @@ export function personSchema() {
           { "@type": "Organization", name: "Outlier", description: "Generative AI data specialist" },
         ],
         award: [
-          "UREAP Research Award, Thompson Rivers University ($6,000), for automated diabetic retinopathy detection with CNNs",
+          "UREAP Research Award, Thompson Rivers University ($6,000), for automated diabetic retinopathy detection, published in the Inspire Health Journal (2026)",
           "TRU Student Sustainability Research Grant ($2,500), for AI-driven post-wildfire ecosystem recovery research",
         ],
         knowsAbout: TOPICS,
@@ -157,7 +158,7 @@ export function personSchema() {
             provider: { "@id": person },
           },
         },
-        sameAs: [profile.github, profile.linkedin, profile.leetcode],
+        sameAs: socials.map((s) => s.href),
       },
       {
         "@type": "ResearchProject",
@@ -173,10 +174,31 @@ export function personSchema() {
         "@type": "ResearchProject",
         "@id": `${SITE_URL}/#research-retinopathy`,
         name: "Automated Diabetic Retinopathy Detection",
-        description: "Convolutional neural networks that grade diabetic retinopathy from fundus images.",
+        description:
+          "Fused CNN (AlexNet) and Swin Transformer features that detect diabetic retinopathy in fundus images, 98.2% accuracy on APTOS 2019.",
         funder: { "@type": "Organization", name: "UREAP Research Award, Thompson Rivers University" },
         parentOrganization: TRU,
         member: { "@id": person },
+        subjectOf: { "@id": `${SITE_URL}/#paper-retinopathy` },
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "@id": `${SITE_URL}/#paper-retinopathy`,
+        headline:
+          "Optimized Deep Learning Framework for Diabetic Retinopathy Detection and Classification Using Fundus Imaging",
+        author: [
+          { "@id": person },
+          { "@type": "Person", name: "Ghazanfar Latif" },
+          { "@type": "Person", name: "Jaspreet Kaur" },
+          { "@type": "Person", name: "Mohsin Butt" },
+        ],
+        datePublished: "2026-01-05",
+        isPartOf: { "@type": "PublicationIssue", issueNumber: "1", isPartOf: { "@type": "PublicationVolume", volumeNumber: "1", isPartOf: { "@type": "Periodical", name: "Inspire Health Journal" } } },
+        pagination: "42-62",
+        publisher: { "@type": "Organization", name: "Inspire Academic Press Inc." },
+        sameAs: "https://doi.org/10.65718/inspireHealth.2026.2005",
+        url: "https://doi.org/10.65718/inspireHealth.2026.2005",
+        identifier: { "@type": "PropertyValue", propertyID: "DOI", value: "10.65718/inspireHealth.2026.2005" },
       },
       {
         "@type": "WebSite",

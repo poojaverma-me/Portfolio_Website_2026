@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    // the hero portrait asks for 82
+    qualities: [75, 82],
   },
   async headers() {
     return [

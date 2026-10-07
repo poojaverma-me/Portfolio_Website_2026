@@ -14,6 +14,8 @@ import CaseStudyToc from "@/components/CaseStudyToc";
 import Screenshot from "@/components/Screenshot";
 import ScreenshotPlaceholder from "@/components/ScreenshotPlaceholder";
 import Reveal from "@/components/Reveal";
+import VideoPlayer from "@/components/VideoPlayer";
+import { isoDuration, projectVideo } from "@/lib/videos";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -130,6 +132,7 @@ export default async function ProjectPage({
   const prev = projects[(idx - 1 + projects.length) % projects.length];
   const next = projects[(idx + 1) % projects.length];
   const Icon = categoryIcon[project.category];
+  const video = projectVideo(project.slug);
 
   // what this project is, for search engines and assistants
   const schema = {
@@ -144,6 +147,18 @@ export default async function ProjectPage({
     dateCreated: project.year,
     ...(project.cover && { image: `${SITE_URL}${project.cover}` }),
     author: { "@id": `${SITE_URL}/#person` },
+    ...(video && {
+      subjectOf: {
+        "@type": "VideoObject",
+        name: video.title,
+        description: video.description,
+        thumbnailUrl: `https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`,
+        embedUrl: `https://www.youtube-nocookie.com/embed/${video.id}`,
+        contentUrl: `https://www.youtube.com/watch?v=${video.id}`,
+        ...(video.published && { uploadDate: video.published }),
+        ...(video.duration && { duration: isoDuration(video.duration) }),
+      },
+    }),
   };
 
   return (
@@ -245,6 +260,30 @@ export default async function ProjectPage({
               )}
             </div>
           </header>
+
+          {/* the demo, when one is posted on YouTube */}
+          {video && (
+            <Reveal>
+              <figure className="mt-14" aria-label={`${project.title} demo video`}>
+                <div className="glass-card overflow-hidden">
+                  <VideoPlayer id={video.id} title={video.title} duration={video.duration} hd />
+                </div>
+                <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <span className="footnote">
+                    Demo{video.duration && ` · ${video.duration}`} · {video.title}
+                  </span>
+                  <a
+                    href={`https://www.youtube.com/watch?v=${video.id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="link-accent text-[0.875rem]"
+                  >
+                    Watch on YouTube <ArrowUpRight size={14} />
+                  </a>
+                </figcaption>
+              </figure>
+            </Reveal>
+          )}
 
           {project.sections.map((section, i) => (
             <Reveal key={section.id}>

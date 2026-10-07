@@ -35,8 +35,8 @@ Last updated: September 2026
   Previously Tier-3 Programmer Analyst there (2024 to 2025).
 - Research Assistant, TRU (May to July 2025): built a RAG study assistant used
   by 3,000+ students, improving answer relevance by 40%.
-- UREAP Undergraduate Researcher, TRU (April to November 2025): CNN-based
-  diabetic retinopathy detection.
+- UREAP Undergraduate Researcher, TRU (April to November 2025): diabetic
+  retinopathy detection from fundus images, published as first author.
 - Programmer Analyst Co-op, BC Lottery Corporation (May 2024 to January 2025):
   Salesforce (Apex, LWC) and Power Platform work for 4,000+ retailers and an
   employee check-in platform for 1,000+ staff; cut manual licensing work 30%.
@@ -48,8 +48,12 @@ Last updated: September 2026
 - AI-Driven Post-Wildfire Ecosystem Recovery. TRU Student Sustainability
   Research Grant ($2,500). LightGBM at 0.707 weighted F1 over six merged
   environmental datasets; presented at the TRU Sustainability Conference.
-- Automated Diabetic Retinopathy Detection from fundus images with CNNs.
-  UREAP Research Award ($6,000).
+- Paper (first author): "Optimized Deep Learning Framework for Diabetic
+  Retinopathy Detection and Classification Using Fundus Imaging", Inspire
+  Health Journal 1(1), 42-62, January 2026, with Ghazanfar Latif, Jaspreet
+  Kaur and Mohsin Butt. Fused AlexNet and Swin Transformer features; 98.2%
+  accuracy on APTOS 2019. https://doi.org/10.65718/inspireHealth.2026.2005
+  Funded by a UREAP Research Award ($6,000).
 
 ## Skills
 - Machine learning: PyTorch, scikit-learn, XGBoost, LightGBM, SHAP, Optuna,
@@ -98,12 +102,28 @@ Last updated: September 2026
 - [Solo Ascend](https://www.poojaverma.ca/projects/solo-ascend): gamified
   habit tracker with XP, levels and ranks; React, Tailwind CSS, Framer Motion.
 
+## Newsletter: Benchmarked
+- The AI news, fact-checked. Every number is labelled by who reported it:
+  the company, an independent tester, the press or the community.
+- All issues: https://www.poojaverma.ca/newsletter
+- 3 Oct 2026: The week Washington stepped into AI https://www.poojaverma.ca/newsletter/2026-10-03-ai-week-roundup
+- 1 Oct 2026: Is Claude Fable 5.5 already here? https://www.poojaverma.ca/newsletter/2026-10-01-claude-fable-5-5
+- 30 Sep 2026: Meta’s Muse: the most polished consumer agent yet, after a rough first three weeks https://www.poojaverma.ca/newsletter/2026-09-30-meta-muse
+- 30 Sep 2026: Gemini 4 Argon: is Google back on top? https://www.poojaverma.ca/newsletter/2026-09-30-gemini-4-argon
+- 29 Sep 2026: OpenAI DevDay 2026: three launches that matter, and a catch https://www.poojaverma.ca/newsletter/2026-09-29-openai-devday-2026
+- 28 Sep 2026: Claude Sonnet 5.5: near-Opus scores at half the token price https://www.poojaverma.ca/newsletter/2026-09-28-claude-sonnet-5-5
+- 25 Sep 2026: Jev: the AI model that can’t write a sentence https://www.poojaverma.ca/newsletter/2026-09-25-jev-typesafe-ai
+- 24 Sep 2026: Claude Opus 5.5: a narrow lead at a lower price https://www.poojaverma.ca/newsletter/2026-09-24-claude-opus-5-5
+
 ## Pages
 - [Home](https://www.poojaverma.ca/): profile, experience, research,
-  volunteering, testimonials and contact.
+  research, newsletter, videos, volunteering and contact.
 - [Projects](https://www.poojaverma.ca/projects): the project archive.
 
 ## Elsewhere
+- LinkedIn: https://www.linkedin.com/in/poojav3rma/
 - GitHub: https://github.com/poojaverma-me
-- LinkedIn: https://www.linkedin.com/in/poojav3rma
+- X: https://x.com/Poojav3rma
+- YouTube (Beyond Prompt, AI news and model reviews): https://www.youtube.com/@BeyondPromptOfficial
+- YouTube (Pooja Verma, short demos of her projects): https://www.youtube.com/@Poojav3rma
 - LeetCode: https://leetcode.com/sugaryeuphoria/

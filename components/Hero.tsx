@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { Award, ChevronRight, Code, FlaskConical } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { profile } from "@/lib/profile";
 import { useIntroFinished } from "@/lib/use-intro";
 
@@ -20,12 +20,6 @@ const rise = {
   }),
 };
 
-const highlights = [
-  { icon: Code, text: "Full-stack development" },
-  { icon: FlaskConical, text: "AI and ML research" },
-  { icon: Award, text: "UREAP research scholar" },
-];
-
 export default function Hero() {
   // hold the entrance until the hello intro has revealed the page
   const introFinished = useIntroFinished();
@@ -40,7 +34,7 @@ export default function Hero() {
   const copyOpacity = useTransform(scrollYProgress, [0, 0.75], reduce ? [1, 1] : [1, 0]);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden pt-36 pb-20 lg:min-h-[760px]">
+    <section ref={sectionRef} className="relative overflow-hidden pt-32 pb-14 sm:pt-36 lg:min-h-[640px]">
       {/* portrait: full-bleed to the right edge, desktop only */}
       <motion.div
         style={{ y: portraitY, scale: portraitScale }}
@@ -74,9 +68,9 @@ export default function Hero() {
       </motion.div>
 
       <div className="mx-auto max-w-6xl px-6 relative">
-        <motion.div style={{ y: copyY, opacity: copyOpacity }} className="lg:max-w-[560px]">
+        <motion.div style={{ y: copyY, opacity: copyOpacity }} className="lg:max-w-[600px]">
           {/* The eyebrow is part of the heading, so the page's one h1 says who this
-              is, what she does and where, in text that is on screen. */}
+              is and what she does, in text that is on screen. */}
           <h1>
             <motion.span
               variants={rise}
@@ -85,17 +79,17 @@ export default function Hero() {
               custom={0}
               className="eyebrow block"
             >
-              {profile.name} · {profile.role} · {profile.location}
+              {profile.name} · {profile.role}
             </motion.span>
             <motion.span
               variants={rise}
               initial="hidden"
               animate={introFinished ? "show" : "hidden"}
               custom={1}
-              className="large-title mt-4 block"
+              className="large-title mt-4 block !text-[clamp(2.1rem,7.4vw,3.5rem)]"
             >
-              <span className="block">{profile.headline[0]}</span>
-              <span className="block text-accent">{profile.headline[1]}</span>
+              {profile.headline[0]} <span className="text-accent">{profile.headline[1]}</span>{" "}
+              {profile.headline[2]}
             </motion.span>
           </h1>
 
@@ -104,7 +98,7 @@ export default function Hero() {
             initial="hidden"
             animate={introFinished ? "show" : "hidden"}
             custom={2}
-            className="lead mt-6 max-w-[34rem]"
+            className="lead mt-6 max-w-[33rem]"
           >
             {profile.intro}
           </motion.p>
@@ -114,7 +108,7 @@ export default function Hero() {
             initial="hidden"
             animate={introFinished ? "show" : "hidden"}
             custom={3}
-            className="mt-9 flex flex-wrap items-center gap-3"
+            className="mt-8 flex flex-wrap items-center gap-3"
           >
             <Link href="/projects" className="btn-primary">
               View my work
@@ -127,25 +121,6 @@ export default function Hero() {
             </a>
           </motion.div>
 
-          <motion.ul
-            variants={rise}
-            initial="hidden"
-            animate={introFinished ? "show" : "hidden"}
-            custom={4}
-            className="mt-12 flex flex-wrap gap-2.5"
-          >
-            {highlights.map(({ icon: Icon, text }) => (
-              <li
-                key={text}
-                className="btn-glass btn-sm !cursor-default !gap-2 !pl-1.5 !font-normal"
-              >
-                <span className="app-icon is-sm !h-6 !w-6 !rounded-full">
-                  <Icon size={13} strokeWidth={2.25} />
-                </span>
-                {text}
-              </li>
-            ))}
-          </motion.ul>
         </motion.div>
       </div>
     </section>
