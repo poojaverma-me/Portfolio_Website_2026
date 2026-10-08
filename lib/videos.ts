@@ -35,6 +35,22 @@ export const CHANNELS: Channel[] = [
     about: "The week's AI launches, checked against independent benchmarks.",
     videos: [
       {
+        id: "GldlKv7MivU",
+        title: "Claude Haiku 5.5: 75% cheaper, but read the fine print",
+        description:
+          "Ten cents per million input tokens and a 43 on the independent Artificial Analysis index, ahead of GPT-6 Luna. The catches: prompts over 100K tokens cost 5x more, it burns about 3x the tokens, and it over-refuses.",
+        date: "Oct 7, 2026",
+        duration: "9:51",
+      },
+      {
+        id: "SQl7NdD-r9g",
+        title: "Mistral Large 4, \u201cLe Chonk\u201d: is Europe back?",
+        description:
+          "A 1-trillion-parameter open-weight model that jumps from 9 to 38 on the Artificial Analysis index and shines at legal and security work, yet sits about 20 points behind the frontier and trails Kimi K3 and GLM-5.3 at coding.",
+        date: "Oct 7, 2026",
+        duration: "11:03",
+      },
+      {
         id: "mhaVKSvmkbc",
         title: "AI this week: a superintelligence accord, a leaked IPO filing and an FTC probe",
         description:
