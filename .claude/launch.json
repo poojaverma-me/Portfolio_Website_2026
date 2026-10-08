@@ -4,20 +4,53 @@
     {
       "name": "ember-portfolio",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "autoPort": true
     },
     {
       "name": "ember-prod",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["next", "start"],
+      "runtimeArgs": [
+        "next",
+        "start"
+      ],
       "autoPort": true
     },
     {
       "name": "acid-portfolio",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "acid-portfolio", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "acid-portfolio",
+        "run",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "living-city",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/poojaverma/Projects/portfolio-projects/TheLivingCity",
+        "run",
+        "dev"
+      ],
+      "port": 5321
+    },
+    {
+      "name": "job-search",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/poojaverma/Projects/JobSearch",
+        "run",
+        "dev"
+      ],
+      "port": 3240
     }
   ]
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ProjectsGrid from "@/components/ProjectsGrid";
+import { projectCountWord } from "@/lib/projects";
 import Reveal from "@/components/Reveal";
 
 const description =
@@ -7,7 +8,7 @@ const description =
 
 export const metadata: Metadata = {
   // the layout template appends the name, so the title stays short here
-  title: "Projects",
+  title: "AI and Machine Learning Projects",
   description,
   keywords: [
     "Pooja Verma projects",
@@ -21,11 +22,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/projects" },
   openGraph: {
     type: "website",
-    title: "Projects · Pooja Verma",
+    title: "AI and Machine Learning Projects · Pooja Verma",
     description,
     url: "/projects",
   },
-  twitter: { card: "summary_large_image", title: "Projects · Pooja Verma", description },
+  twitter: { card: "summary_large_image", title: "AI and Machine Learning Projects · Pooja Verma", description },
 };
 
 export default function ProjectsPage() {
@@ -35,7 +36,7 @@ export default function ProjectsPage() {
         <p className="eyebrow">The archive</p>
         <h1 className="large-title mt-2">Projects.</h1>
         <p className="lead mt-5 max-w-2xl">
-          Twelve builds across machine learning research, AI products and
+          {projectCountWord()} builds across machine learning research, AI products, games and
           full-stack apps. Each case study covers the problem, how it works and the
           results, with screenshots of the real thing and what I would fix
           next.

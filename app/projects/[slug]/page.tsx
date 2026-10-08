@@ -8,7 +8,7 @@ import {
   CircleCheck,
 } from "lucide-react";
 import { CASE_STUDIES_PUBLISHED, getProject, projects, type Figure } from "@/lib/projects";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, breadcrumbs } from "@/lib/site";
 import { categoryIcon } from "@/lib/categories";
 import CaseStudyToc from "@/components/CaseStudyToc";
 import Screenshot from "@/components/Screenshot";
@@ -31,7 +31,8 @@ export async function generateMetadata({
   if (!project) return {};
   const url = `/projects/${project.slug}`;
   return {
-    title: project.title,
+    // the field it serves is what people search for, so it goes in the title
+    title: `${project.title}: ${project.domains[0]} case study`,
     description: project.tagline,
     keywords: [project.title, project.category, ...project.domains, ...project.stack, "Pooja Verma"],
     alternates: { canonical: url },
@@ -147,6 +148,19 @@ export default async function ProjectPage({
     dateCreated: project.year,
     ...(project.cover && { image: `${SITE_URL}${project.cover}` }),
     author: { "@id": `${SITE_URL}/#person` },
+    creator: { "@id": `${SITE_URL}/#person` },
+    about: project.domains.map((d) => ({ "@type": "Thing", name: d })),
+    ...(project.film && {
+      subjectOf: {
+        "@type": "VideoObject",
+        name: project.film.title,
+        description: project.tagline,
+        thumbnailUrl: `${SITE_URL}${project.film.poster}`,
+        contentUrl: `${SITE_URL}${project.film.src}`,
+        uploadDate: project.film.published,
+        duration: isoDuration(project.film.duration),
+      },
+    }),
     ...(video && {
       subjectOf: {
         "@type": "VideoObject",
@@ -166,6 +180,19 @@ export default async function ProjectPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            ...breadcrumbs([
+              ["Home", "/"],
+              ["Projects", "/projects"],
+              [project.title, `/projects/${project.slug}`],
+            ]),
+          }),
+        }}
       />
       <div className="lg:grid lg:grid-cols-[168px_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[200px_minmax(0,1fr)] xl:gap-14">
         <CaseStudyToc
@@ -260,6 +287,28 @@ export default async function ProjectPage({
               )}
             </div>
           </header>
+
+          {/* a film hosted on this site; loads only when played */}
+          {project.film && (
+            <Reveal>
+              <figure className="mt-14" aria-label={`${project.title} film`}>
+                <div className="glass-card overflow-hidden">
+                  <video
+                    className="block aspect-video w-full bg-black"
+                    src={project.film.src}
+                    poster={project.film.poster}
+                    controls
+                    playsInline
+                    preload="none"
+                    aria-label={project.film.title}
+                  />
+                </div>
+                <figcaption className="mt-3 footnote">
+                  Film · {project.film.duration} · {project.film.title}
+                </figcaption>
+              </figure>
+            </Reveal>
+          )}
 
           {/* the demo, when one is posted on YouTube */}
           {video && (

@@ -24,6 +24,15 @@ const socialTiles: IconGridItem[] = socials.map((s) => ({
   label: s.handle,
 }));
 
+// plain links: /newsletter and /llms.txt are route handlers, not app pages
+const FOOTER_LINKS: [string, string][] = [
+  ["About", "/about"],
+  ["Work with me", "/work-with-me"],
+  ["Projects", "/projects"],
+  ["Newsletter", "/newsletter"],
+  ["For AI assistants", "/llms.txt"],
+];
+
 export default function Footer() {
   return (
     <footer className="mt-40">
@@ -65,8 +74,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t hairline py-6 text-[0.75rem] text-label-2">
-          <p>Copyright © 2026 Pooja Verma.</p>
+        <div className="mt-12 flex flex-col gap-3 border-t hairline py-6 text-[0.75rem] text-label-2 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            Copyright © 2026 Pooja Verma · AI developer in British Columbia, Canada, working across
+            Canada and remotely.
+          </p>
+          <nav aria-label="Site" className="flex flex-wrap gap-x-4 gap-y-1">
+            {FOOTER_LINKS.map(([label, href]) => (
+              <a key={href} href={href} className="hover:text-label">
+                {label}
+              </a>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>

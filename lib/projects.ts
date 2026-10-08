@@ -38,6 +38,8 @@ export type Project = {
   cover?: string;
   /** small portrait crops for the homepage card arc */
   thumbs?: string[];
+  /** a film hosted on this site (not YouTube), shown above the write-up */
+  film?: { src: string; poster: string; title: string; duration: string; published: string };
   sections: ProjectSection[];
 };
 
@@ -156,6 +158,92 @@ export const projects: Project[] = [
           "XGBoost at 0.717 weighted F1 in cross-validation, reported alongside its failure on the rare class",
           "Species recommender ported to the browser and verified against Python, 9 of 9 tests passing",
           "No backend in production: research outputs are exported to JSON at build time",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "living-city",
+    title: "The Living City",
+    tagline:
+      "A 3D miniature city inside an animal cell: walk its streets with a scientist guide, explore 11 organelle districts, try a hands-on activity in each and hunt for 24 hidden curiosities.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Game design, 3D world, science activities and audio",
+    team: "Solo",
+    featured: true,
+    stack: ["Three.js", "JavaScript", "Vite", "postprocessing", "GSAP", "Web Audio API", "Gemini TTS"],
+    domains: ["Science education", "Cell biology", "Game-based learning"],
+    metrics: [
+      { label: "Organelle districts, each with a hands-on activity", value: "11" },
+      { label: "Hidden curiosities to find", value: "24" },
+      { label: "Voiced lines for the guide and workers", value: "108" },
+    ],
+    links: { github: "https://github.com/poojaverma-me/TheLivingCity" },
+    cover: img("living-city", "golgi"),
+    thumbs: thumbs("living-city", ["a", "b", "c"]),
+    film: {
+      src: "/projects/living-city/film.mp4",
+      poster: "/projects/living-city/poster.webp",
+      title: "The Living City: walk inside an animal cell",
+      duration: "2:24",
+      published: "2026-10-10",
+    },
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "The Living City turns a classic biology poster, the animal cell drawn as a city, into a place you can walk around. Every organelle is a district: the nucleus is a control centre under a violet dome, the mitochondria are power plants, the Golgi apparatus is a packaging and shipping hall, and lysosomes are recycling tanks. Lab-coat workers, delivery trucks and vesicles keep the streets busy.",
+          "It is built for intro cell biology students and curious adults. There are no levels or locks: you explore freely, and the reward is curiosity. The opening shot matches the poster, then the camera descends to the front gate and the city is yours.",
+        ],
+        figures: [
+          { src: img("living-city", "overview"), caption: "The poster view: the whole cell as a city", alt: "Isometric 3D animal cell shaped like a city, with a violet nucleus dome, blue rough ER rings, orange mitochondria and a pink Golgi stack" },
+          { src: img("living-city", "labels"), caption: "Science labels over the overview", alt: "The cell city from above with numbered labels for each organelle" },
+        ],
+      },
+      {
+        id: "world",
+        label: "01 / The world",
+        title: "A Miniature You Can Walk",
+        body: [
+          "The city is made in Three.js and lit like a hand-built scale model: satin paint, glass and brushed metal under soft studio light, with ambient occlusion, bloom and a tilt-shift blur that makes it read as a miniature. One layout file holds every position, so districts, roads and the membrane gates never drift out of place.",
+          "About **140 workers** walk the streets, all drawn in **5 draw calls**: one instanced, GPU-skinned crowd with per-worker colour, and level of detail that drops far figures from the colour pass. Trucks, staff at their stations and drifting vesicles fill in the rest.",
+        ],
+        figures: [
+          { src: img("living-city", "nucleus"), caption: "The nucleus control centre", alt: "Violet glass dome over a control room with screens and a glowing nucleolus orb, ringed by the rough ER" },
+          { src: img("living-city", "mito"), caption: "A mitochondrion power plant", alt: "Orange capsule-shaped mitochondrion with glowing cristae, among city streets" },
+          { src: img("living-city", "street"), caption: "Street level near Protein QC", alt: "Street with a recycling tank, the Golgi shipping hall, a Protein QC sign and workers" },
+        ],
+      },
+      {
+        id: "learning",
+        label: "02 / Learning by doing",
+        title: "Learning by Doing",
+        body: [
+          "Each of the **11 districts** has something to look at closely and something to try. You transcribe a gene at the nucleus console, sort tagged cargo through the Golgi to lysosomes, the membrane or secretion, and pump protons across a crista until ATP synthase spins and releases ATP. The city analogy stays an analogy; the labels, cards and deeper notes on top are accurate science.",
+          "Dr. Celia Mendel, a scientist guide, walks with you, explains a place when you ask and offers a guided tour. Her lines and the workers' are **108 voiced lines in 5 voices**, generated offline with Gemini text-to-speech and cached by content hash, so only changed lines are regenerated. A field notebook tracks the districts you have visited, the activities you have tried and the **24 curiosities** you have found.",
+        ],
+        figures: [
+          { src: img("living-city", "sorting"), caption: "Sort the cargo at the Golgi", alt: "Golgi activity with parcels routed to lysosome, plasma membrane or secretion" },
+          { src: img("living-city", "proton"), caption: "Proton power in a mitochondrion", alt: "Magnified crista with protein complexes, a proton gradient and ATP synthase" },
+          { src: img("living-city", "guide"), caption: "Dr. Celia explains the lysosomes", alt: "Lysosome recycling tank beside a delivery truck with the guide's subtitle at the bottom" },
+        ],
+      },
+      {
+        id: "engineering",
+        label: "03 / Engineering",
+        title: "Built to Run in a Browser",
+        body: [
+          "Graphics quality is chosen automatically from three tiers, which change render resolution, shadow map size, ambient occlusion and the tilt-shift pass, and the player can override it. In a headless Chrome capture at 1800 by 1125 on an Apple M4, the full city drew in **198 draw calls**, about **2.1 million triangles**, at **42 fps**.",
+          "All sound is generated in code with the Web Audio API: ambience, effects and generative music. A QA script renders every effect offline and checks it against loudness targets (peak at or below -1 dBFS, no DC offset, little energy above 8 kHz). Scripted playtests, headless GPU screenshots and a per-district performance breakdown ran alongside, and the art direction went through **17 recorded review rounds** against the reference poster.",
+        ],
+        figures: [
+          { src: img("living-city", "ser"), caption: "The smooth ER detox district", alt: "Green folded smooth ER ribbons with enzyme stations beside a winding road" },
+          { src: img("living-city", "membrane"), caption: "Through the membrane", alt: "City blocks seen through the translucent cell membrane near a vesicle port" },
         ],
       },
     ],
@@ -1105,4 +1193,10 @@ export function getProject(slug: string): Project | undefined {
 
 export function featuredProjects(): Project[] {
   return projects.filter((p) => p.featured);
+}
+
+/** The number of projects as a word, for copy ("Thirteen builds"). */
+export function projectCountWord(): string {
+  const words = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
+  return words[projects.length] ?? String(projects.length);
 }
