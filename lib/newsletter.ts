@@ -18,6 +18,16 @@ export type Issue = {
 /** newest first */
 export const issues: Issue[] = [
   {
+    "slug": "2026-10-12-muse-wonder",
+    "title": "Meta’s Muse Wonder: frontier, with an asterisk",
+    "dek": "Independent testers confirm Wonder Full is a frontier model, but the version developers can call is a tier lower at Opus 5.5’s price, and the rest of the week was about who checks the claims.",
+    "date": "12 Oct 2026",
+    "iso": "2026-10-12",
+    "kind": "Model launch + week in review",
+    "minutes": 8,
+    "cover": "/newsletter/2026-10-12-muse-wonder/images/muse-hero.jpg"
+  },
+  {
     "slug": "2026-10-03-ai-week-roundup",
     "title": "The week Washington stepped into AI",
     "dek": "A voluntary White House accord, a reported FTC probe, Anthropic’s leaked IPO numbers and a turbulent week at OpenAI, plus where the model race stands.",
