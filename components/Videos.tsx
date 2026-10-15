@@ -36,7 +36,7 @@ export default function Videos() {
         </h2>
         <p className="lead mt-4 max-w-2xl">
           On Beyond Prompt I check the week&apos;s AI launches against independent benchmarks. On
-          my own channel I demo the products I build, each in under two minutes.
+          my own channel I show the products I build, in short demos and films.
         </p>
       </Reveal>
 

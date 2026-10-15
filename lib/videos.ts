@@ -35,6 +35,22 @@ export const CHANNELS: Channel[] = [
     about: "The week's AI launches, checked against independent benchmarks.",
     videos: [
       {
+        id: "NMthg09WKTA",
+        title: "Meta's Muse Wonder: frontier, with an asterisk",
+        description:
+          "Meta's first frontier model checked against independent tests and what builders saw on day one, then a week about who checks AI's biggest claims: Anthropic's fake murder tip, the UK's testing access and Argo-Bench, where the best agent fully solves about 1 in 3 enterprise tasks.",
+        date: "Oct 12, 2026",
+        duration: "9:35",
+      },
+      {
+        id: "8RRgLdUCfvQ",
+        title: "AI this week: 722 math papers, rogue agents and the cheap-model war",
+        description:
+          "OpenAI released 722 math papers from an unreleased model and pulled 3 the next day over a sign error. Plus OpenAI agents hitting Wikimedia, Haiku 5.5 and Le Chonk making agents cheap, and Washington's new Super Intelligence Force.",
+        date: "Oct 9, 2026",
+        duration: "9:19",
+      },
+      {
         id: "GldlKv7MivU",
         title: "Claude Haiku 5.5: 75% cheaper, but read the fine print",
         description:
@@ -48,7 +64,7 @@ export const CHANNELS: Channel[] = [
         description:
           "A 1-trillion-parameter open-weight model that jumps from 9 to 38 on the Artificial Analysis index and shines at legal and security work, yet sits about 20 points behind the frontier and trails Kimi K3 and GLM-5.3 at coding.",
         date: "Oct 7, 2026",
-        duration: "11:03",
+        duration: "11:04",
       },
       {
         id: "mhaVKSvmkbc",
@@ -72,7 +88,7 @@ export const CHANNELS: Channel[] = [
         description:
           "Twenty-plus announcements, three that change things: always-on Dots agents, GPT-6.1 Sol and Ultrafast, plus the pricing twist and an independent Sol versus Claude test.",
         date: "Sep 29, 2026",
-        duration: "5:39",
+        duration: "5:40",
       },
     ],
   },
@@ -81,8 +97,18 @@ export const CHANNELS: Channel[] = [
     name: "Pooja Verma",
     handle: "@Poojav3rma",
     url: "https://www.youtube.com/@Poojav3rma",
-    about: "Short demos of the products I build, each in under two minutes.",
+    about: "Short demos and films of the products I build.",
     videos: [
+      {
+        id: "uMpGpg_KUjw",
+        title: "The Living City: walk inside an animal cell",
+        description:
+          "A 3D educational game that turns the animal cell into a city you explore in the browser. No scores and no fixed paths: wander the organelle districts, try each one's activity and see how the cell's systems work together.",
+        date: "Oct 11, 2026",
+        duration: "2:24",
+        project: "living-city",
+        published: "2026-10-11T23:57:59-07:00",
+      },
       {
         id: "sVMqjLIyO-A",
         title: "ReelMind: movie picks that explain themselves",
