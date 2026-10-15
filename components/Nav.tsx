@@ -10,6 +10,7 @@ import ShinyButton from "@/components/ui/shiny-button";
 
 const links = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
   { href: "/#experience", label: "Experience" },
   { href: "/#research", label: "Research" },

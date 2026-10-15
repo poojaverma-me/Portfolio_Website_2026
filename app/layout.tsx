@@ -46,7 +46,11 @@ export const metadata: Metadata = {
   creator: profile.name,
   publisher: profile.name,
   category: "technology",
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    // the plain-text versions for AI assistants (llmstxt.org)
+    types: { "text/plain": [{ url: "/llms.txt", title: "Pooja Verma for AI assistants" }] },
+  },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,

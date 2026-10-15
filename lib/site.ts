@@ -1,4 +1,5 @@
 import { profile } from "@/lib/profile";
+import { projects } from "@/lib/projects";
 import { socials } from "@/lib/socials";
 
 /**
@@ -15,18 +16,18 @@ export const SITE_URL = (
 export const SITE_NAME = `${profile.name} · Portfolio`;
 
 /** Under 60 characters, so a search result shows all of it. */
-export const SITE_TITLE = `${profile.name} · AI Developer and Researcher in Kamloops, BC`;
+export const SITE_TITLE = `${profile.name} · AI Developer in British Columbia, Canada`;
 
 /** Under 160 characters, so it survives as a search snippet and a link preview. */
 export const SITE_DESCRIPTION =
-  "AI developer and machine learning researcher in Kamloops, British Columbia, building RAG systems, LLM evaluation and full-stack products at TRU.";
+  `AI developer and machine learning researcher in British Columbia, Canada: RAG systems, LLM products and ML models, with published research and ${projects.length} case studies.`;
 
 /**
  * The longer, factual summary that structured data and AI assistants use.
  * Every claim here is on the page and in Pooja's resume.
  */
 export const SITE_SUMMARY =
-  "Pooja Verma is an AI developer and machine learning researcher in Kamloops, British Columbia, and a computing science student at Thompson Rivers University. She builds retrieval-augmented generation (RAG) systems, evaluates and fine-tunes large language models, and ships full-stack and data products. Mitacs research intern at PataBid; holder of a UREAP Research Award and a TRU Student Sustainability Research Grant; her systems serve 3,000+ students and 4,000+ retailers. She is open to AI development projects, applied ML research, grant-funded work and collaborations across BC and Canada.";
+  `Pooja Verma is an AI developer and machine learning researcher based in Kamloops, British Columbia, Canada, completing a Bachelor of Computing Science at Thompson Rivers University (December 2026). She builds retrieval-augmented generation (RAG) assistants, LLM-powered products, machine learning models and the full-stack software around them. She is first author of a peer-reviewed deep learning paper on diabetic retinopathy detection (98.2% accuracy on APTOS 2019), holds a UREAP Research Award and a TRU Student Sustainability Research Grant, designs coding benchmarks and RLHF data for frontier LLMs at Outlier, and was a Mitacs research intern at PataBid. Her systems have served 3,000+ students and 4,000+ retailers, and her portfolio documents ${projects.length} projects with measured results. She works with teams across British Columbia and Canada, in person or remotely, is open to relocation, and is available for full-time roles and AI projects.`;
 
 /**
  * What the site is about, for the assistants that still read the keywords tag
@@ -34,9 +35,16 @@ export const SITE_SUMMARY =
  */
 export const KEYWORDS = [
   "Pooja Verma",
-  "AI developer Kamloops",
   "AI developer British Columbia",
   "AI developer Canada",
+  "AI developer BC",
+  "hire an AI developer in Canada",
+  "AI developer Kamloops",
+  "machine learning engineer British Columbia",
+  "LLM developer Canada",
+  "RAG developer Canada",
+  "generative AI developer",
+  "AI researcher British Columbia",
   "machine learning researcher British Columbia",
   "machine learning developer Kamloops",
   "Thompson Rivers University AI research",
@@ -91,7 +99,10 @@ const TOPICS = [
   ["Artificial intelligence", "Artificial_intelligence"],
   ["Machine learning", "Machine_learning"],
   ["Large language models", "Large_language_model"],
+  ["Generative artificial intelligence", "Generative_artificial_intelligence"],
   ["Retrieval-augmented generation", "Retrieval-augmented_generation"],
+  ["Natural language processing", "Natural_language_processing"],
+  ["Semantic search", "Semantic_search"],
   ["Reinforcement learning from human feedback", "Reinforcement_learning_from_human_feedback"],
   ["Computer vision", "Computer_vision"],
   ["Convolutional neural networks", "Convolutional_neural_network"],
@@ -125,12 +136,10 @@ export function personSchema() {
         },
         homeLocation: KAMLOOPS,
         address: KAMLOOPS.address,
+        // a current student, so TRU is an affiliation, not alma mater
         affiliation: TRU,
-        alumniOf: TRU,
-        worksFor: [
-          { "@type": "Organization", name: "PataBid", description: "Mitacs Business Strategy Internship, junior research intern" },
-          { "@type": "Organization", name: "Outlier", description: "Generative AI data specialist" },
-        ],
+        memberOf: TRU,
+        worksFor: [{ "@type": "Organization", name: "Outlier", url: "https://outlier.ai", description: "Generative AI data specialist" }],
         award: [
           "UREAP Research Award, Thompson Rivers University ($6,000), for automated diabetic retinopathy detection, published in the Inspire Health Journal (2026)",
           "TRU Student Sustainability Research Grant ($2,500), for AI-driven post-wildfire ecosystem recovery research",
@@ -221,5 +230,18 @@ export function personSchema() {
         isPartOf: { "@id": `${SITE_URL}/#website` },
       },
     ],
+  };
+}
+
+/** BreadcrumbList for a page: [name, path] pairs from the home page down. */
+export function breadcrumbs(trail: [string, string][]) {
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map(([name, path], i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name,
+      item: `${SITE_URL}${path}`,
+    })),
   };
 }
