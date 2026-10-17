@@ -35,6 +35,7 @@ const SERVICES: Service[] = [
       { label: "Tidal: 96.9% routing accuracy", href: "/projects/tidal" },
       { label: "Pulse: live coaching at 230 ms", href: "/projects/pulse" },
       { label: "ReelMind", href: "/projects/reelmind" },
+      { label: "Clinic voice receptionist", href: "/projects/voice-receptionist" },
     ],
   },
   {

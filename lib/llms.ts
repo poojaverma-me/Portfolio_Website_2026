@@ -43,6 +43,7 @@ const SERVICES = [
   "LLM evaluation, coding benchmarks, red-teaming and RLHF data",
   "Machine learning models with SHAP explanations, from tabular data to medical images",
   "Full-stack web apps (Next.js, React, Node.js, Firebase) and data dashboards",
+  "Real-time voice agents that call tools and write to business systems (Gemini Live API)",
   "Interactive 3D and educational experiences in the browser (Three.js)",
   "Salesforce (Apex, Lightning Web Components) and Power Platform automation",
 ];

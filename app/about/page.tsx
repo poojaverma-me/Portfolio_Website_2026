@@ -114,6 +114,15 @@ export default function AboutPage() {
           </p>
 
           <p>
+            I&apos;m now building a{" "}
+            <Link className="link-accent" href="/projects/voice-receptionist">
+              real-time voice receptionist
+            </Link>{" "}
+            for clinics on the Gemini Live API: it books, cancels and reschedules appointments in
+            Google Calendar through function calling, and only discusses a caller&apos;s bookings once
+            their name and phone number match.
+          </p>
+          <p>
             I also build interactive 3D worlds for the browser.{" "}
             <Link className="link-accent" href="/projects/living-city">
               The Living City
