@@ -35,6 +35,14 @@ export const CHANNELS: Channel[] = [
     about: "The week's AI launches, checked against independent benchmarks.",
     videos: [
       {
+        id: "y6nELJeKF2k",
+        title: "Anthropic is giving away $48 billion, kind of",
+        description:
+          "Anthropic pledges 5% of the company to a Public Benefit Fund just as juniors fall from 27% to 9% of its technical hires. Plus what AI work costs now: MiniMax's $0.15 Space Bunny, Gemini 4 Argon scoring 97.5% or 49.8% on ARC-AGI-3 depending on the harness, and a $520 Minecraft run.",
+        date: "Oct 19, 2026",
+        duration: "6:49",
+      },
+      {
         id: "NMthg09WKTA",
         title: "Meta's Muse Wonder: frontier, with an asterisk",
         description:
