@@ -16,18 +16,18 @@ export const SITE_URL = (
 export const SITE_NAME = `${profile.name} · Portfolio`;
 
 /** Under 60 characters, so a search result shows all of it. */
-export const SITE_TITLE = `${profile.name} · AI Developer in British Columbia, Canada`;
+export const SITE_TITLE = `${profile.name} · AI Developer in Kamloops, BC, Canada`;
 
 /** Under 160 characters, so it survives as a search snippet and a link preview. */
 export const SITE_DESCRIPTION =
-  `AI developer and machine learning researcher in British Columbia, Canada: RAG systems, LLM products and ML models, with published research and ${projects.length} case studies.`;
+  `Award-winning AI developer in Kamloops, BC: RAG assistants, LLM products, ML models and AI automation, with a Best Paper Award and ${projects.length} case studies.`;
 
 /**
  * The longer, factual summary that structured data and AI assistants use.
  * Every claim here is on the page and in Pooja's resume.
  */
 export const SITE_SUMMARY =
-  `Pooja Verma is an AI developer and machine learning researcher based in Kamloops, British Columbia, Canada, completing a Bachelor of Computing Science at Thompson Rivers University (December 2026). She builds retrieval-augmented generation (RAG) assistants, LLM-powered products, machine learning models and the full-stack software around them. She is first author of a peer-reviewed deep learning paper on diabetic retinopathy detection (98.2% accuracy on APTOS 2019), holds a UREAP Research Award and a TRU Student Sustainability Research Grant, designs coding benchmarks and RLHF data for frontier LLMs at Outlier, and was a Mitacs research intern at PataBid. Her systems have served 3,000+ students and 4,000+ retailers, and her portfolio documents ${projects.length} projects with measured results. She works with teams across British Columbia and Canada, in person or remotely, is open to relocation, and is available for full-time roles and AI projects.`;
+  `Pooja Verma is an AI developer and machine learning researcher based in Kamloops, British Columbia, Canada, completing a Bachelor of Computing Science at Thompson Rivers University (December 2026). She builds retrieval-augmented generation (RAG) assistants, LLM-powered products, machine learning models and the full-stack software around them. She is first author of a peer-reviewed deep learning paper on diabetic retinopathy detection (98.2% accuracy on APTOS 2019) that won a Best Paper Award, holds a UREAP Research Award and a TRU Student Sustainability Research Grant, and was a Mitacs-funded research intern at PataBid. Since 2024 she has trained frontier large language models at Outlier (Scale AI), designing coding benchmarks, RLHF and fine-tuning data. She explains AI launches on her YouTube channel, Beyond Prompt, and in the Benchmarked newsletter. Her systems have served 3,000+ students and 4,000+ retailers, and her portfolio documents ${projects.length} projects with measured results. She works with teams in Kamloops, across British Columbia and across Canada, in person or remotely, is open to relocation, and is available for full-time roles and AI projects.`;
 
 /**
  * What the site is about, for the assistants that still read the keywords tag
@@ -40,6 +40,19 @@ export const KEYWORDS = [
   "AI developer BC",
   "hire an AI developer in Canada",
   "AI developer Kamloops",
+  "AI developer in Kamloops BC",
+  "Kamloops AI developer",
+  "AI consultant Kamloops",
+  "AI solutions Kamloops",
+  "machine learning engineer Kamloops",
+  "award-winning AI developer",
+  "Best Paper Award diabetic retinopathy",
+  "AI workflow automation",
+  "AI pipelines",
+  "LLM fine-tuning",
+  "Outlier AI",
+  "Scale AI",
+  "Beyond Prompt YouTube",
   "machine learning engineer British Columbia",
   "LLM developer Canada",
   "RAG developer Canada",
@@ -59,6 +72,7 @@ export const KEYWORDS = [
   "CNN research",
   "Mitacs research intern",
   "UREAP research award",
+  "Mitacs Business Strategy Internship",
   "full-stack developer",
   "Python",
   "TypeScript",
@@ -104,6 +118,10 @@ const TOPICS = [
   ["Natural language processing", "Natural_language_processing"],
   ["Semantic search", "Semantic_search"],
   ["Reinforcement learning from human feedback", "Reinforcement_learning_from_human_feedback"],
+  ["Fine-tuning", "Fine-tuning_(deep_learning)"],
+  ["AI agents", "Intelligent_agent"],
+  ["Medical image computing", "Medical_image_computing"],
+  ["Diabetic retinopathy", "Diabetic_retinopathy"],
   ["Computer vision", "Computer_vision"],
   ["Convolutional neural networks", "Convolutional_neural_network"],
   ["Gradient boosting", "Gradient_boosting"],
@@ -127,11 +145,15 @@ export function personSchema() {
         email: `mailto:${profile.email}`,
         telephone: profile.phone,
         jobTitle: "AI Developer and Machine Learning Researcher",
+        disambiguatingDescription: "AI developer and machine learning researcher in Kamloops, British Columbia, Canada",
         description: SITE_SUMMARY,
         hasOccupation: {
           "@type": "Occupation",
           name: "AI developer and machine learning researcher",
-          occupationLocation: { "@type": "AdministrativeArea", name: "British Columbia, Canada" },
+          occupationLocation: [
+            { "@type": "City", name: "Kamloops, British Columbia" },
+            { "@type": "AdministrativeArea", name: "British Columbia, Canada" },
+          ],
           skills: profile.skills.join(", "),
         },
         homeLocation: KAMLOOPS,
@@ -139,8 +161,18 @@ export function personSchema() {
         // a current student, so TRU is an affiliation, not alma mater
         affiliation: TRU,
         memberOf: TRU,
-        worksFor: [{ "@type": "Organization", name: "Outlier", url: "https://outlier.ai", description: "Generative AI data specialist" }],
+        worksFor: [
+          {
+            "@type": "Organization",
+            name: "Outlier",
+            url: "https://outlier.ai",
+            parentOrganization: { "@type": "Organization", name: "Scale AI", url: "https://scale.com" },
+            description: "Generative AI data specialist: coding benchmarks, RLHF and fine-tuning data for frontier LLMs",
+          },
+        ],
         award: [
+          "Best Paper Award, for \"Optimized Deep Learning Framework for Diabetic Retinopathy Detection and Classification Using Fundus Imaging\" (2026)",
+          "Mitacs Business Strategy Internship (2026), research internship at PataBid",
           "UREAP Research Award, Thompson Rivers University ($6,000), for automated diabetic retinopathy detection, published in the Inspire Health Journal (2026)",
           "TRU Student Sustainability Research Grant ($2,500), for AI-driven post-wildfire ecosystem recovery research",
         ],
@@ -150,7 +182,7 @@ export function personSchema() {
           "@type": "ContactPoint",
           contactType: "AI projects, research collaborations and grant-funded work",
           email: profile.email,
-          areaServed: ["CA-BC", "CA"],
+          areaServed: ["Kamloops", "CA-BC", "CA"],
           availableLanguage: "en",
         },
         makesOffer: {
@@ -161,6 +193,7 @@ export function personSchema() {
             description:
               "RAG systems, LLM evaluation, machine learning models and full-stack AI products, for projects, research and grants in British Columbia and across Canada.",
             areaServed: [
+              { "@type": "City", name: "Kamloops" },
               { "@type": "AdministrativeArea", name: "British Columbia" },
               { "@type": "Country", name: "Canada" },
             ],
@@ -205,6 +238,7 @@ export function personSchema() {
         isPartOf: { "@type": "PublicationIssue", issueNumber: "1", isPartOf: { "@type": "PublicationVolume", volumeNumber: "1", isPartOf: { "@type": "Periodical", name: "Inspire Health Journal" } } },
         pagination: "42-62",
         publisher: { "@type": "Organization", name: "Inspire Academic Press Inc." },
+        award: "Best Paper Award",
         sameAs: "https://doi.org/10.65718/inspireHealth.2026.2005",
         url: "https://doi.org/10.65718/inspireHealth.2026.2005",
         identifier: { "@type": "PropertyValue", propertyID: "DOI", value: "10.65718/inspireHealth.2026.2005" },

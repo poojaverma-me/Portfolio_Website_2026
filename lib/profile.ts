@@ -252,12 +252,12 @@ export const research: ResearchItem[] = [
       "Optimized Deep Learning Framework for Diabetic Retinopathy Detection and Classification Using Fundus Imaging",
     kinds: ["Paper", "Research project"],
     venue:
-      "Inspire Health Journal 1(1), 42\u201362 · First author, with Ghazanfar Latif, Jaspreet Kaur and Mohsin Butt · UREAP Research Award ($6,000)",
+      "Inspire Health Journal 1(1), 42\u201362 · First author, with Ghazanfar Latif, Jaspreet Kaur and Mohsin Butt · Best Paper Award · UREAP Research Award ($6,000)",
     year: "2026",
     status: "Published",
     hook: "Can one photograph of the eye flag diabetic retinopathy before it costs someone their sight?",
     summary:
-      "CNNs catch the small lesions; vision transformers see the whole retina. I fused features from both, AlexNet and a Swin Transformer, and a Random Forest trained on them reached 98.2% accuracy on the public APTOS 2019 dataset, ahead of every single-model baseline. Funded by a $6,000 UREAP award and published as first author.",
+      "CNNs catch the small lesions; vision transformers see the whole retina. I fused features from both, AlexNet and a Swin Transformer, and a Random Forest trained on them reached 98.2% accuracy on the public APTOS 2019 dataset, ahead of every single-model baseline. Funded by a $6,000 UREAP award, published as first author and recognised with a Best Paper Award.",
     links: [{ label: "Paper", href: "https://doi.org/10.65718/inspireHealth.2026.2005" }],
     cover: { src: unsplash("1617339860632-f53c5b5dce4d"), alt: "Close-up of a human eye with an amber iris" },
   },

@@ -89,7 +89,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "Does she work with companies outside British Columbia?",
-    "Yes. Pooja is based in Kamloops, British Columbia, and works with teams across Canada in person or remotely. She is also open to relocating for a full-time role.",
+    "Yes. Pooja is based in Kamloops, British Columbia, works with teams in Kamloops and across BC, and with teams across Canada in person or remotely. She is also open to relocating for a full-time role.",
   ],
   [
     "Is she available for full-time roles?",
@@ -97,7 +97,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "Can she help with research or grant-funded work?",
-    "Yes. She has led funded research (a $6,000 UREAP Research Award and a TRU Student Sustainability Research Grant), completed a Mitacs research internship, and published as first author in the Inspire Health Journal.",
+    "Yes. She has led funded research (a $6,000 UREAP Research Award and a TRU Student Sustainability Research Grant), completed a Mitacs-funded research internship, and published as first author in the Inspire Health Journal, a paper that won a Best Paper Award.",
   ],
   [
     "How does she show that an AI feature works?",

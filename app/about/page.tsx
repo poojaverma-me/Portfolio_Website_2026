@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Award, Mail } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { profile } from "@/lib/profile";
 import { projects } from "@/lib/projects";
 import { SITE_SUMMARY, SITE_URL, breadcrumbs } from "@/lib/site";
 import { socials } from "@/lib/socials";
+import { CHANNELS } from "@/lib/videos";
+import { issues } from "@/lib/newsletter";
 
-const title = "About Pooja Verma · AI Developer in British Columbia, Canada";
+const title = "About Pooja Verma · AI Developer in Kamloops, BC, Canada";
 const description =
-  `Pooja Verma is an AI developer and machine learning researcher in British Columbia, Canada: RAG assistants, LLM products, published deep learning research and ${projects.length} case studies.`;
+  "Award-winning AI developer in Kamloops, BC: a Best Paper Award, UREAP and Mitacs funding, frontier LLM training at Outlier and AI used by thousands of people.";
 
 export const metadata: Metadata = {
   // absolute: the name is already in it, so skip the layout's " · Pooja Verma"
@@ -20,30 +22,84 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description },
 };
 
+const PAPER = "https://doi.org/10.65718/inspireHealth.2026.2005";
+
+/** Awards and competitive funding, most recent recognition first. */
+const RECOGNITION: { name: string; detail: string; href?: string }[] = [
+  {
+    name: "Best Paper Award",
+    detail:
+      "For my first-author paper on detecting diabetic retinopathy in retinal photographs, which reached 98.2% accuracy and was published in the Inspire Health Journal (2026).",
+    href: PAPER,
+  },
+  {
+    name: "Mitacs Business Strategy Internship",
+    detail:
+      "An eight-month, Mitacs-funded research internship at PataBid (2026), where I owned the PDF engine at the core of a construction estimating platform and automated its AI pipelines.",
+  },
+  {
+    name: "UREAP Research Award, $6,000",
+    detail:
+      "Thompson Rivers University's Undergraduate Research Experience Award (2025), which funded the retinopathy research behind the paper.",
+  },
+  {
+    name: "TRU Student Sustainability Research Grant, $2,500",
+    detail:
+      "For AI-driven wildfire recovery research in BC's Thompson-Okanagan (2026), presented at the TRU Sustainability Conference and published as the After Fire atlas.",
+  },
+];
+
 /** Facts at a glance: each one is on the site and in the resume. */
 const FACTS: [string, React.ReactNode][] = [
-  ["Based in", "Kamloops, British Columbia, Canada. Works across Canada in person or remotely, and open to relocation"],
-  ["Focus", "Retrieval-augmented generation (RAG), LLM products and evaluation, machine learning models, full-stack development"],
-  ["Education", "Bachelor of Computing Science, Thompson Rivers University (TRU), expected December 2026"],
+  ["Based in", "Kamloops, British Columbia, Canada. Works across BC and Canada, in person or remotely, and open to relocation"],
+  ["Focus", "AI products, retrieval-augmented generation (RAG), LLM evaluation and fine-tuning data, machine learning models, AI workflow automation"],
+  ["Recognition", "Best Paper Award · UREAP Research Award ($6,000) · Mitacs Business Strategy Internship · TRU Student Sustainability Research Grant ($2,500)"],
   [
     "Publication",
     <>
       First author, &ldquo;Optimized Deep Learning Framework for Diabetic Retinopathy Detection and
       Classification Using Fundus Imaging&rdquo;, Inspire Health Journal, 2026 (
-      <a className="link-accent" href="https://doi.org/10.65718/inspireHealth.2026.2005" target="_blank" rel="noreferrer">
+      <a className="link-accent" href={PAPER} target="_blank" rel="noreferrer">
         DOI
       </a>
       )
     </>,
   ],
-  ["Awards", "UREAP Undergraduate Research Award ($6,000), TRU Student Sustainability Research Grant ($2,500)"],
-  ["Experience", "Outlier (generative AI data), PataBid (Mitacs research internship), BC Lottery Corporation (software co-op), TRU (research and teaching)"],
-  ["Reach", "Systems used by 3,000+ students, 4,000+ lottery retailers and 1,000+ staff; 150+ students taught"],
-  ["Writing and video", "Beyond Prompt on YouTube and the Benchmarked newsletter, both fact-checking AI launches"],
+  ["LLM training", "Outlier (Scale AI), since November 2024: coding benchmarks, RLHF and fine-tuning data, model evaluation and red-teaming"],
+  ["Experience", "Outlier, PataBid (Mitacs), BC Lottery Corporation (software co-op), Thompson Rivers University (research, RAG systems, teaching)"],
+  ["Reach", "Systems used by 3,000+ students, 1,000+ staff and 4,000+ lottery retailers; 150+ students taught"],
+  ["Education", "Bachelor of Computing Science, Thompson Rivers University (TRU), Kamloops, expected December 2026"],
+  ["Teaching AI", "Beyond Prompt on YouTube and the Benchmarked newsletter: AI launches checked against independent benchmarks"],
+];
+
+/** Questions people (and search engines) ask, answered from the facts above. */
+const FAQ: [string, string][] = [
+  [
+    "Who is Pooja Verma?",
+    "Pooja Verma is an AI developer and machine learning researcher based in Kamloops, British Columbia, Canada. She builds AI products, retrieval-augmented generation (RAG) assistants, machine learning models and AI workflow automation, has trained frontier large language models at Outlier (Scale AI) since 2024, and won a Best Paper Award for her first-author research on diabetic retinopathy detection.",
+  ],
+  [
+    "What awards and funding has Pooja Verma received?",
+    "A Best Paper Award for her diabetic retinopathy detection paper, a $6,000 UREAP Research Award from Thompson Rivers University, a Mitacs-funded Business Strategy Internship, and a $2,500 TRU Student Sustainability Research Grant.",
+  ],
+  [
+    "Is there an AI developer in Kamloops, BC who builds custom AI solutions?",
+    "Yes. Pooja Verma is based in Kamloops and builds custom AI solutions for teams in Kamloops, across British Columbia and across Canada, in person or remotely: RAG assistants and AI search, LLM-powered product features, machine learning models and automated AI workflows.",
+  ],
+  [
+    "What has Pooja Verma built that people use?",
+    "A RAG study assistant used by 3,000+ Thompson Rivers University students, Salesforce tools for BC Lottery Corporation's network of 4,000+ retailers, an employee check-in platform for 1,000+ staff, the PDF engine at the core of a construction estimating platform, and " +
+      `${projects.length} documented projects, from LLM products to an educational 3D game.`,
+  ],
+  [
+    "How do I hire Pooja Verma for an AI project?",
+    `Email ${profile.email} with the problem, the data you have and your timeline. She is open to full-time roles and to AI projects.`,
+  ],
 ];
 
 export default function AboutPage() {
   const jev = projects.filter((p) => ["reelmind", "pulse", "tidal", "shortlist", "wildwood", "tadka"].includes(p.slug));
+  const beyond = CHANNELS.find((c) => c.id === "beyond-prompt");
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -54,8 +110,18 @@ export default function AboutPage() {
         name: title,
         description: SITE_SUMMARY,
         inLanguage: "en-CA",
+        dateModified: new Date().toISOString(),
         mainEntity: { "@id": `${SITE_URL}/#person` },
         isPartOf: { "@id": `${SITE_URL}/#website` },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${SITE_URL}/about#faq`,
+        mainEntity: FAQ.map(([q, a]) => ({
+          "@type": "Question",
+          name: q,
+          acceptedAnswer: { "@type": "Answer", text: a },
+        })),
       },
       breadcrumbs([
         ["Home", "/"],
@@ -70,38 +136,61 @@ export default function AboutPage() {
       <Reveal>
         <p className="eyebrow">About</p>
         <h1 className="section-title mt-2 max-w-3xl">
-          AI developer and researcher <span className="text-label-2">in British Columbia, Canada.</span>
+          Award-winning AI developer <span className="text-label-2">in Kamloops, British Columbia.</span>
         </h1>
         <p className="lead mt-6 max-w-3xl">
-          I&apos;m Pooja Verma. I build AI systems that hold up outside the demo: retrieval-augmented
-          generation (RAG) assistants, LLM-powered products, machine learning models for research,
-          and the full-stack software around them. I&apos;m based in Kamloops, British Columbia, work
-          with teams across Canada in person or remotely, and I&apos;m open to relocating.
+          I&apos;m Pooja Verma. I build AI that people actually use: products in production every day,
+          research that has won a Best Paper Award, and the training data behind frontier language
+          models. I don&apos;t build demos for their own sake. I build systems that change how people
+          work, and I get teams from an idea to a working product fast.
         </p>
       </Reveal>
 
       <Reveal delay={0.05}>
-        <div className="docs-prose mt-14 space-y-5">
-          <h2 className="headline !text-[1.375rem] text-label">What I&apos;ve built</h2>
+        <h2 className="headline mt-14 !text-[1.375rem]">Recognition</h2>
+        <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+          {RECOGNITION.map((r) => (
+            <li key={r.name} className="glass-card flex gap-4 p-5">
+              <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-fill-2 text-accent" aria-hidden>
+                <Award size={18} />
+              </span>
+              <div>
+                <h3 className="headline !text-[1.0625rem]">
+                  {r.href ? (
+                    <a className="hover:text-accent" href={r.href} target="_blank" rel="noreferrer">
+                      {r.name}
+                    </a>
+                  ) : (
+                    r.name
+                  )}
+                </h3>
+                <p className="mt-1.5 text-[0.9375rem] leading-[1.55] text-label-2">{r.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <div className="docs-prose mt-16 space-y-5">
+          <h2 className="headline !text-[1.375rem] text-label">AI that ships, and gets used every day</h2>
           <p>
-            At Thompson Rivers University I built a RAG study assistant grounded in course material.
-            It reached 3,000+ students, raised answer relevance by 40%, and took 35% of the repeat
-            questions off instructors&apos; desks.
+            Most of what I build is in daily use. At Thompson Rivers University I built a
+            retrieval-augmented generation (RAG) study assistant grounded in course material: it serves
+            3,000+ students, raised answer relevance by 40% and took 35% of the repeat questions off
+            instructors&apos; desks. At the British Columbia Lottery Corporation I built Salesforce and
+            Power Platform tools for a network of 4,000+ lottery retailers, cutting manual licensing
+            work by 30%, and co-built an employee check-in platform for 1,000+ staff.
           </p>
           <p>
-            At Outlier I design coding benchmarks and multi-turn reasoning prompts used to fine-tune
-            frontier large language models through reinforcement learning from human feedback (RLHF),
-            and red-team model reasoning for hallucinations. Before that, as a Mitacs research intern
-            at PataBid, I owned the PDF rendering engine at the core of a construction estimating
-            platform and automated the pipelines behind its AI stamp and take-off detection.
+            As a Mitacs-funded research intern at PataBid, I owned the PDF rendering engine at the
+            core of a construction estimating platform and automated the data and training pipelines
+            behind its AI stamp and take-off detection. Beyond these roles, I&apos;ve built AI pipelines
+            and automated workflows for about a dozen companies, so their people spend less time on
+            repetitive work and reach a working MVP sooner.
           </p>
           <p>
-            As a software engineering co-op at the British Columbia Lottery Corporation I built
-            Salesforce and Power Platform tools for a network of 4,000+ lottery retailers, cutting
-            manual licensing work by 30%, and co-built an employee check-in platform for 1,000+ staff.
-          </p>
-          <p>
-            On my own I&apos;ve built six AI products on TypeSafe&apos;s Jev decision model, each with
+            On my own I&apos;ve shipped six AI products on TypeSafe&apos;s Jev decision model, each with
             its latency, cost and accuracy measured:{" "}
             {jev.map((p, i) => (
               <span key={p.slug}>
@@ -110,32 +199,44 @@ export default function AboutPage() {
                 </Link>
                 {i < jev.length - 2 ? ", " : i === jev.length - 2 ? " and " : "."}
               </span>
-            ))}
-          </p>
-
-          <p>
-            I&apos;m now building a{" "}
+            ))}{" "}
+            I also build{" "}
+            <Link className="link-accent" href="/projects/living-city">
+              interactive 3D learning worlds
+            </Link>{" "}
+            and a{" "}
             <Link className="link-accent" href="/projects/voice-receptionist">
               real-time voice receptionist
             </Link>{" "}
-            for clinics on the Gemini Live API: it books, cancels and reschedules appointments in
-            Google Calendar through function calling, and only discusses a caller&apos;s bookings once
-            their name and phone number match.
+            that books clinic appointments through function calling.
+          </p>
+
+          <h2 className="headline !text-[1.375rem] pt-6 text-label">I know LLMs from the inside</h2>
+          <p>
+            Since November 2024 I&apos;ve trained frontier large language models at Outlier, Scale
+            AI&apos;s platform for AI training data. I design coding benchmarks and multi-turn reasoning
+            prompts used to fine-tune models through reinforcement learning from human feedback (RLHF),
+            write the annotated rationales and synthetic datasets that feed supervised fine-tuning,
+            and red-team model reasoning for hallucinations. Along the way I&apos;ve benchmarked 100+
+            code submissions to find exactly where models break.
           </p>
           <p>
-            I also build interactive 3D worlds for the browser.{" "}
-            <Link className="link-accent" href="/projects/living-city">
-              The Living City
-            </Link>{" "}
-            turns an animal cell into a miniature city that biology students can walk through, with 11
-            organelle districts, a hands-on activity in each and a voiced scientist guide.
+            That work is why my AI products hold up: I know where language models fail, how they are
+            evaluated, and how to make them reliable, fast and affordable enough to run on every
+            request.
           </p>
-          <h2 className="headline !text-[1.375rem] pt-6 text-label">Research</h2>
+
+          <h2 className="headline !text-[1.375rem] pt-6 text-label">Award-winning research</h2>
           <p>
-            My first-author paper in the Inspire Health Journal (2026) detects diabetic retinopathy in
-            retinal photographs by fusing features from a convolutional network (AlexNet) and a vision
-            transformer (Swin), reaching 98.2% accuracy on the public APTOS 2019 dataset. The work was
-            funded by a $6,000 UREAP Research Award.
+            My first-author paper detects diabetic retinopathy, a leading cause of preventable
+            blindness, from a single retinal photograph. It fuses features from a convolutional network
+            (AlexNet) and a vision transformer (Swin), reaches 98.2% accuracy on the public APTOS 2019
+            dataset, and won a <strong>Best Paper Award</strong>. The research was funded by a $6,000
+            UREAP Research Award and{" "}
+            <a className="link-accent" href={PAPER} target="_blank" rel="noreferrer">
+              published in the Inspire Health Journal
+            </a>{" "}
+            (2026).
           </p>
           <p>
             With a TRU Student Sustainability Research Grant I&apos;m studying which burned land in
@@ -145,6 +246,23 @@ export default function AboutPage() {
             </Link>
             , a public atlas, recovery simulator and native-species planting guide, presented at the
             TRU Sustainability Conference.
+          </p>
+
+          <h2 className="headline !text-[1.375rem] pt-6 text-label">Teaching AI in public</h2>
+          <p>
+            On my YouTube channel,{" "}
+            <a className="link-accent" href={beyond?.url} target="_blank" rel="noreferrer">
+              Beyond Prompt
+            </a>
+            , I break down every major AI launch: what&apos;s actually new, live demos, what independent
+            benchmarks and the developer community say, and my own verdict as someone who trains and
+            ships these models. The{" "}
+            <Link className="link-accent" href="/newsletter">
+              Benchmarked newsletter
+            </Link>{" "}
+            ({issues.length} issues so far) does the same in writing, labelling every number by who
+            reported it. Before that I taught 150+ students Python, Java and data structures as a
+            teaching assistant, and coached undergraduate researchers at TRU.
           </p>
         </div>
       </Reveal>
@@ -159,6 +277,23 @@ export default function AboutPage() {
             </div>
           ))}
         </dl>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <h2 className="headline mt-16 !text-[1.375rem]">Questions</h2>
+        <div className="mt-4 divide-y divide-[var(--color-separator)] border-y hairline">
+          {FAQ.map(([q, a]) => (
+            <details key={q} className="group py-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[1.0625rem] font-semibold text-label">
+                {q}
+                <span aria-hidden className="text-accent transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="mt-2 max-w-3xl text-[0.9375rem] leading-[1.6] text-label-2">{a}</p>
+            </details>
+          ))}
+        </div>
       </Reveal>
 
       <Reveal delay={0.05}>
