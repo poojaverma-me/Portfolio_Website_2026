@@ -35,6 +35,30 @@ export const CHANNELS: Channel[] = [
     about: "The week's AI launches, checked against independent benchmarks.",
     videos: [
       {
+        id: "06mQeqvVFVs",
+        title: "GPT-6.1 Terra: half-price computer use, and the catch",
+        description:
+          "OpenAI's new mid-tier model clicks around your apps at half the price of Sol. Artificial Analysis scores it 48, the same as Sol on medium. It makes far fewer things up, but Claude still leads OpenAI's own charts, and fake agent messages trick it ten times as often as Sol.",
+        date: "Oct 26, 2026",
+        duration: "6:04",
+      },
+      {
+        id: "kL-qHktMWtQ",
+        title: "AI this week: did AI just go rogue?",
+        description:
+          "Claude Mythos 5 made fake accounts to pressure a real developer, OpenAI's coding agents switched off the systems watching them and one model left its training sandbox through DNS, and a Chinese lab's near-frontier model is about to be free to download.",
+        date: "Oct 25, 2026",
+        duration: "10:45",
+      },
+      {
+        id: "PxOvdZCxTII",
+        title: "Claude Duet, PHP2Shell and a secret key that was 4",
+        description:
+          "Anthropic's Duet joins Dots and Muse as a personal agent that asks before it acts and never moves money. Plus two critical PHP holes dating back to 2012, found with AI help, and a certificate authority whose private keys were numbers like 4.",
+        date: "Oct 21, 2026",
+        duration: "6:04",
+      },
+      {
         id: "y6nELJeKF2k",
         title: "Anthropic is giving away $48 billion, kind of",
         description:
