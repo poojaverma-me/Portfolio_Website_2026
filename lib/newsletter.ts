@@ -18,6 +18,16 @@ export type Issue = {
 /** newest first */
 export const issues: Issue[] = [
   {
+    "slug": "2026-10-19-minimax-m31-flash",
+    "title": "15 cents a million: MiniMax vs DeepSeek, Argon’s two ARC scores and Anthropic’s 5% pledge",
+    "dek": "AI work keeps getting cheaper, but the numbers used to judge it depend on who picked the rivals, which harness ran the test, and whether a pledge has been voted on yet.",
+    "date": "19 Oct 2026",
+    "iso": "2026-10-19",
+    "kind": "Model launch + news",
+    "minutes": 7,
+    "cover": "/newsletter/2026-10-19-minimax-m31-flash/images/openrouter-space-bunny.jpg"
+  },
+  {
     "slug": "2026-10-12-muse-wonder",
     "title": "Meta’s Muse Wonder: frontier, with an asterisk",
     "dek": "Independent testers confirm Wonder Full is a frontier model, but the version developers can call is a tier lower at Opus 5.5’s price, and the rest of the week was about who checks the claims.",
@@ -26,6 +36,16 @@ export const issues: Issue[] = [
     "kind": "Model launch + week in review",
     "minutes": 8,
     "cover": "/newsletter/2026-10-12-muse-wonder/images/muse-hero.jpg"
+  },
+  {
+    "slug": "2026-10-09-ai-week-roundup",
+    "title": "722 math papers, rogue agents and the 10-cent model",
+    "dek": "OpenAI’s mass release of AI-generated mathematics and its retractions, Wikimedia’s account of rogue agents, a price war in small models, and a week of money and policy news.",
+    "date": "9 Oct 2026",
+    "iso": "2026-10-09",
+    "kind": "Weekly roundup",
+    "minutes": 7,
+    "cover": "/newsletter/2026-10-09-ai-week-roundup/images/x-openai-math.jpg"
   },
   {
     "slug": "2026-10-03-ai-week-roundup",

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: 15 Cents a Million</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 19 Oct 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Model launch + news · about a 7-minute read</div>
+    <h1>15 cents a million: MiniMax vs DeepSeek, Argon’s two ARC scores and Anthropic’s 5% pledge</h1>
+    <p class="dek">AI work keeps getting cheaper, but the numbers used to judge it depend on who picked the rivals, which harness ran the test, and whether a pledge has been voted on yet.</p>
+
+    <figure><img src="images/openrouter-space-bunny.jpg" alt="OpenRouter graphic: Space Bunny was MiniMax all along. MiniMax M3.1 Flash. 56.7T tokens during stealth, #1 for 10 straight days, free for the next 72 hours"><figcaption>OpenRouter’s reveal: the anonymous “Space Bunny” was MiniMax M3.1 Flash. Source: @OpenRouter.</figcaption></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>MiniMax M3.1 Flash launched</b> at a flat $0.15 / $0.60 per million tokens, the same as DeepSeek V4.1-Flash-1017’s off-peak price but with no peak surcharge. <span class="tag vendor">vendor</span></li>
+        <li><b>DeepSeek still leads on coding,</b> even on MiniMax’s own DeepSWE chart, and Artificial Analysis ranks it 45 to MiniMax’s 42. <span class="tag vendor">vendor</span> <span class="tag independent">independent</span></li>
+        <li><b>Gemini 4 Argon scored 97.5% and 49.8% on ARC-AGI-3:</b> the same model with two different harnesses. <span class="tag independent">independent</span></li>
+        <li><b>Four Argon agents beat Minecraft</b> in 27 hours 14 minutes, with no human help, for about $520 at introductory prices. <span class="tag vendor">vendor</span></li>
+        <li><b>Anthropic pledged 5% of its shares</b> to a new Public Benefit Fund, subject to a stockholder vote. <span class="tag vendor">vendor</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>Space Bunny was MiniMax</h2>
+    <p>In late September an unnamed, free model called Space Bunny appeared on OpenRouter. OpenRouter says it was the platform’s #1 model for 10 straight days and processed 56.7 trillion tokens, the most of any stealth model it has hosted. It came off OpenRouter on 5 Oct. <span class="tag independent">independent</span> On 19 Oct MiniMax revealed it as an early version of M3.1 Flash, saying it processed “more than 200 trillion tokens” while anonymous. <span class="tag vendor">vendor</span></p>
+    <p>The final model is free on OpenRouter for 72 hours. <span class="tag independent">independent</span> MiniMax says weights “will be released later”, with no licence named yet, and a Pro model is next. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">02</span>What MiniMax launched</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Claim</th><th>Value</th><th>Kind</th></tr>
+      <tr><td>Price per 1M tokens</td><td class="num">$0.15 in / $0.60 out / $0.015 cached, flat</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>Size</td><td class="num">428B MoE, ~23B active, 1M context</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>Speed</td><td class="num">“Nearly three times faster”; 200+ tokens/s (median 170+)</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>Speed, measured</td><td class="num">120.1 tokens/s; 1.05 s to first token</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Agent-task cost</td><td class="num">70% lower than its predecessor</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>Cost per AA task</td><td class="num">$0.22 vs ~$0.51 for MiniMax M3 (~57% lower)</td><td><span class="tag independent">independent</span></td></tr>
+    </table></div>
+    <p>The size figure comes from MiniMax’s agent product guide, not the launch post, and there was no Hugging Face model card at launch. <span class="tag vendor">vendor</span> For comparison, DeepSeek V4.1-Flash-1017 lists the same $0.15 / $0.60 off-peak but doubles to $0.30 / $1.20 at peak hours. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">03</span>MiniMax’s own table vs DeepSeek</h2>
+    <figure><img src="images/minimax-table.jpg" alt="MiniMax benchmark table with the DeepSeek-V4.1-Flash-1017 column and the Terminal Bench and DeepSWE rows highlighted"><figcaption>MiniMax’s table, DeepSeek 1017 column and the Terminal-Bench and DeepSWE rows highlighted. Source: MiniMax.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Benchmark</th><th>M3.1 Flash</th><th>DeepSeek 1017</th><th>Kind</th></tr>
+      <tr><td>Automation-Bench v1.0.6</td><td class="num"><b>62.8</b></td><td class="num">60.5</td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>DeepSWE v1.1</td><td class="num">73.7</td><td class="num"><b>77.0</b></td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>Terminal-Bench 4.0</td><td class="num">38.1</td><td class="num"><b>42.3</b></td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>NL2Repo-Bench</td><td class="num">61.2</td><td class="num"><b>68.2</b></td><td><span class="tag vendor">vendor</span></td></tr>
+      <tr><td>HLE (no tools, text subset)</td><td class="num">43.4</td><td class="num"><b>44.0</b></td><td><span class="tag vendor">vendor</span></td></tr>
+    </table></div>
+    <p>MiniMax wins business automation and loses the coding rows. Like DeepSeek’s own launch table, it compares against GPT-5.6 Sol and Opus 5 rather than GPT-6 Astra or Opus 5.5. <span class="tag vendor">vendor</span> An earlier version of the table showed 62.2 on Automation-Bench; MarkTechPost flagged the change to 62.8. <span class="tag press">press</span></p>
+
+    <h2><span class="n">04</span>The chart that favours DeepSeek</h2>
+    <figure><img src="images/minimax-deepswe-cost.jpg" alt="MiniMax DeepSWE score vs cost chart: DeepSeek V4.1 Flash-1017 at about 77% for about $0.19 a task, above and left of MiniMax M3.1 Flash at 73.7% for about $0.27"><figcaption>MiniMax’s own DeepSWE chart: DeepSeek 1017 sits higher and further left. Source: MiniMax.</figcaption></figure>
+    <p>On MiniMax’s own DeepSWE score-vs-cost chart, DeepSeek 1017 sits at about 77% for roughly $0.19 a task, and M3.1 Flash at 73.7% for roughly $0.27. <span class="tag vendor">vendor</span> MiniMax’s Automation-Bench cost chart prices DeepSeek at its peak rates ($0.30 / $1.20), which flatters MiniMax. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">05</span>What independent testers found</h2>
+    <figure><img src="images/aa-index.jpg" alt="Artificial Analysis Intelligence Index and cost-per-task chart: MiniMax-M3.1-Flash 42, DeepSeek V4.1 Flash 1017 45"><figcaption>Artificial Analysis Intelligence Index and cost per task. Source: Artificial Analysis.</figcaption></figure>
+    <ul>
+      <li><b>Artificial Analysis:</b> 42 on its Intelligence Index, 13 points above MiniMax M3, level with GLM-5.3-Flash and behind DeepSeek V4.1 Flash 1017 at 45. <span class="tag independent">independent</span></li>
+      <li><b>Code Arena WebDev:</b> 1588 points, #12 among open models and #32 overall, 106 points above M3. <span class="tag independent">independent</span></li>
+    </ul>
+
+    <h2><span class="n">06</span>Argon on ARC-AGI-3: 97.5% or 49.8%</h2>
+    <figure><img src="images/arc-argon.jpg" alt="ARC-AGI-3 leaderboard: Gemini 4 Argon with the provider adapter near 97%, and with the standard harness near 50%, both highlighted"><figcaption>ARC-AGI-3: the same model, two harnesses. Source: ARC Prize.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Model, harness</th><th>Score</th><th>Cost</th><th>Kind</th></tr>
+      <tr><td>Gemini 4 Argon, Google’s provider adapter (low effort)</td><td class="num">97.5%</td><td class="num">~$4.8K</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>Gemini 4 Argon, ARC Prize standard (low effort)</td><td class="num">49.8%</td><td class="num">~$5.8K</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>GPT-6 Astra, provider adapter (high)</td><td class="num">99.9%</td><td class="num">$18,817</td><td><span class="tag independent">independent</span></td></tr>
+      <tr><td>GPT-6 Astra, standard (max)</td><td class="num">62.7%</td><td class="num">$26,098</td><td><span class="tag independent">independent</span></td></tr>
+    </table></div>
+    <p>The adapter keeps the model’s reasoning state between requests and compacts its context; the standard harness keeps only notes the model chooses to write. <span class="tag independent">independent</span> On the standard harness, Argon finished 42 of 55 games at low effort, which ARC Prize attributes to API issues; at high effort only 19 of 55 runs finished. <span class="tag independent">independent</span> Google is the second lab past 95% on ARC-AGI-3, and François Chollet says Argon has “a similar performance profile” to Astra. <span class="tag independent">independent</span></p>
+    <figure><img src="images/arc-astra.jpg" alt="ARC-AGI-3 leaderboard: GPT-6 Astra with the provider adapter near 100%, and standard-harness runs between about 17% and 63%"><figcaption>GPT-6 Astra shows the same gap between harnesses. Source: ARC Prize.</figcaption></figure>
+
+    <h2><span class="n">07</span>Four Argon agents beat Minecraft</h2>
+    <p>In a Google DeepMind paper (arXiv 2610.22319), Maxence Faldor, Satinder Singh and Roberta Raileanu placed four Gemini 4 Argon agents in a random Minecraft survival world on Easy, with one goal: defeat the Ender Dragon. They had no assigned roles and no game-specific tools; they acted by writing code through the standard Mineflayer library and coordinated over in-game chat and shared notes. <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/minecraft-timeline.jpg" alt="Timeline of the run: four agents and their roles, with milestones from stone tools at 6 minutes to the Ender Dragon at 27 hours 14 minutes"><figcaption>The run, step by step. Source: Google DeepMind (@maxencefaldor).</figcaption></figure>
+    <ul>
+      <li><b>Self-organised:</b> within ten minutes the agents had split tools, food, diamonds and the portal between them. <span class="tag vendor">vendor</span></li>
+      <li><b>Geometry:</b> one agent triangulated the stronghold from two Eye of Ender throws; its estimate landed 43 m from the target, 1.3 km away. <span class="tag vendor">vendor</span></li>
+      <li><b>Totals:</b> 27 h 14 min, 2,783 programs, 229 chat messages and 605 deaths; 22% of programs ended in an error. The End fight took nearly 14 hours. <span class="tag vendor">vendor</span></li>
+      <li><b>No cheating found:</b> a fifth Observer agent and a manual audit found no cheating or specification gaming. <span class="tag vendor">vendor</span></li>
+    </ul>
+    <figure><img src="images/minecraft-deaths.jpg" alt="Charts of what the 229 messages carried and the 605 respawns by cause: monsters 351, the dragon 69, drowning 67"><figcaption>What the messages carried, and what killed the agents. Source: Google DeepMind.</figcaption></figure>
+    <p><b>The cost:</b> the paper estimates about $520 for the winning run at Argon’s introductory price ($1,040 at standard) and about $810 for the full session ($1,620). <span class="tag vendor">vendor</span> That is roughly $19 an hour for the winning run, a figure this newsletter derived; the paper doesn’t state one. Some coverage attached the $810 full-session figure to the winning run. <span class="tag press">press</span></p>
+
+    <h2><span class="n">08</span>Anthropic pledges 5% of itself</h2>
+    <figure><img src="images/anthropic-pbf.jpg" alt="Anthropic’s announcement with ‘Subject to stockholder approval’ highlighted: 5% of shares committed, plus 2% for every 50% increase in value above a set baseline"><figcaption>The terms, with the condition highlighted. Source: Anthropic.</figcaption></figure>
+    <ul>
+      <li><b>The pledge:</b> subject to stockholder approval, 5% of Anthropic’s shares go to the Anthropic Public Benefit Fund, with 2% more at the board’s discretion for every 50% rise in the company’s value above a baseline. The baseline isn’t disclosed. <span class="tag vendor">vendor</span></li>
+      <li><b>The structure:</b> a wholly owned LLC, not a 501(c)(3), with no lobbying or political giving. Governance and recipients come “in the coming months”. <span class="tag vendor">vendor</span></li>
+      <li><b>The total:</b> with the co-founders’ 80% pledge and an employee donation match used by about half of staff, roughly 20% of shares are now dedicated to the public good. <span class="tag vendor">vendor</span></li>
+      <li><b>On paper:</b> at the $965B post-money valuation of May’s Series H, 5% is about $48B. Anthropic gives no dollar figure; the calculation is this newsletter’s. <span class="tag vendor">vendor</span></li>
+    </ul>
+    <p>Two days earlier, Anthropic’s own employment report said the junior share of its technical hires fell from 27% to 9%, and the junior share of technical employees from 21% to 14% since early 2025, while the company tripled in size. By August, agents were logging six times the hours of the employees directing them. <span class="tag vendor">vendor</span> The fund announcement doesn’t reference the report. Elon Musk responded that the shares should go directly to the public, Cointelegraph reports. <span class="tag press">press</span></p>
+    <figure><img src="images/anthropic-junior.jpg" alt="Anthropic chart: junior share of technical hires falling from about 27% to 9%, highlighted at both ends"><figcaption>“Decline of entry-level technical hiring at Anthropic”. Source: Anthropic.</figcaption></figure>
+
+    <h2><span class="n">09</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>Every MiniMax benchmark is vendor-run; independent coverage so far is Artificial Analysis and Code Arena.</li>
+      <li>An “Oct 23” date for MiniMax’s weights appears only in press reports; MiniMax says “later”.</li>
+      <li>MiniMax’s 428B / 23B-active size comes from a product guide, not a model card.</li>
+      <li>Argon’s rank on ARC’s standard-harness leaderboard depends on whether effort levels are listed separately, so it isn’t given here.</li>
+      <li>The Minecraft costs are the authors’ estimates from token counts; the run was on Easy, through code rather than vision.</li>
+      <li>The $48B figure is derived, and the pledge depends on a stockholder vote that hasn’t happened.</li>
+      <li>Anthropic’s report gives no dates, definitions or raw counts for the 27% → 9% hiring figure.</li>
+    </ul></div>
+
+    <h2><span class="n">10</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://www.minimax.io/blog/minimax-m31f">MiniMax: M3.1 Flash</a> · <a href="https://platform.minimax.io/docs/guides/pricing">MiniMax pricing</a> · <a href="https://agent.minimax.io/tools/m3-1-flash-preview">MiniMax agent guide</a> · <a href="https://x.com/MiniMax_AI/status/2112150867868541221">@MiniMax_AI</a> · <a href="https://api-docs.deepseek.com/quick_start/pricing">DeepSeek pricing</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://arxiv.org/abs/2610.22319">arXiv 2610.22319 (Google DeepMind)</a> · <a href="https://x.com/maxencefaldor/status/2111023397106770026">@maxencefaldor</a> · <a href="https://x.com/GoogleDeepMind/status/2111127991401247033">@GoogleDeepMind</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://www.anthropic.com/news/public-benefit-fund">Anthropic: Investing in the public benefit</a> · <a href="https://www.anthropic.com/research/employment-at-anthropic">How employment is changing at Anthropic</a> · <a href="https://www.anthropic.com/news/series-h">Series H</a> · <a href="https://x.com/AnthropicAI/status/2111881963657412903">@AnthropicAI</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://x.com/OpenRouter/status/2112152045461680591">OpenRouter reveal</a> · <a href="https://openrouter.ai/compare/minimax/minimax-m3.1-flash">OpenRouter model page</a> · <a href="https://artificialanalysis.ai/models/minimax-m3-1-flash">Artificial Analysis: M3.1 Flash</a> · <a href="https://x.com/arena/status/2112156275282968930">Code Arena</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://arcprize.org/results/google-gemini-4-argon">ARC Prize: Gemini 4 Argon</a> · <a href="https://arcprize.org/results/openai-gpt-6-astra">ARC Prize: GPT-6 Astra</a> · <a href="https://x.com/arcprize/status/2110768288523251762">@arcprize</a> · <a href="https://x.com/fchollet/status/2110775560846914009">@fchollet</a></li>
+      <li><span class="tag press">press</span> <a href="https://venturebeat.com/technology/minimaxs-new-m3-1-flash-beats-deepseek-and-opus-5-on-a-key-business-benchmark-at-lower-cost-but-with-a-high-hallucination-rate">VentureBeat</a> · <a href="https://www.marktechpost.com/2026/10/19/minimax-m3-1-flash-release/">MarkTechPost</a> · <a href="https://cellcog.ai/blog/what-is-space-bunny-alpha/">CellCog</a> · <a href="https://www.engadget.com/2289944/google-gemini-4-agents-just-beat-minecraft-with-no-human-intervention/">Engadget</a> · <a href="https://the-decoder.com/four-gemini-4-argon-agents-beat-minecraft-without-any-human-help/">The Decoder</a> · <a href="https://dealroom.co/news/163719-anthropic-pledges-5-of-shares-to-public-benefit-fund-as-it-eyes-record-i/">Dealroom</a> · <a href="https://x.com/Cointelegraph/status/2112015947745698147">Cointelegraph</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 19 Oct 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>

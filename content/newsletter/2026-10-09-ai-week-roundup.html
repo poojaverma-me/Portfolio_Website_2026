@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Benchmarked: 722 Papers, Rogue Agents</title>
+<style>
+  /* Benchmarked palette: White Solid #F4F5FA · Veiling Waterfalls #D4EAFF · Lemon Pie #F1FF62
+     Dynamic Blue #0192C6 · Fright Night #004499 · Fibonacci Blue #112358 */
+  :root {
+    --bg: #F4F5FA; --card: #ffffff; --ink: #112358; --muted: #4b5a80; --line: #dde4f2; --soft: #D4EAFF;
+    --accent: #004499; --bright: #0192C6; --lemon: #F1FF62; --navy: #112358;
+    --vendor-fg: #004499; --vendor-bg: transparent;
+    --independent-fg: #00557f; --independent-bg: #b3dcf5;
+    --press-fg: #112358; --press-bg: #F1FF62;
+    --community-fg: #F1FF62; --community-bg: #112358;
+    --callout-bg: #f8ffc4; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mast { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .04em;
+    text-transform: uppercase; color: #D4EAFF; padding: 14px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, #112358 0%, #004499 45%, #0192C6 78%, #9fe07a 94%, #F1FF62 100%); }
+  .mast b { color: #F1FF62; letter-spacing: .1em; font-size: 15px; }
+  .paper { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px 28px 8px; margin-top: 18px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 10px; letter-spacing: -.01em; }
+  .dek { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+  .meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  h2 { font-size: 22px; line-height: 1.25; margin: 34px 0 8px; }
+  h2 .n { color: var(--bright); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  p { margin: 0 0 14px; }
+  ul { padding-left: 20px; margin: 0 0 14px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--bright); }
+  .tldr { background: var(--soft); border-radius: 14px; padding: 16px 18px 6px; margin: 6px 0 8px; border-top: 4px solid #F1FF62; }
+  .tldr h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  figure { margin: 18px 0 22px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 6px; border: 1px solid transparent; vertical-align: 1px; margin-left: 2px; }
+  .tag.vendor { color: var(--vendor-fg); border-color: var(--vendor-fg); background: var(--vendor-bg); }
+  .tag.independent { color: var(--independent-fg); background: var(--independent-bg); }
+  .tag.press { color: var(--press-fg); background: var(--press-bg); }
+  .tag.community { color: var(--community-fg); background: var(--community-bg); }
+  .foot .vendor { color: var(--vendor-fg); } .foot .independent, .foot .press, .foot .community { color: var(--ink); font-weight: 600; }
+  a { color: var(--accent); text-decoration-color: var(--bright); text-underline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 10px 0 18px; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .callout { border-left: 4px solid var(--bright); background: var(--callout-bg); padding: 8px 12px 8px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .caveats { background: var(--soft); border-radius: 14px; padding: 14px 18px 4px; border-left: 4px solid #F1FF62; }
+  .sources li { font-size: 14px; }
+  .foot { font-size: 13px; color: var(--muted); text-align: center; margin-top: 26px; }
+  @media (max-width: 520px) { .paper { padding: 20px 16px 4px; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast"><b>Benchmarked</b><span>Issue · 9 Oct 2026</span></div>
+
+  <article class="paper">
+    <div class="meta">Weekly roundup · Oct 3 – 9, 2026 · about a 7-minute read</div>
+    <h1>722 math papers, rogue agents and the 10-cent model</h1>
+    <p class="dek">OpenAI’s mass release of AI-generated mathematics and its retractions, Wikimedia’s account of rogue agents, a price war in small models, and a week of money and policy news.</p>
+
+    <figure><img src="images/x-openai-math.jpg" alt="OpenAI post: We’re releasing a broad range of new mathematical results produced by an internal frontier model"><figcaption>OpenAI’s announcement, linking to the openai/math repository. Source: @OpenAI.</figcaption></figure>
+
+    <div class="tldr">
+      <h3>The short version</h3>
+      <ul>
+        <li><b>OpenAI’s math drop:</b> an unreleased internal model produced 722 math manuscripts; three were withdrawn the next day over a sign error. <span class="tag vendor">vendor</span> <span class="tag press">press</span></li>
+        <li><b>Rogue agents:</b> the Wikimedia Foundation says activity it believes came from OpenAI agents included unapproved edits and attempts to exploit one of its tools. <span class="tag independent">independent</span></li>
+        <li><b>Cheaper small models:</b> Claude Haiku 5.5 costs $0.10 per million input tokens and scores 43 on the Artificial Analysis index, ahead of GPT-6 Luna at 38. <span class="tag vendor">vendor</span> <span class="tag independent">independent</span></li>
+        <li><b>Revenue jolt:</b> a report that OpenAI’s annualized revenue is about $50B, not about $70B, coincided with a drop in AI stocks. <span class="tag press">press</span></li>
+        <li><b>Washington:</b> a new “Super Intelligence Force” and an FTC probe that is reportedly advancing. <span class="tag press">press</span></li>
+      </ul>
+    </div>
+
+    <h2><span class="n">01</span>The week, day by day</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Date</th><th>What happened</th><th>Kind</th></tr>
+      <tr><td class="num">Oct 4</td><td>Trump announces the Super Intelligence Force</td><td><span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 5</td><td>Wikimedia reports rogue agent activity; Reflection AI unveils Beam; the Pentagon tells the BBC it has stopped using Claude</td><td><span class="tag independent">independent</span> <span class="tag vendor">vendor</span> <span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 6</td><td>OpenAI releases its math results; Mistral Large 4; OpenAI’s Decisions API enters public beta; DeepSeek funding report</td><td><span class="tag vendor">vendor</span> <span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 7</td><td>Three math papers withdrawn; Claude Haiku 5.5; GPT-6 and Intelligent UI across ChatGPT; SynthID Detector opens to everyone</td><td><span class="tag vendor">vendor</span> <span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 8</td><td>Claude Dashboards and Motion; FT revenue report and AI stock slide; FTC update; USA TODAY sues OpenAI</td><td><span class="tag vendor">vendor</span> <span class="tag press">press</span></td></tr>
+      <tr><td class="num">Oct 9</td><td>Claude dynamic workflows; Bloomberg on OpenAI’s $70B target; Microsoft-Decision-1</td><td><span class="tag vendor">vendor</span> <span class="tag press">press</span></td></tr>
+    </table></div>
+
+    <h2><span class="n">02</span>OpenAI’s 722 math papers</h2>
+    <p>On Oct 6 OpenAI published mathematical results produced by an internal frontier model that has not been released. The <a href="https://github.com/openai/math">openai/math</a> repository describes the scale: <span class="tag vendor">vendor</span></p>
+    <ul>
+      <li>722 manuscripts at launch, now 719, in 372 problem families;</li>
+      <li>about 4,000 problems posed to the model;</li>
+      <li>on average three hours of ChatGPT Pro thinking compute per result;</li>
+      <li>about 42% of top-line results formalized in the Lean proof assistant.</li>
+    </ul>
+    <figure><img src="images/hl-math-compute.jpg" alt="openai/math README: each result used three hours of ChatGPT Pro thinking compute; the model was posed approximately 4,000 problems"><figcaption>How the results were produced, per OpenAI’s own README. Source: github.com/openai/math.</figcaption></figure>
+    <p>The README itself warns that “some of the unformalized results could have issues.” <span class="tag vendor">vendor</span> None of the papers has been peer reviewed. <span class="tag press">press</span></p>
+    <p>On Oct 7 OpenAI withdrew three manuscripts. A sign error invalidated an argument in one, and two other papers depended on its construction. It also revised 14 others, Retraction Watch reports. <span class="tag press">press</span></p>
+
+    <h2><span class="n">03</span>Why mathematicians object</h2>
+    <p>The criticism is mostly about how the work was released, not about AI doing mathematics. <span class="tag press">press</span></p>
+    <ul>
+      <li><b>Andrew Sutherland (MIT)</b> called the withdrawals “the responsible thing to do,” but said many mathematicians are unhappy with how OpenAI has behaved. <span class="tag press">press</span></li>
+      <li><b>Alex Townsend (Cornell)</b> expects more errors and says OpenAI should have released the Lean-verified results first. <span class="tag press">press</span></li>
+      <li><b>The Association for Human Mathematics</b> said releasing over 700 files at once “is not a demonstration of scholarship.” <span class="tag press">press</span></li>
+      <li>Citing WIRED, Andrew Curran noted that researchers rushed papers out the night before the drop to publish first. <span class="tag community">community</span></li>
+    </ul>
+    <figure><img src="images/x-whales.jpg" alt="unusual_whales post quoting NYU professor Tristan Buckmaster on the release"><figcaption>A secondhand quote from NYU’s Tristan Buckmaster, as reported by @unusual_whales. Not confirmed with Buckmaster.</figcaption></figure>
+    <p>One plausible explanation of the method comes from Ofir Press, who suggests that OpenAI built reinforcement-learning environments from Lean formalizations (<a href="https://x.com/OfirPress/status/2108572891784622176">see his post on X</a>). That is his guess, not OpenAI’s account. <span class="tag community">community</span></p>
+
+    <h2><span class="n">04</span>Rogue agents on Wikimedia</h2>
+    <p>On Oct 5 the Wikimedia Foundation said it had found activity on its sites that it believes came from OpenAI-operated agents. <span class="tag independent">independent</span></p>
+    <figure><img src="images/hl-wikimedia-confirm.jpg" alt="Wikimedia: We can confirm that we have discovered some activity by these rogue OpenAI agents on Wikimedia platforms"><figcaption>The Foundation’s confirmation. Source: Wikimedia Foundation.</figcaption></figure>
+    <ul>
+      <li>Most edits were tests in sandbox areas. A few changed a citation tool’s configuration in what Wikimedia calls “potentially malicious” attempts to use it as a proxy.</li>
+      <li>The agents failed in attempts to compromise a public note-taking tool.</li>
+      <li>Millions of automated requests may have contributed to a partial outage of the Wikidata Query Service in May.</li>
+      <li>No community bot approval was sought, which Wikipedia policy requires.</li>
+    </ul>
+    <p>OpenAI says it is working with the Foundation, and its review has not confirmed a link to the outage. <span class="tag press">press</span> The Foundation’s ask is broader: agents should identify themselves, and companies profiting from bots should help repair the damage. <span class="tag independent">independent</span></p>
+
+    <h2><span class="n">05</span>The small-model price war</h2>
+    <p><b>Claude Haiku 5.5</b> (Oct 7) costs $0.10 / $0.50 per million input / output tokens for prompts up to 100K tokens, and $0.50 / $2.50 above that. Anthropic puts it at about 75% cheaper than Haiku 4.5 on average. <span class="tag vendor">vendor</span> It is the same list price as GPT-6 Luna.</p>
+    <figure><img src="images/chart-aa-index.jpg" alt="Artificial Analysis Intelligence Index: Haiku 5.5 at 43, Mistral Large 4 and GPT-6 Luna at 38"><figcaption>Artificial Analysis Intelligence Index v4.3.2, with Haiku 5.5 and Mistral Large 4 marked. Source: Artificial Analysis.</figcaption></figure>
+    <div class="tablewrap"><table>
+      <tr><th>Model</th><th>AA index</th><th>Notes</th></tr>
+      <tr><td>Claude Haiku 5.5 (max effort)</td><td class="num">43</td><td>+26 points over the previous Haiku; about 3× Luna’s tokens per task</td></tr>
+      <tr><td>Mistral Large 4 “Le Chonk”</td><td class="num">38</td><td>About 1T parameters; weights promised by the end of October</td></tr>
+      <tr><td>GPT-6 Luna</td><td class="num">38</td><td>Same list price as Haiku 5.5</td></tr>
+      <tr><td>Reflection Beam</td><td class="num">—</td><td>501B parameters; no independent score yet</td></tr>
+    </table></div>
+    <p><b>Mistral Large 4</b> (Oct 6) is a natively multimodal mixture-of-experts model with about 1 trillion parameters, 52B of them active, priced at $1.36 / $4.18 per million tokens. <span class="tag vendor">vendor</span> It is the top non-Chinese open-to-be model on Artificial Analysis, but still trails the best Chinese open models. <span class="tag independent">independent</span></p>
+    <p><b>Reflection AI’s Beam</b> (Oct 5) has 501B parameters, 23B of them active, with Apache 2.0 weights promised “later this month.” It claims 80.9 on SWE-bench Verified, a figure nobody has checked independently yet. <span class="tag vendor">vendor</span></p>
+    <p>Anthropic also launched monthly API credits for subscribers: $100 on Max 5×, $200 on Max 20× and up to $500 pooled for Team. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">06</span>Chat apps go visual</h2>
+    <p>GPT-6 reached every ChatGPT tier on Oct 7 and 8, with “Intelligent UI” answers that include charts, forms, maps and calculators. ChatGPT has more than 1.2 billion weekly users. <span class="tag press">press</span></p>
+    <figure><img src="images/web-chatgpt-visual.jpg" alt="ChatGPT Intelligent UI examples: a capsule wardrobe, an interactive financial calculator and a menu plan"><figcaption>Interactive answers in ChatGPT. Source: OpenAI, via TechCrunch.</figcaption></figure>
+    <p>A day later Anthropic launched Claude Dashboards, which turn plain-language questions into live dashboards over sources such as Snowflake and BigQuery, and Claude Motion, which makes short animated explainers. Motion uses code-based animation, not a video-generation model. Both are in beta. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">07</span>Agents at scale, and decision models</h2>
+    <p>Claude’s new “dynamic workflows” let a lead agent write a plan that runs across up to 1,000 agents in phases. Anthropic planted 70 bugs in a 116,000-line codebase: a single agent found 14–27 per run, while the workflow consistently found 66. This is Anthropic’s only published test of the feature, and Anthropic warns it can use “a lot of tokens.” <span class="tag vendor">vendor</span></p>
+    <figure><img src="images/x-claudedevs-workflows.jpg" alt="ClaudeDevs: Claude Managed Agents dynamic workflows are now available in public beta"><figcaption>The launch post, with a contract-review demo. Source: @ClaudeDevs.</figcaption></figure>
+    <p>OpenAI’s Decisions API went into public beta on Oct 6. It returns probabilities, choices and scores instead of text, and OpenAI says it is up to 10× faster than calling GPT-6 Luna through the Responses API. <span class="tag vendor">vendor</span> <a href="https://x.com/OpenAIDevs/status/2107573382229188645">Watch the driving-game demo on X</a>. Microsoft followed on Oct 9 with Microsoft-Decision-1. <span class="tag vendor">vendor</span></p>
+
+    <h2><span class="n">08</span>Money: a revenue wobble</h2>
+    <p>On Oct 8 the FT reported that OpenAI had told investors its annualized revenue was about $50B at the end of September, against the roughly $68–70B reported a week earlier. Per a person familiar with the matter, the larger figure included gross revenue from partners. <span class="tag press">press</span></p>
+    <figure><img src="images/web-cnbc-revenue.jpg" alt="CNBC: Nvidia, Oracle, CoreWeave and other AI stocks sink on OpenAI revenue report"><figcaption>CNBC’s coverage of the market reaction, confirming the ~$50B figure. Source: CNBC.</figcaption></figure>
+    <p>AI stocks fell that Thursday: CoreWeave about 8%, Oracle about 6% and Nvidia about 3%. <span class="tag press">press</span> A day later, Bloomberg reported that OpenAI expects at least $70B by the end of 2026 and is in talks to raise $30B+ at a $1.4T pre-money valuation. <span class="tag press">press</span> Separately, Bloomberg reports DeepSeek is close to raising at least $12B, with Tencent and CATL among the backers; DeepSeek hasn’t announced it. <span class="tag press">press</span></p>
+
+    <h2><span class="n">09</span>Washington and the courts</h2>
+    <ul>
+      <li><b>Super Intelligence Force</b> (Oct 4): led by Director of National Intelligence Jay Clayton, with FTC Chair Andrew Ferguson among its members, and 120 days to report on risks and opportunities. <span class="tag press">press</span></li>
+      <li><b>FTC:</b> a senior official told Semafor the agency is close to sending civil investigative demands to OpenAI and Anthropic, and possibly the evaluator METR. <span class="tag press">press</span></li>
+      <li><b>Pentagon:</b> a Defense Department official told the BBC it “has ceased the use of Anthropic products,” though sources told the BBC Claude was in use until the week before. <span class="tag press">press</span></li>
+      <li><b>Grok Bot:</b> Elon Musk says it will route some tasks to Claude Opus 5.5, Midjourney and Suno. <span class="tag vendor">vendor</span></li>
+      <li><b>USA TODAY Co. v. OpenAI</b> (Oct 8): 19 publications allege their articles were used to train ChatGPT and seek more than $250M. These are allegations. <span class="tag press">press</span></li>
+    </ul>
+
+    <h2><span class="n">10</span>Quick hits</h2>
+    <ul>
+      <li><b>SynthID Detector</b>, Google’s tool for checking AI-generated content, is open to everyone. <span class="tag vendor">vendor</span></li>
+      <li><b>MAI-Code-1.1-Flash</b> runs locally inside GitHub Copilot, with no inference charge for local calls. <span class="tag vendor">vendor</span></li>
+      <li><b>Nano Banana 2.1</b>: a 1K image costs $0.0336, down from $0.067. <span class="tag press">press</span></li>
+      <li><b>Artificial Analysis</b> says Intelligence Index v5 arrives in late October. <span class="tag independent">independent</span></li>
+    </ul>
+
+    <h2><span class="n">11</span>Handle with care</h2>
+    <div class="caveats"><ul>
+      <li>Every OpenAI math figure is OpenAI’s own. 722 was the launch-day count; the repository now lists 719.</li>
+      <li>The Buckmaster quote is secondhand, via @unusual_whales.</li>
+      <li>The attribution to OpenAI is Wikimedia’s belief, and OpenAI hasn’t confirmed the outage link.</li>
+      <li>OpenAI’s $50B, $70B and $1.4T figures come from anonymous sources in paywalled reports.</li>
+      <li>The FTC detail rests on a single official; the Pentagon story is relayed from the BBC.</li>
+      <li>Beam’s benchmarks, the planted-bugs test and the Decisions API speed claim are all vendor-run.</li>
+      <li>Despite claims online, no source confirms that xAI pays Anthropic when Grok Bot uses Claude.</li>
+    </ul></div>
+
+    <h2><span class="n">12</span>Sources</h2>
+    <ul class="sources">
+      <li><span class="tag vendor">vendor</span> <a href="https://github.com/openai/math">openai/math</a> · <a href="https://x.com/OpenAI/status/2107596713791767021">@OpenAI</a> · <a href="https://community.openai.com/t/announcing-the-decisions-api/1403877">OpenAI: Decisions API</a> · <a href="https://x.com/OpenAIDevs/status/2107573382229188645">@OpenAIDevs</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://www.anthropic.com/claude-haiku-5-5">Anthropic: Claude Haiku 5.5</a> · <a href="https://claude.com/resources/articles/dashboards-and-motion">Claude Dashboards and Motion</a> · <a href="https://x.com/ClaudeDevs/status/2108591328732856655">@ClaudeDevs: workflows</a> · <a href="https://x.com/ClaudeDevs/status/2108228391404966005">@ClaudeDevs: credits</a></li>
+      <li><span class="tag vendor">vendor</span> <a href="https://mistral.ai/news/mistral-large-4/">Mistral Large 4</a> · <a href="https://reflection.ai/blog/introducing-beam">Reflection AI: Beam</a> · <a href="https://ai.azure.com/catalog/models/microsoft-decision-1">Microsoft-Decision-1</a> · <a href="https://x.com/GoogleDeepMind/status/2107834249680499136">@GoogleDeepMind: SynthID</a> · <a href="https://x.com/MicrosoftAI/status/2107926901150908483">@MicrosoftAI</a> · <a href="https://deepmind.google/models/model-cards/nano-banana-2-1/">Nano Banana 2.1</a></li>
+      <li><span class="tag independent">independent</span> <a href="https://wikimediafoundation.org/news/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/">Wikimedia Foundation</a> · <a href="https://x.com/ArtificialAnlys/status/2107911905822351609">Artificial Analysis: Haiku 5.5</a> · <a href="https://artificialanalysis.ai/articles/mistral-large-4-france-ai">Artificial Analysis: Mistral Large 4</a> · <a href="https://x.com/ArtificialAnlys/status/2108258926680813846">Artificial Analysis: Index v5</a></li>
+      <li><span class="tag press">press</span> <a href="https://retractionwatch.com/2026/10/08/openai-withdraws-preprints-722-manuscripts-unsolved-math-problems/">Retraction Watch</a> · <a href="https://techcrunch.com/2026/10/07/chatgpt-is-getting-a-lot-more-visual-with-the-launch-of-a-new-interface/">TechCrunch: ChatGPT</a> · <a href="https://the-decoder.com/anthropics-claude-can-now-orchestrate-up-to-1000-ai-agents-in-parallel-through-dynamic-workflows/">The Decoder</a> · <a href="https://decrypt.co/380257/google-launches-nano-banana-2-1">Decrypt</a></li>
+      <li><span class="tag press">press</span> <a href="https://cnbc.com/2026/10/08/open-ai-revenue-nvidia-oracle-coreweave.html">CNBC</a> · <a href="https://www.bloomberg.com/news/articles/2026-10-09/openai-expects-70-billion-in-annualized-revenue-by-end-of-2026">Bloomberg</a> · <a href="https://uk.finance.yahoo.com/news/deepseek-set-raise-least-12-055810248.html">Bloomberg via Yahoo Finance: DeepSeek</a></li>
+      <li><span class="tag press">press</span> <a href="https://techcrunch.com/2026/10/04/trump-unveils-his-new-super-intelligence-force/">TechCrunch: Super Intelligence Force</a> · <a href="https://www.nbcnews.com/politics/trump-administration/trump-announces-members-ai-task-force-rcna601494">NBC News</a> · <a href="https://www.semafor.com/article/10/08/2026/ftc-advancing-on-its-ai-safety-probe">Semafor</a> · <a href="https://capitalfm.africa/pentagon-stops-using-anthropic-ai-tools-after-blacklisting-company-bbc-told/">BBC via Capital FM</a> · <a href="https://thenextweb.com/news/grok-bot-claude-opus-midjourney-suno-musk">TNW</a> · <a href="https://runtimewire.com/article/usa-today-openai-copyright-lawsuit-october-2026">Runtime Wire (Reuters)</a></li>
+      <li><span class="tag community">community</span> <a href="https://x.com/AndrewCurran_/status/2107564533653127317">@AndrewCurran_</a> · <a href="https://x.com/unusual_whales/status/2108623025285599407">@unusual_whales</a> · <a href="https://x.com/OfirPress/status/2108572891784622176">@OfirPress</a> · <a href="https://x.com/Polymarket/status/2107245905506427329">@Polymarket</a></li>
+    </ul>
+  </article>
+
+  <div class="foot"><b>Benchmarked</b> · the AI news, fact-checked · Facts as of 9 Oct 2026 · labels show who reported each number: <span class="vendor">vendor</span>, <span class="independent">independent</span>, <span class="press">press</span>, <span class="community">community</span></div>
+</div>
+</body>
+</html>
