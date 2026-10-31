@@ -12,6 +12,7 @@ import {
   SITE_URL,
   personSchema,
 } from "@/lib/site";
+import CopyGuard from "@/components/CopyGuard";
 import CursorGlow from "@/components/CursorGlow";
 import IntroPicker from "@/components/IntroPicker";
 import "./globals.css";
@@ -106,6 +107,7 @@ export default function RootLayout({
         <IntroPicker />
         <div className="wallpaper" aria-hidden />
         <CursorGlow />
+        <CopyGuard />
         <div className="top-scrim" aria-hidden />
         <Nav />
         <main className="flex-1">{children}</main>

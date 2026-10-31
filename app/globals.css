@@ -96,6 +96,33 @@ body {
   color: var(--color-label);
 }
 
+/* Copy deterrents (with components/CopyGuard.tsx). Pictures, video and the
+   intro canvas can't be dragged out or long-pressed into a save sheet, and the
+   interface chrome (nav, buttons, tabs, chips, labels) isn't selectable. Body
+   copy, headings and contact details stay selectable for reading and quoting. */
+img,
+video,
+canvas {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+img,
+svg,
+video,
+canvas,
+nav,
+button,
+[role="tab"],
+.btn-primary,
+.btn-glass,
+.token,
+.eyebrow,
+.section-marker,
+.intro-overlay {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* macOS-style overlay scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
