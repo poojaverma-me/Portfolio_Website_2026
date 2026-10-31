@@ -15,12 +15,18 @@
  * rate in the intro's render loop and can break on future browser changes.
  * A fixed seed keeps the output the same for the same input.
  */
-import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { Script } from "node:vm";
 import JavaScriptObfuscator from "javascript-obfuscator";
 
-const CHUNKS = resolve(import.meta.dirname, "../.next/static/chunks");
+const ROOT = resolve(import.meta.dirname, "..");
+// .next is what `next start` serves; on Vercel, Next's deployment adapter copies
+// the build into .vercel/output during `next build`, and that copy is what's
+// uploaded, so both are processed (an already obfuscated file is skipped, which
+// also covers the two paths sharing files)
+const STATIC_ROOTS = [join(ROOT, ".next/static"), join(ROOT, ".vercel/output/static/_next/static")];
+const WRAPPED = "(function(){function _";
 // class names and strings that only this site's code contains
 const MARKERS = ["glass-card", "btn-glass", "link-accent", "intro-overlay", "eyebrow"];
 // above this, a chunk is mostly a library that happens to include a little site code
@@ -62,25 +68,34 @@ function files(dir) {
 let done = 0;
 let before = 0;
 let after = 0;
-for (const file of files(CHUNKS)) {
-  const code = readFileSync(file, "utf8");
-  if (code.length > MAX_BYTES || !MARKERS.some((m) => code.includes(m))) continue;
-  // A chunk is a classic script and the obfuscator puts its helpers (the string
-  // table and its decoder) at the top level, so they would be globals, and two
-  // chunks' helpers would overwrite each other and decode the wrong strings.
-  // Each chunk gets its own prefix, and the result is wrapped in a function
-  // scope so nothing leaks; the chunk itself is one expression, so it runs the same.
-  const prefix = `_${done.toString(36)}`;
-  const obf = JavaScriptObfuscator.obfuscate(code, { ...OPTIONS, identifiersPrefix: prefix }).getObfuscatedCode();
-  const out = `(function(){${obf}\n})();`;
-  // a chunk that doesn't parse would break the page and stay in browsers' caches
-  // under the same name for a year, so fail the build instead
-  new Script(out, { filename: file });
-  writeFileSync(file, out);
-  done++;
-  before += code.length;
-  after += out.length;
+const report = { node: process.version, vercel: !!process.env.VERCEL, adapter: !!process.env.NEXT_ADAPTER_PATH, roots: {} };
+for (const root of STATIC_ROOTS) {
+  const chunks = join(root, "chunks");
+  report.roots[root.replace(ROOT, "")] = existsSync(chunks);
+  if (!existsSync(chunks)) continue;
+  for (const file of files(chunks)) {
+    const code = readFileSync(file, "utf8");
+    if (code.startsWith(WRAPPED) || code.length > MAX_BYTES || !MARKERS.some((m) => code.includes(m))) continue;
+    // A chunk is a classic script and the obfuscator puts its helpers (the string
+    // table and its decoder) at the top level, so they would be globals, and two
+    // chunks' helpers would overwrite each other and decode the wrong strings.
+    // Each chunk gets its own prefix, and the result is wrapped in a function
+    // scope so nothing leaks; the chunk itself is one expression, so it runs the same.
+    const prefix = `_${done.toString(36)}`;
+    const obf = JavaScriptObfuscator.obfuscate(code, { ...OPTIONS, identifiersPrefix: prefix }).getObfuscatedCode();
+    const out = `(function(){${obf}\n})();`;
+    // a chunk that doesn't parse would break the page and stay in browsers' caches
+    // under the same name for a year, so fail the build instead
+    new Script(out, { filename: file });
+    writeFileSync(file, out);
+    done++;
+    before += code.length;
+    after += out.length;
+  }
 }
+report.obfuscated = done;
+// temporary: shows from outside which copy of the build was processed
+for (const root of STATIC_ROOTS) if (existsSync(root)) writeFileSync(join(root, "obf-report.json"), JSON.stringify(report));
 console.log(
   `Obfuscated ${done} site chunks: ${(before / 1024).toFixed(0)} KB → ${(after / 1024).toFixed(0)} KB`,
 );
