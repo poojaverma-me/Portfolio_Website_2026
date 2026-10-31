@@ -1,9 +1,13 @@
 import type { NextConfig } from "next";
+import { resolve } from "node:path";
 
 const nextConfig: NextConfig = {
   // the browser bundle ships without source maps, so the published JavaScript
   // stays minified rather than mapping back to readable source
   productionBrowserSourceMaps: false,
+  // obfuscates the site's own chunks inside `next build`, then defers to the
+  // platform's adapter (Vercel's) so the obfuscated files are the ones deployed
+  adapterPath: resolve("scripts/next-adapter.mjs"),
   // no "x-powered-by: Next.js" banner on every response
   poweredByHeader: false,
   images: {

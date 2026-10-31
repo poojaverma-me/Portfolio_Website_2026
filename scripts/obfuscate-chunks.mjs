@@ -1,10 +1,12 @@
-#!/usr/bin/env node
 /**
- * Runs after `next build` (see "build" in package.json, which Vercel runs) and
- * obfuscates the browser chunks that hold the site's own code: the intro
+ * Obfuscates the browser chunks that hold the site's own code: the intro
  * engine and its shaders, the pages and the components. The shader source and
  * the copy inside them are template strings, which minification leaves
  * readable; here they move into an encoded string table.
+ *
+ * It runs inside `next build`, from the adapter in scripts/next-adapter.mjs,
+ * because on Vercel the deployment adapter collects the static files during
+ * the build: anything changed after `next build` returns never ships.
  *
  * Framework and library chunks (React, Next, three.js) are left alone:
  * obfuscating them would add weight and slow hydration while protecting
@@ -14,23 +16,21 @@
  * dead code, no debugger traps or self-defending wrappers, which cost frame
  * rate in the intro's render loop and can break on future browser changes.
  * A fixed seed keeps the output the same for the same input.
+ *
+ * Run by hand on an existing build: node scripts/obfuscate-chunks.mjs
  */
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Script } from "node:vm";
 import JavaScriptObfuscator from "javascript-obfuscator";
 
-const ROOT = resolve(import.meta.dirname, "..");
-// .next is what `next start` serves; on Vercel, Next's deployment adapter copies
-// the build into .vercel/output during `next build`, and that copy is what's
-// uploaded, so both are processed (an already obfuscated file is skipped, which
-// also covers the two paths sharing files)
-const STATIC_ROOTS = [join(ROOT, ".next/static"), join(ROOT, ".vercel/output/static/_next/static")];
-const WRAPPED = "(function(){function _";
 // class names and strings that only this site's code contains
 const MARKERS = ["glass-card", "btn-glass", "link-accent", "intro-overlay", "eyebrow"];
 // above this, a chunk is mostly a library that happens to include a little site code
 const MAX_BYTES = 300_000;
+// how an obfuscated chunk starts, so a second pass skips it
+const WRAPPED = "(function(){function _";
 
 const OPTIONS = {
   compact: true,
@@ -65,15 +65,12 @@ function files(dir) {
   });
 }
 
-let done = 0;
-let before = 0;
-let after = 0;
-const report = { node: process.version, vercel: !!process.env.VERCEL, adapter: !!process.env.NEXT_ADAPTER_PATH, roots: {} };
-for (const root of STATIC_ROOTS) {
-  const chunks = join(root, "chunks");
-  report.roots[root.replace(ROOT, "")] = existsSync(chunks);
-  if (!existsSync(chunks)) continue;
-  for (const file of files(chunks)) {
+/** Obfuscates the site chunks under a build's static directory (.next/static). */
+export function obfuscateChunks(staticDir) {
+  let done = 0;
+  let before = 0;
+  let after = 0;
+  for (const file of files(join(staticDir, "chunks"))) {
     const code = readFileSync(file, "utf8");
     if (code.startsWith(WRAPPED) || code.length > MAX_BYTES || !MARKERS.some((m) => code.includes(m))) continue;
     // A chunk is a classic script and the obfuscator puts its helpers (the string
@@ -92,10 +89,10 @@ for (const root of STATIC_ROOTS) {
     before += code.length;
     after += out.length;
   }
+  console.log(`Obfuscated ${done} site chunks: ${(before / 1024).toFixed(0)} KB → ${(after / 1024).toFixed(0)} KB`);
+  return done;
 }
-report.obfuscated = done;
-// temporary: shows from outside which copy of the build was processed
-for (const root of STATIC_ROOTS) if (existsSync(root)) writeFileSync(join(root, "obf-report.json"), JSON.stringify(report));
-console.log(
-  `Obfuscated ${done} site chunks: ${(before / 1024).toFixed(0)} KB → ${(after / 1024).toFixed(0)} KB`,
-);
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  obfuscateChunks(resolve(import.meta.dirname, "../.next/static"));
+}
