@@ -35,6 +35,30 @@ export const CHANNELS: Channel[] = [
     about: "The week's AI launches, checked against independent benchmarks.",
     videos: [
       {
+        id: "pUh2gGvOw8E",
+        title: "AI this week: Anthropic says AI may soon speed up AI",
+        description:
+          "Anthropic's IPO filing warns that AI may soon accelerate its own progress. Plus data centers on the US ballot, the $6.3 billion Binance theft and what AI agents do with a crypto wallet, MIT's AI editing another AI's weights, and new usage limits from Claude, ChatGPT and Grok.",
+        date: "Nov 5, 2026",
+        duration: "10:48",
+      },
+      {
+        id: "HCDCK_-FVGg",
+        title: "AI this week: Anthropic opens its books",
+        description:
+          "Anthropic files to go public and shows its real revenue and computing bills, OpenAI and Claude each break a 27-year-old bet in computer science on the same day, plus Gemini 4 Carbon, GPT-6.1 Terra's price play and DeepSeek's new free model.",
+        date: "Oct 31, 2026",
+        duration: "9:05",
+      },
+      {
+        id: "eHuavk7_cvU",
+        title: "Gemini 4 Carbon beat Claude by one point. Here's the catch",
+        description:
+          "Artificial Analysis rebuilt its scoreboard around private questions, and a day later Google's Gemini 4 Carbon took first place, one point ahead of Claude Opus 5.5. Most people can't use it yet: security teams get it first. Plus Genie 4, explorable worlds that now have sound.",
+        date: "Oct 29, 2026",
+        duration: "5:46",
+      },
+      {
         id: "06mQeqvVFVs",
         title: "GPT-6.1 Terra: half-price computer use, and the catch",
         description:
