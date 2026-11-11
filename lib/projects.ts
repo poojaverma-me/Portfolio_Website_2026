@@ -329,6 +329,185 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "riverton",
+    title: "Riverton",
+    tagline:
+      "How a city's electricity works, in a city you can switch on and off: an isometric 3D simulation where you shut down the nuclear plant, put solar on every roof or trigger a heatwave, and the grid reacts in plain words.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Nov 2026",
+    role: "Design, simulation and 3D",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "React Three Fiber", "Three.js", "TypeScript", "Blender (procedural)", "Zustand"],
+    domains: ["Energy education", "Simulation"],
+    metrics: [
+      { label: "What if scenarios", value: "12" },
+      { label: "City grid", value: "1.2 × 0.84 km" },
+      { label: "Backend, accounts, API keys", value: "None" },
+    ],
+    links: {},
+    cover: img("riverton", "overview"),
+    thumbs: thumbs("riverton", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Most people have no idea what happens between a power plant and their kettle, and every explainer assumes they want charts. Riverton assumes they want to poke something. It is a planned city rendered as an architectural white clay model, with a live clock, weather, and a grid you can break.",
+          "The whole thing runs in the browser with no backend and no accounts. Every number is a teaching value for a fictional city, chosen so the real patterns show up, and the app says so.",
+        ],
+        figures: [
+          { src: img("riverton", "overview"), caption: "Riverton at midday: everyone has power", alt: "Isometric white clay model city with a river, labelled nuclear plant, hospital, stadium and airport, and a live card showing the power mix" },
+        ],
+      },
+      {
+        id: "scenarios",
+        label: "01 / What if",
+        title: "Twelve What-Ifs",
+        body: [
+          "The sidebar asks the questions people actually have: where does my electricity come from, why is 7 pm the busiest hour, what does a big game night do, what if every car were electric. Tapping one sets up the city, flies the camera to the place that matters, and shows a live before and now comparison with a two-sentence explanation and one big idea.",
+          "Every scenario ends with a follow-up that lets you try the fix: switch the neighbourhood back on, set the air conditioners two degrees warmer, close the backup link.",
+        ],
+        figures: [
+          { src: img("riverton", "whatif-menu"), caption: "The twelve questions, grouped by what they teach", alt: "What if sidebar listing twelve questions grouped under start here, every day and cleaner power" },
+          { src: img("riverton", "follow-path"), caption: "Following the power from plant to home", alt: "The path from nuclear plant through substations to North Hills homes lit up on the map, with a watch panel showing plant output" },
+        ],
+      },
+      {
+        id: "grid",
+        label: "02 / The grid model",
+        title: "The Grid Model",
+        body: [
+          "Riverton is 1.2 by 0.84 km on a 10 m grid: seven housing estates, five apartment districts, downtown, a tech park, industry and docklands, fed by a nuclear plant, a gas plant, solar and wind farms, a giant battery and a link to neighbouring cities, through five substations on a high-voltage ring.",
+          "The simulation keeps real grid behaviour: nuclear runs flat out while gas follows the ups and downs, the battery charges at noon and gives back after sunset, substations tolerate brief overloads before tripping, and when supply falls short, load sheds by priority, with the hospital and the water plant last in line.",
+        ],
+        figures: [
+          { src: img("riverton", "nuclear-off"), caption: "Shutting the nuclear plant: a rolling blackout, the hospital stays on", alt: "Nuclear plant switched off, three areas with no power, gas at full power, 94 percent bought from neighbours and a missing slice in the power mix" },
+          { src: img("riverton", "heatwave"), caption: "A heatwave trips the downtown substation", alt: "Heatwave scenario at 34 degrees with the downtown substation switched itself off, four areas dark and toasts for city hall, mall and shops" },
+        ],
+      },
+      {
+        id: "craft",
+        label: "03 / The craft",
+        title: "The Craft",
+        body: [
+          "The city is generated procedurally in Blender by a build script and rendered with React Three Fiber, in an architectural model-making style: matte white buildings, soft shadows, blue glass water. Labels name places the way people do, Homes and Hospital, not feeder-7.",
+          "The plain-words rule runs all the way down. The Right Now card reduces the grid to one bar and three gauges: clean power, pollution, cost. Megawatts exist, but only behind the number button for those who want them.",
+        ],
+        figures: [
+          { src: img("riverton", "solar"), caption: "Solar on every roof: the gas plant switches off at lunch", alt: "Solar panel scenario with rooftop panels on every house, gas plant off, pollution none and spare power being sold to neighbours" },
+          { src: img("riverton", "phone"), caption: "Riverton on a phone", alt: "Riverton city overview on a phone", device: "phone" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "Riverton is the clearest statement of how I think about explaining systems: simulate honestly, narrate plainly, and let people break things safely.",
+        ],
+        bullets: [
+          "Twelve scenario walkthroughs with live before and now comparisons and one-idea summaries",
+          "Priority-based load shedding, substation overloads, battery cycling and import limits, all modelled client-side",
+          "A procedurally generated 3D city with no backend, no accounts and no API keys",
+          "Every number is a labelled teaching value, not a real-world claim",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "infinity-chronicles",
+    title: "Infinity Chronicles",
+    tagline:
+      "A non-commercial Demon Slayer fan game: a 3D anime action game in the browser with a hand-built engine on raw Three.js, 18,762 lines of TypeScript, and every note of music and sound synthesised in real time, no audio files shipped.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "In Progress",
+    timeline: "Nov 2026",
+    role: "Engine, combat, audio and content",
+    team: "Solo",
+    featured: false,
+    stack: ["Three.js", "TypeScript", "Vite", "Web Audio", "Blender (procedural)", "n8ao"],
+    domains: ["Game development", "Real-time 3D"],
+    metrics: [
+      { label: "TypeScript across 96 modules", value: "18,762 lines" },
+      { label: "Runtime dependencies", value: "2" },
+      { label: "Audio files shipped", value: "0 · synthesised live" },
+    ],
+    links: {},
+    cover: img("infinity-chronicles", "title"),
+    thumbs: thumbs("infinity-chronicles", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Infinity Chronicles is a fan-made 3D action game following the opening arc of Demon Slayer, built from scratch for the browser. The title screen says what matters up front: a non-commercial fan game inspired by Koyoharu Gotouge's manga, with original art, and music and sound synthesised in real time.",
+          "It is the deepest engineering project on this page. There is no game engine underneath: just Three.js, one post-processing library, and 18,762 lines of TypeScript across 96 modules covering combat, character rigs and animation, demon AI, navigation, collision, VFX, missions, story, progression and saves.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "title"), caption: "The title screen, disclaimer included", alt: "Infinity Chronicles title screen with a water dragon swirling around a swordsman, the subtitle in Japanese and a non-commercial fan game disclaimer in the footer" },
+        ],
+      },
+      {
+        id: "combat",
+        label: "01 / Combat",
+        title: "Combat",
+        body: [
+          "Combat is the character-action kind: light and heavy strings, dodges with perfect-dodge windows, parries, guard breaks, lock-on, and breathing forms that spend a focus meter. Input maps to actions rather than raw keys, so a controller is just another mapping.",
+          "A training ground makes the system inspectable: spawn demons one at a time, set them aggressive, and work through challenges like landing a full four-hit combo, parrying three attacks or breaking a demon's guard. Difficulty changes telegraph timing, enemy tracking, aggression and how many demons attack at once, and the menu says exactly that.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "training"), caption: "Training ground: a spawned demon, lock-on and the challenge list", alt: "Training ground with Tanjiro locked onto a straw dummy, a spawned starving demon approaching and a panel of spawn buttons and challenges" },
+          { src: img("infinity-chronicles", "characters"), caption: "The roster unlocks as the story arcs are built", alt: "Character select with demon slayers, hashira and Muzan, most locked, showing Tanjiro's techniques and mastery tree" },
+        ],
+      },
+      {
+        id: "audio",
+        label: "02 / Synthesised everything",
+        title: "Synthesised Everything",
+        body: [
+          "The public folder ships art and 3D models, and nothing else: there are no audio files in the build. Fifteen audio modules synthesise the score, ambience, instruments and combat effects live in the Web Audio API, from the menu theme to sword clashes and demon snarls.",
+          "The 3D side follows the same philosophy: environments are built procedurally in Blender by script, characters are rigged and animated in code, and the anime look comes from the renderer, not from licensed assets.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "mission"), caption: "On the trail home, dawn after snowfall", alt: "In-mission gameplay on a snowy mountain trail with the objective climb the trail home and a waypoint reading Home 72 metres" },
+        ],
+      },
+      {
+        id: "scope",
+        label: "03 / Honest scope",
+        title: "Honest Scope",
+        body: [
+          "The campaign map shows seven story arcs, and only the first says PLAYABLE: the rest are labelled PLANNED, on screen, in the shipped build. Characters join the roster as their arcs are built, and the mission list locks until you finish the one before.",
+          "Each mission opens with a briefing: objectives, optional challenges, and three difficulties with a one-line design statement of intent. The scope is ambitious, and the game never pretends to be further along than it is.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "campaign"), caption: "Arc one playable, the rest honestly marked planned", alt: "Campaign screen with seven arcs from Final Selection to Swordsmith Village, the first marked playable and the rest planned" },
+          { src: img("infinity-chronicles", "briefing"), caption: "Mission briefing: objectives, optionals and intent", alt: "Snow on Mount Kumotori briefing with objectives, optional challenges and three difficulty options over a snowy mountain hut" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "A fan game is where you build the things no client would ever ask for: a combat system, a procedural orchestra, a save system, an animation rig. This one is a love letter with an engine inside, and it stays clearly labelled as the tribute it is.",
+        ],
+        bullets: [
+          "A complete action-game engine on raw Three.js: 96 modules, 18,762 lines, 2 runtime dependencies",
+          "Zero audio files shipped: music, ambience and combat sound synthesised live in Web Audio",
+          "Combat with parries, perfect dodges, guard breaks, lock-on, breathing forms and a mastery tree",
+          "Scope stated on screen: one arc playable, six marked planned, roster unlocking as arcs are built",
+        ],
+      },
+    ],
+  },
+  {
     slug: "voice-receptionist",
     title: "Clinic Voice Receptionist",
     tagline:
@@ -1725,6 +1904,6 @@ export function featuredProjects(): Project[] {
 
 /** The number of projects as a word, for copy ("Thirteen builds"). */
 export function projectCountWord(): string {
-  const words = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
+  const words = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty", "Twenty-one", "Twenty-two", "Twenty-three", "Twenty-four", "Twenty-five"];
   return words[projects.length] ?? String(projects.length);
 }
