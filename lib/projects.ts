@@ -320,6 +320,210 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "plainsight",
+    title: "Plainsight",
+    tagline:
+      "A legal and medical information assistant that answers in plain language and cites an official source for every claim: hybrid retrieval over 127 government documents, Claude Haiku answers measured at $0.0007 each, and a hands-free voice mode on Gemini Live.",
+    category: "AI / ML",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, retrieval pipeline and front end",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "TypeScript", "Claude Haiku 5.5", "Gemini embeddings", "Gemini Live", "Tailwind CSS 4"],
+    domains: ["Legal information", "Consumer rights", "Voice interfaces"],
+    metrics: [
+      { label: "Official documents indexed", value: "127" },
+      { label: "Searchable passages", value: "3,738" },
+      { label: "Measured cost per answer", value: "$0.0007" },
+    ],
+    links: { github: "https://github.com/poojaverma-me/Plainsight" },
+    cover: img("plainsight", "home"),
+    thumbs: thumbs("plainsight", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Plainsight answers everyday legal and medical-legal questions: rent increases, eviction notices, traffic tickets, consent to care. It covers four regions (British Columbia, Ontario, California, New York), and every answer is drawn from statutes, government guides and regulators, with a numbered citation on each claim.",
+          "The rule that shapes the whole app: the model is never allowed to answer from its own memory. Retrieval finds official passages first, Claude Haiku explains only what those passages say, and every answer carries a triage level that points to the right professional. It presents itself as general information, not legal or medical advice.",
+        ],
+        figures: [
+          { src: img("plainsight", "home"), caption: "Home: four topics, one region, grounded in 37 BC sources", alt: "Plainsight home page with the headline 'Know where you stand, in plain language', four topic filters and suggested questions" },
+        ],
+      },
+      {
+        id: "honesty",
+        label: "01 / The honesty test",
+        title: "The Honesty Test",
+        body: [
+          "The question 'How much can my landlord raise the rent this year?' is the trap every legal chatbot falls into: the yearly percentage changes, and a language model will happily invent one. Plainsight's corpus intentionally holds the rules but not the current figure, and the answer says exactly that: the sources do not give this year's percentage, here is how the limit works, here is the official calculator.",
+          "Everything else in the answer is cited: the no-rounding rule, the 12-month wait, the 3 months' written notice on the approved form. The sources rail shows which passages were retrieved, each with its cosine score and keyword rank, so the grounding is inspectable rather than claimed.",
+        ],
+        figures: [
+          { src: img("plainsight", "answer"), caption: "A cited answer that refuses to invent the one number it does not have", alt: "Plainsight answer about rent increases with a triage chip, British Columbia badge, numbered citations and a sources rail showing 5 cited of 8 retrieved" },
+        ],
+      },
+      {
+        id: "retrieval",
+        label: "02 / Retrieval",
+        title: "Retrieval",
+        body: [
+          "The library holds **127 documents** from governments, tribunals, regulators, Crown insurers and legal-aid organisations, plus statute text. Heading-aware chunking turns them into **3,738 passages**; Gemini embeddings (768-d, L2-normalised) live in an 11.5 MB binary file, so there is no vector database service to run.",
+          "Search is hybrid: BM25 rewards exact legal terms like 'security deposit', semantic search catches 'kicked out' meaning eviction. The two rankings merge with reciprocal-rank fusion, the chosen topic gets a gentle boost, each document contributes at most 2 passages, and the top 8 go to the model. The app's own How It Works page traces a real query live: for BC that is 1,195 candidate passages, 376 ms to embed, 3 ms to search.",
+        ],
+        figures: [
+          { src: img("plainsight", "how-it-works"), caption: "The pipeline explaining itself on a real query", alt: "How Plainsight answers page showing corpus stats and a live trace with BM25 and cosine top hits for the rent question" },
+          { src: img("plainsight", "library"), caption: "Source library: every document the answers can draw from", alt: "Source library page showing 37 BC documents and 1,195 searchable passages with filters by type and topic" },
+        ],
+      },
+      {
+        id: "answering",
+        label: "03 / Answering",
+        title: "Answering",
+        body: [
+          "Claude Haiku 5.5 writes the answer behind a byte-stable cached system prompt, with three rules: cite every claim, never invent figures or deadlines, and say so when the library does not cover something. Answers stream as NDJSON with a fixed structure: what the rules say, your options, next steps, when to get professional help.",
+          "Measured on repeated runs: **0.9 to 1.0 s** to the first word, under 4.2 s for the full answer, about 3,900 tokens, **$0.0007** per answer. Failure modes are designed in: if Claude is unavailable the app shows the top official passages instead, and if embeddings fail, search falls back to keywords and says so.",
+        ],
+        figures: [
+          { src: img("plainsight", "answer-sources"), caption: "Options, next steps, and the measured footer: 3.8 s and $0.0007", alt: "Lower half of a Plainsight answer with next steps, professional help section and a footer reading haiku-5-5, 0.9s first word, 3.8s, 3,878 tokens, $0.0007" },
+        ],
+      },
+      {
+        id: "voice-safety",
+        label: "04 / Voice and safety",
+        title: "Voice and Safety",
+        body: [
+          "A voice mode runs on the Gemini Live API: you talk naturally, Gemini transcribes and calls the same retrieval pipeline through a lookup_answer tool, and the cited answer appears on screen while it speaks. The grounding rules do not change because the modality did.",
+          "Safety is handled before search, not after: emergency phrases surface a call-911 / 9-8-8 banner immediately, every answer carries a triage level, and the disclaimer that Plainsight is not a lawyer or a doctor sits on every screen.",
+        ],
+        figures: [
+          { src: img("plainsight", "phone-home"), caption: "Home on a phone", alt: "Plainsight home page on a phone", device: "phone" },
+          { src: img("plainsight", "phone-answer"), caption: "A cited answer on a phone", alt: "Plainsight rent increase answer on a phone with triage chip and citations", device: "phone" },
+        ],
+      },
+      {
+        id: "results",
+        label: "05 / Results",
+        title: "Results",
+        body: [
+          "Plainsight is the answer-engine pattern I now reach for when correctness matters more than fluency: retrieve first, cite everything, measure the cost, and make refusing to guess a feature.",
+        ],
+        bullets: [
+          "127 official documents, 3,738 passages, 4 regions, one 11.5 MB embedding file, no vector database service",
+          "Hybrid BM25 + semantic retrieval fused by reciprocal rank, at most 2 passages per document, top 8 to the model",
+          "Measured answers: first word in about 1 s, $0.0007 each, with citations on every claim",
+          "Asked for this year's rent cap, it says the number is not in its sources instead of inventing one",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "quanta",
+    title: "Quanta",
+    tagline:
+      "An AI data analyst that runs in the browser: drop a CSV and DuckDB-WASM turns it into a typed SQL database that never leaves the tab, Claude profiles and charts it, an autonomous Opus agent investigates it, and you can ask follow-ups out loud.",
+    category: "Data",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, data pipeline and agent loops",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "DuckDB-WASM", "Highcharts", "Claude Opus 5.5", "Claude Haiku 5.5", "Gemini Live"],
+    domains: ["Data analytics", "Business intelligence"],
+    metrics: [
+      { label: "Live deep dive, measured", value: "88 s · $0.25" },
+      { label: "SQL queries the agent ran", value: "8" },
+      { label: "Measured cost to profile a CSV", value: "$0.001" },
+    ],
+    links: { github: "https://github.com/poojaverma-me/Quanta" },
+    cover: img("quanta", "overview"),
+    thumbs: thumbs("quanta", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Most 'chat with your data' tools upload the file to a server. Quanta inverts that: the CSV is staged into **DuckDB-WASM inside the browser tab**, and the raw rows never leave it. The models see the schema, column statistics and the results of the SQL they ask for, nothing more.",
+          "The browser owns every agent loop. API routes only forward model calls; each model-written query passes a read-only guard (single SELECT or WITH statements, no file or URL readers) and runs locally. The result is an analyst you can hand sensitive data to without a data-processing conversation.",
+        ],
+        figures: [
+          { src: img("quanta", "landing"), caption: "Landing: drop a CSV, or try a synthetic dataset", alt: "Quanta landing page with the headline 'Your spreadsheets, as an analyst you can talk to', a CSV dropzone and three sample datasets" },
+        ],
+      },
+      {
+        id: "ingestion",
+        label: "01 / Typed ingestion",
+        title: "Typed Ingestion",
+        body: [
+          "A CSV lands as an all-VARCHAR table, then Claude Haiku reads 20 sample rows and writes the typed schema: column types, roles, date formats and an executive summary. Each column is converted with TRY_CAST, and any column where more than 20% of values fail falls back to text rather than corrupting rows.",
+          "I verified the live path with a 388-row cafe-sales CSV generated for the test: Haiku named it 'Cafe Sales Transactions', classified it as food and beverage retail, typed the dates, and the whole profile cost **$0.001**.",
+        ],
+        figures: [
+          { src: img("quanta", "live-overview"), caption: "A 388-row test CSV, profiled live for $0.001", alt: "Quanta overview of a live-uploaded cafe sales CSV, named and sector-classified by Claude Haiku, with charts and a live token meter in the header" },
+        ],
+      },
+      {
+        id: "dashboard",
+        label: "02 / Dashboard",
+        title: "Dashboard",
+        body: [
+          "The Overview tab renders a dashboard generated from the profile: KPI cards with glowing pill columns and rolling averages, a neon barcode of daily records with the busiest fortnight lit, ranked category rows, and a set of 3D and radar cards, all Highcharts on black, styled after Setproduct's Hyper Charts kit.",
+          "Every card is honest about its provenance: each one has a table toggle and a SQL toggle, so the query behind any number is one click away.",
+        ],
+        figures: [
+          { src: img("quanta", "overview"), caption: "Overview: KPI cards and the daily-records barcode", alt: "Quanta overview dashboard for the IT support tickets sample with a green barcode chart, weekly KPI cards and category rows" },
+          { src: img("quanta", "overview-cards"), caption: "The 3D report cards further down the page", alt: "Category landscape, peak days and daily rhythm 3D chart cards on the Quanta overview" },
+        ],
+      },
+      {
+        id: "deep-dive",
+        label: "03 / The deep dive agent",
+        title: "The Deep Dive Agent",
+        body: [
+          "Deep Dive hands the dataset to an autonomous Claude Opus agent with two tools: run_sql and submit_report. It plans, queries, reasons about what it finds and queries again, streaming every step to a live agent log, then delivers an executive report with KPI cards, validated charts, findings and recommendations.",
+          "The three sample datasets ship as recorded real sessions that replay instantly, labelled Demo in the header, so the public demo costs nothing. I verified the live loop on my test CSV, which had a deliberate planted pattern: the agent ran **7 steps and 8 queries in 88 seconds for $0.25**, and its report led with exactly the planted fact, the University store's revenue run-rate down 71% since mid-September, then went further and tied the drop to falling loyalty-member visits.",
+        ],
+        figures: [
+          { src: img("quanta", "deepdive-run"), caption: "Mid-run: the agent log streams reasoning and SQL", alt: "Deep dive in progress with an agent log showing reasoning steps, SQL queries with row counts and a skeleton report" },
+          { src: img("quanta", "deepdive-report"), caption: "The delivered report on the sample dataset", alt: "Executive report titled 'Department Bottlenecks: Security Engineering Is Structural, Data Platform Is New' with four KPI cards" },
+          { src: img("quanta", "live-deepdive"), caption: "Live run on the test CSV: 7 steps, 8 queries, $0.25, planted decline found", alt: "Live deep dive report on cafe sales data finding the University store decline, with a cost card showing $0.25" },
+        ],
+      },
+      {
+        id: "ask",
+        label: "04 / Ask, in text or out loud",
+        title: "Ask, in Text or Out Loud",
+        body: [
+          "The Ask tab answers one-off questions: the model writes SQL, the browser runs it, and the answer arrives with an 'Inspect SQL and results' toggle so nothing is a black box.",
+          "Voice runs on the Gemini Live API: a real-time, interruptible conversation where Gemini calls a run_sql tool mid-sentence, the query executes on the in-browser DuckDB, and both the SQL and the rows appear in the transcript alongside the spoken answer.",
+        ],
+        figures: [
+          { src: img("quanta", "ask"), caption: "Ask: a cited, inspectable answer next to the voice panel", alt: "Ask tab answering an SLA question with Inspect SQL toggle, a Gemini Live voice panel and suggested questions" },
+          { src: img("quanta", "phone-overview"), caption: "The dashboard on a phone", alt: "Quanta overview dashboard on a phone", device: "phone" },
+        ],
+      },
+      {
+        id: "results",
+        label: "05 / Results",
+        title: "Results",
+        body: [
+          "Quanta is my argument that agentic analytics and privacy are not in tension: put the database in the browser, give the model tools instead of data, and show the SQL behind every number.",
+        ],
+        bullets: [
+          "Raw data never leaves the tab: DuckDB-WASM locally, models see schema, statistics and query results only",
+          "Every model-written query passes a read-only guard: single SELECT or WITH, no file or URL readers",
+          "Live verification: a planted revenue decline found autonomously in 88 s for $0.25, 7 steps, 8 queries",
+          "Recorded demo replays make the public samples free to explore, honestly labelled Demo in the header",
+        ],
+      },
+    ],
+  },
+  {
     slug: "reelmind",
     title: "ReelMind",
     tagline:
@@ -788,6 +992,82 @@ export const projects: Project[] = [
         title: "Measured Results",
         body: [
           "Across 17 fresh searches, Jev answered all 79 questions in a median **251 ms** (123 to 352 ms) using about **10,350 input tokens**, about **$0.00044** per search. \"Light vegetarian dinner\" returned dal tadka, bhindi masala and khichdi; \"something sweet for Diwali\" returned gulab jamun, gajar ka halwa and kheer; and \"pizza\" sensibly came back as closest options only.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "capstone-kanban",
+    title: "Capstone Team Board",
+    tagline:
+      "A real-time Kanban board for my capstone team, shipped as one HTML file: no build step, Supabase for live sync, tasks with any number of assignees, and an operating manual that lets an AI agent work the board through a restricted database role.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "Shipped",
+    timeline: "Oct 2026",
+    role: "Design and build",
+    team: "Solo build, used by a team of 5",
+    featured: false,
+    stack: ["HTML + CSS + JS", "Supabase", "PostgreSQL", "Realtime"],
+    domains: ["Team tooling", "Project management"],
+    metrics: [
+      { label: "Build step, bundler, framework", value: "None" },
+      { label: "Lines in index.html", value: "1,017" },
+      { label: "Setup time for the team", value: "About 5 min" },
+    ],
+    links: { github: "https://github.com/poojaverma-me/Capstone-Kanban" },
+    cover: img("capstone-kanban", "board"),
+    thumbs: thumbs("capstone-kanban", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "My capstone team needed a shared board without another account to create, another subscription, or a deploy pipeline for a tool we would use for one semester. So the whole app is one **index.html**: open it anywhere and the team's live board is there. Data lives in Supabase, and changes appear on everyone's screen within a second.",
+          "Constraints were the design brief: no build step, no framework, no server of mine. The single file holds the Apple-style UI, drag and drop, search, filters and the Supabase client, in 1,017 lines. A 'Try without Supabase' mode runs the same board with sample data in the browser, which is also what these screenshots show.",
+        ],
+        figures: [
+          { src: img("capstone-kanban", "board"), caption: "The board in demo mode: three columns, priorities, due dates, overdue flags", alt: "Capstone Board Kanban with Not Started, In Progress and Done columns, multi-assignee avatars and an overdue task" },
+        ],
+      },
+      {
+        id: "build",
+        label: "01 / Design and data model",
+        title: "Design and Data Model",
+        body: [
+          "Tasks take **any number of assignees**, which most lightweight boards refuse to do; the schema is three tables (members, tasks, task_assignees) with row-level-security policies and realtime publication, created by pasting one schema.sql into Supabase. That paste is the entire setup: teammates just open the same file, and there is nothing to configure on their side.",
+          "The details carry the polish: cards drag between and within columns, a column choice replaces dragging on phones, avatars in the top bar filter by person, the slash key jumps to search, N creates a task, and option plus arrow keys move a focused card between columns.",
+        ],
+        figures: [
+          { src: img("capstone-kanban", "task"), caption: "A task with two assignees, status, priority and notes", alt: "Edit task modal with five teammates as toggleable assignees, status and priority segmented controls and a due date" },
+          { src: img("capstone-kanban", "phone-board"), caption: "The board on a phone", alt: "Capstone Board on a phone showing task cards with assignees", device: "phone" },
+        ],
+      },
+      {
+        id: "agent",
+        label: "02 / The board agent",
+        title: "The Board Agent",
+        body: [
+          "The part I find most interesting is agent.html: an **operating manual addressed to an AI agent** that controls a browser. Paste meeting notes, an email or a request, tell your agent to process the page, and it extracts the tasks, works out owners, checks for duplicates, writes and runs the SQL, verifies the result and reports back, asking a person only when something essential is ambiguous.",
+          "The agent never touches the team's real credentials. A one-time agent-setup.sql creates a restricted board_agent role, a token-gated SQL function and a run log, so the agent operates through its own audited, least-privilege path rather than the service key.",
+        ],
+        figures: [
+          { src: img("capstone-kanban", "agent"), caption: "agent.html: the manual and tool panels an AI agent follows", alt: "Board Agent operating manual page with connection, input and context panels and a how-to-use section" },
+        ],
+      },
+      {
+        id: "results",
+        label: "03 / Results",
+        title: "Results",
+        body: [
+          "The team ran the semester on this board. It is the smallest project on this page and the one with the highest usage-to-code ratio, which is its own lesson: the right tool for a five-person team was a file, not a platform.",
+        ],
+        bullets: [
+          "One HTML file, no build step; live team sync through Supabase realtime in about a second",
+          "Any number of assignees per task via a junction table, with row-level security on all three tables",
+          "An AI agent can run the board through a token-gated, least-privilege SQL path with a run log",
+          "Setup for the whole team was one SQL paste and a shared file, about 5 minutes",
         ],
       },
     ],
