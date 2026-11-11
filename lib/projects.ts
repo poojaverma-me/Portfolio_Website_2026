@@ -240,6 +240,95 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "floating-physics-kingdom",
+    title: "The Floating Physics Kingdom",
+    tagline:
+      "An isometric 3D exploration game about physics, set on floating islands above a sea of clouds: no levels, no scores, just ancient machines that wake when you get the physics right, with every simulation checked against hand calculations.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, simulation and engine",
+    team: "Solo",
+    featured: false,
+    stack: ["Three.js", "Rapier", "TypeScript", "Vite", "Vitest", "Gemini TTS"],
+    domains: ["Game-based learning", "Physics education"],
+    metrics: [
+      { label: "Simulation checks vs hand calculations", value: "100 passing" },
+      { label: "Ancient machines to wake", value: "10" },
+      { label: "External art assets", value: "0" },
+    ],
+    links: {},
+    cover: img("floating-physics-kingdom", "title"),
+    thumbs: thumbs("floating-physics-kingdom", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "The machines of a floating kingdom have fallen silent, and nobody remembers how they worked. You wander between islands, each one a physics topic made walkable: the Temple of Motion, the Waterwheel Sanctuary, the Garden of Arcs, the Storm Shrine, the Observatory Spire.",
+          "There are no levels and no score. Waking a machine means actually getting the physics right: setting a projectile's angle, balancing a truss, closing a circuit. The chapter structure follows the CBSE / NCERT Class 9 syllabus, so the game doubles as a curriculum companion rather than a generic science toy.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "title"), caption: "The kingdom: each island is a physics chapter", alt: "Title screen showing floating islands labelled Temple of Motion, Garden of Arcs, Pagoda of Echoes, Storm Shrine and Observatory Spire above a sea of clouds" },
+        ],
+      },
+      {
+        id: "world",
+        label: "01 / The world",
+        title: "The World",
+        body: [
+          "Everything is generated in code: no downloaded models, textures or audio. Toon-ramp materials, procedural textures, procedural music and ambience, and a living day cycle with dusk, stars, aurora and sky lanterns. Cranes, butterflies, koi and fireflies keep the islands breathing between experiments.",
+          "Rapier drives rigid-body physics for everything that moves, and the character walks, jumps and rides gondolas between islands with pathfinding on the walkable mesh.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "gameplay-storm"), caption: "Storm Shrine: circuits, induction and a lightning pool, mid-rain", alt: "Storm Shrine island in the rain with Tesla coil towers, a glowing lightning pool and the HUD showing Class 9 Chapter 1 progress" },
+          { src: img("floating-physics-kingdom", "gameplay-arcs"), caption: "Garden of Arcs: projectile range markers on real terrain", alt: "Garden of Arcs island with a launcher, distance markers at 2, 4 and 6 metres, a pagoda and a fountain" },
+        ],
+      },
+      {
+        id: "simulations",
+        label: "02 / Real simulations",
+        title: "Real Simulations",
+        body: [
+          "Each machine runs a real model, not an animation: projectile motion with drag, a 2D truss stiffness solver, nodal circuit analysis, the wave equation, ray optics, orbital mechanics, hydraulics and light gates, all in src/sim as pure TypeScript.",
+          "The test suite checks the simulations against hand calculations, and it is the number I am proudest of on this page: **100 checks passing**. When the notebook tells you the game's model of something is simplified, that honesty is possible because the model is explicit enough to test.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "film"), caption: "Story films set up each machine's question before you touch it", alt: "In-game story film frame where the Keeper asks which of a heavy and a light ball lands first from the drop tower" },
+        ],
+      },
+      {
+        id: "learning",
+        label: "03 / Learning design",
+        title: "Learning Design",
+        body: [
+          "The Physics Notebook is the spine: a journey view mapping each NCERT chapter to its island, 30 collectible ideas each with its equation and an honest note on how the game models it, an experiment log of your own results, and the films you have unlocked.",
+          "Character voices are pre-generated with Gemini TTS at build time, so no API key ever reaches the browser, and every line still appears as a caption without the audio files.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "notebook"), caption: "The notebook: NCERT chapters mapped to islands", alt: "Physics Notebook overlay with Journey, Films, Ideas, Experiment log and Machines tabs, listing Class 9 chapters Motion, Force and Laws of Motion and Gravitation" },
+          { src: img("floating-physics-kingdom", "chapters"), caption: "Pick a chapter and Pip flies you to its island", alt: "Choose a chapter overlay with Class 9 to 12 tabs and NCERT chapters mapped to islands, including one marked island being built" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "The Kingdom is the largest thing I have built alone: an engine-level project where the physics is the gameplay, the art is code, and the curriculum is a real one.",
+        ],
+        bullets: [
+          "100 simulation checks against hand calculations, run with Vitest",
+          "10 machines across the islands, each woken by doing the physics, not watching it",
+          "Every asset generated in code: geometry, textures, music and ambience",
+          "CBSE / NCERT Class 9 chapter structure, with honest notes where the model simplifies",
+        ],
+      },
+    ],
+  },
+  {
     slug: "voice-receptionist",
     title: "Clinic Voice Receptionist",
     tagline:
@@ -519,6 +608,94 @@ export const projects: Project[] = [
           "Every model-written query passes a read-only guard: single SELECT or WITH, no file or URL readers",
           "Live verification: a planted revenue decline found autonomously in 88 s for $0.25, 7 steps, 8 queries",
           "Recorded demo replays make the public samples free to explore, honestly labelled Demo in the header",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "bastion",
+    title: "Bastion",
+    tagline:
+      "An event-driven portfolio risk platform for fund managers, built capital-preservation-first: every incoming headline is read by an LLM, scored by Jev for every exposed holding, run through a transparent risk calculus and pushed to the manager's phone, with the full reasoning chain one click away.",
+    category: "AI / ML",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, risk pipeline and front end",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "TypeScript", "Claude Haiku 5.5", "Jev (TypeSafe)", "Tailwind CSS 4"],
+    domains: ["Fintech", "Portfolio risk", "Decision support"],
+    metrics: [
+      { label: "Ingest to phone push, measured", value: "8.9 s" },
+      { label: "Jev scoring per event, measured", value: "202 ms" },
+      { label: "Breaking-news stress presets", value: "22" },
+    ],
+    links: {},
+    cover: img("bastion", "command"),
+    thumbs: thumbs("bastion", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Bastion asks what a risk desk would look like if capital preservation, not alpha, were the organising principle. It watches 18 intelligence feeds for a simulated $1.78B fund, and every headline that lands is checked against the book: who is exposed, how bad could it get, and does the manager need to know right now.",
+          "Everything in the prototype is honestly simulated, and says so on screen: the news posts, the prices, the hedge orders. What is real is the pipeline: live Claude extraction, live Jev scoring, a deterministic risk calculus and a push console, all traceable end to end.",
+        ],
+        figures: [
+          { src: img("bastion", "command"), caption: "Command: a stress event scored against the book, alert on the phone dock", alt: "Bastion command dashboard with NAV, Event VaR and posture KPIs, a tariff stress event with downside probability gauge, an at-risk holdings table and a simulated phone showing critical alerts" },
+        ],
+      },
+      {
+        id: "pipeline",
+        label: "01 / Pipeline",
+        title: "The Pipeline",
+        body: [
+          "Each event runs a six-stage pipeline: ingest, LLM extraction, exposure screen, Jev scoring, risk calculus, push. Claude Haiku reads the headline against the book and returns entities, sentiment, auditable analysis steps and impact vectors in the platform's tag vocabulary. The screen matches vectors to holdings deterministically, so a vector targeting fabless semiconductors also catches a holding added next week.",
+          "Jev, TypeSafe's decision model, then answers typed questions for every exposed holding in **one batched request**: exposure, direction, and a magnitude distribution over move buckets, plus two portfolio-level questions. Measured on screen: extraction 8.2 s, exposure screen 1 ms, Jev scoring **202 ms**, and ingest to phone push in **8.9 to 10.5 s** against a 60 s SLA.",
+        ],
+        figures: [
+          { src: img("bastion", "trace"), caption: "The traceability console: raw payload to push, with real model timings", alt: "AI reasoning and traceability view showing the live claude-haiku-5-5 extraction with token counts, step-by-step analysis, entities and sectoral dependency chains" },
+        ],
+      },
+      {
+        id: "calculus",
+        label: "02 / Risk calculus",
+        title: "Risk Calculus",
+        body: [
+          "The probabilities become numbers through a pure, inspectable function rather than another model call: exposure weights blend Jev's direct, indirect and peripheral probabilities, an event factor folds in source reliability and follow-through, and expected loss multiplies position size, expected move and probability. Confidence bars show the P10 to P90 of Jev's magnitude distribution, not a point estimate.",
+          "Event VaR sums each holding's worst live residual loss, with live events decaying over 20 minutes as they get priced in. The fund's preservation posture maps VaR against a 1.5% drawdown budget, so one number tells the manager how close the book is to its limit.",
+        ],
+        figures: [
+          { src: img("bastion", "method"), caption: "How Jev decides: a real decision replayed one step at a time", alt: "Method page with the six-stage integration map and a step-by-step walkthrough of the Taiwan tariff decision for TSMC" },
+        ],
+      },
+      {
+        id: "stress",
+        label: "03 / Stress lab",
+        title: "Stress Lab",
+        body: [
+          "The Stress Lab fires synthetic breaking news through the full pipeline against the current book: 22 presets across tariffs, export controls, FDA decisions, rate shocks and defense budgets, plus a composer for custom headlines. Stress tests never touch the live book, and a league table ranks scenarios by expected loss.",
+          "The portfolio page closes the loop: add any of a 40-name universe or define a custom security, and Jev classifies its industry domain live while open events are re-scored for the new name.",
+        ],
+        figures: [
+          { src: img("bastion", "stress"), caption: "22 breaking-news presets, each a full pipeline run", alt: "Stress Lab page with preset scenario cards from tariff threats to FDA rejections and a run-all button" },
+          { src: img("bastion", "portfolio"), caption: "The book: sector exposure, JEV classification, treemap by open threat", alt: "Portfolio page with sector exposure bars, market-cap tiers, a book treemap coloured by threat and an add-holding search" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "Bastion is the most complete systems-design piece in this archive: two model APIs, a deterministic core you can audit, honest simulation labels everywhere, and latency measured against an SLA rather than asserted.",
+        ],
+        bullets: [
+          "Six-stage pipeline with every stage timed on screen: 8 ms ingest, 8.2 s extraction, 1 ms screen, 202 ms Jev scoring",
+          "One batched Jev request scores every exposed holding, with P10 to P90 ranges instead of point estimates",
+          "Ingest to phone push measured at 8.9 to 10.5 s against a 60 s SLA",
+          "Fallbacks at every model boundary, and a trace console that shows which mode actually ran",
         ],
       },
     ],
