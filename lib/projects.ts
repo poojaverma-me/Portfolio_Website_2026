@@ -240,6 +240,274 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "floating-physics-kingdom",
+    title: "The Floating Physics Kingdom",
+    tagline:
+      "An isometric 3D exploration game about physics, set on floating islands above a sea of clouds: no levels, no scores, just ancient machines that wake when you get the physics right, with every simulation checked against hand calculations.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, simulation and engine",
+    team: "Solo",
+    featured: false,
+    stack: ["Three.js", "Rapier", "TypeScript", "Vite", "Vitest", "Gemini TTS"],
+    domains: ["Game-based learning", "Physics education"],
+    metrics: [
+      { label: "Simulation checks vs hand calculations", value: "100 passing" },
+      { label: "Ancient machines to wake", value: "10" },
+      { label: "External art assets", value: "0" },
+    ],
+    links: {},
+    cover: img("floating-physics-kingdom", "title"),
+    thumbs: thumbs("floating-physics-kingdom", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "The machines of a floating kingdom have fallen silent, and nobody remembers how they worked. You wander between islands, each one a physics topic made walkable: the Temple of Motion, the Waterwheel Sanctuary, the Garden of Arcs, the Storm Shrine, the Observatory Spire.",
+          "There are no levels and no score. Waking a machine means actually getting the physics right: setting a projectile's angle, balancing a truss, closing a circuit. The chapter structure follows the CBSE / NCERT Class 9 syllabus, so the game doubles as a curriculum companion rather than a generic science toy.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "title"), caption: "The kingdom: each island is a physics chapter", alt: "Title screen showing floating islands labelled Temple of Motion, Garden of Arcs, Pagoda of Echoes, Storm Shrine and Observatory Spire above a sea of clouds" },
+        ],
+      },
+      {
+        id: "world",
+        label: "01 / The world",
+        title: "The World",
+        body: [
+          "Everything is generated in code: no downloaded models, textures or audio. Toon-ramp materials, procedural textures, procedural music and ambience, and a living day cycle with dusk, stars, aurora and sky lanterns. Cranes, butterflies, koi and fireflies keep the islands breathing between experiments.",
+          "Rapier drives rigid-body physics for everything that moves, and the character walks, jumps and rides gondolas between islands with pathfinding on the walkable mesh.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "gameplay-storm"), caption: "Storm Shrine: circuits, induction and a lightning pool, mid-rain", alt: "Storm Shrine island in the rain with Tesla coil towers, a glowing lightning pool and the HUD showing Class 9 Chapter 1 progress" },
+          { src: img("floating-physics-kingdom", "gameplay-arcs"), caption: "Garden of Arcs: projectile range markers on real terrain", alt: "Garden of Arcs island with a launcher, distance markers at 2, 4 and 6 metres, a pagoda and a fountain" },
+        ],
+      },
+      {
+        id: "simulations",
+        label: "02 / Real simulations",
+        title: "Real Simulations",
+        body: [
+          "Each machine runs a real model, not an animation: projectile motion with drag, a 2D truss stiffness solver, nodal circuit analysis, the wave equation, ray optics, orbital mechanics, hydraulics and light gates, all in src/sim as pure TypeScript.",
+          "The test suite checks the simulations against hand calculations, and it is the number I am proudest of on this page: **100 checks passing**. When the notebook tells you the game's model of something is simplified, that honesty is possible because the model is explicit enough to test.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "film"), caption: "Story films set up each machine's question before you touch it", alt: "In-game story film frame where the Keeper asks which of a heavy and a light ball lands first from the drop tower" },
+        ],
+      },
+      {
+        id: "learning",
+        label: "03 / Learning design",
+        title: "Learning Design",
+        body: [
+          "The Physics Notebook is the spine: a journey view mapping each NCERT chapter to its island, 30 collectible ideas each with its equation and an honest note on how the game models it, an experiment log of your own results, and the films you have unlocked.",
+          "Character voices are pre-generated with Gemini TTS at build time, so no API key ever reaches the browser, and every line still appears as a caption without the audio files.",
+        ],
+        figures: [
+          { src: img("floating-physics-kingdom", "notebook"), caption: "The notebook: NCERT chapters mapped to islands", alt: "Physics Notebook overlay with Journey, Films, Ideas, Experiment log and Machines tabs, listing Class 9 chapters Motion, Force and Laws of Motion and Gravitation" },
+          { src: img("floating-physics-kingdom", "chapters"), caption: "Pick a chapter and Pip flies you to its island", alt: "Choose a chapter overlay with Class 9 to 12 tabs and NCERT chapters mapped to islands, including one marked island being built" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "The Kingdom is the largest thing I have built alone: an engine-level project where the physics is the gameplay, the art is code, and the curriculum is a real one.",
+        ],
+        bullets: [
+          "100 simulation checks against hand calculations, run with Vitest",
+          "10 machines across the islands, each woken by doing the physics, not watching it",
+          "Every asset generated in code: geometry, textures, music and ambience",
+          "CBSE / NCERT Class 9 chapter structure, with honest notes where the model simplifies",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "riverton",
+    title: "Riverton",
+    tagline:
+      "How a city's electricity works, in a city you can switch on and off: an isometric 3D simulation where you shut down the nuclear plant, put solar on every roof or trigger a heatwave, and the grid reacts in plain words.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Nov 2026",
+    role: "Design, simulation and 3D",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "React Three Fiber", "Three.js", "TypeScript", "Blender (procedural)", "Zustand"],
+    domains: ["Energy education", "Simulation"],
+    metrics: [
+      { label: "What if scenarios", value: "12" },
+      { label: "City grid", value: "1.2 × 0.84 km" },
+      { label: "Backend, accounts, API keys", value: "None" },
+    ],
+    links: {},
+    cover: img("riverton", "overview"),
+    thumbs: thumbs("riverton", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Most people have no idea what happens between a power plant and their kettle, and every explainer assumes they want charts. Riverton assumes they want to poke something. It is a planned city rendered as an architectural white clay model, with a live clock, weather, and a grid you can break.",
+          "The whole thing runs in the browser with no backend and no accounts. Every number is a teaching value for a fictional city, chosen so the real patterns show up, and the app says so.",
+        ],
+        figures: [
+          { src: img("riverton", "overview"), caption: "Riverton at midday: everyone has power", alt: "Isometric white clay model city with a river, labelled nuclear plant, hospital, stadium and airport, and a live card showing the power mix" },
+        ],
+      },
+      {
+        id: "scenarios",
+        label: "01 / What if",
+        title: "Twelve What-Ifs",
+        body: [
+          "The sidebar asks the questions people actually have: where does my electricity come from, why is 7 pm the busiest hour, what does a big game night do, what if every car were electric. Tapping one sets up the city, flies the camera to the place that matters, and shows a live before and now comparison with a two-sentence explanation and one big idea.",
+          "Every scenario ends with a follow-up that lets you try the fix: switch the neighbourhood back on, set the air conditioners two degrees warmer, close the backup link.",
+        ],
+        figures: [
+          { src: img("riverton", "whatif-menu"), caption: "The twelve questions, grouped by what they teach", alt: "What if sidebar listing twelve questions grouped under start here, every day and cleaner power" },
+          { src: img("riverton", "follow-path"), caption: "Following the power from plant to home", alt: "The path from nuclear plant through substations to North Hills homes lit up on the map, with a watch panel showing plant output" },
+        ],
+      },
+      {
+        id: "grid",
+        label: "02 / The grid model",
+        title: "The Grid Model",
+        body: [
+          "Riverton is 1.2 by 0.84 km on a 10 m grid: seven housing estates, five apartment districts, downtown, a tech park, industry and docklands, fed by a nuclear plant, a gas plant, solar and wind farms, a giant battery and a link to neighbouring cities, through five substations on a high-voltage ring.",
+          "The simulation keeps real grid behaviour: nuclear runs flat out while gas follows the ups and downs, the battery charges at noon and gives back after sunset, substations tolerate brief overloads before tripping, and when supply falls short, load sheds by priority, with the hospital and the water plant last in line.",
+        ],
+        figures: [
+          { src: img("riverton", "nuclear-off"), caption: "Shutting the nuclear plant: a rolling blackout, the hospital stays on", alt: "Nuclear plant switched off, three areas with no power, gas at full power, 94 percent bought from neighbours and a missing slice in the power mix" },
+          { src: img("riverton", "heatwave"), caption: "A heatwave trips the downtown substation", alt: "Heatwave scenario at 34 degrees with the downtown substation switched itself off, four areas dark and toasts for city hall, mall and shops" },
+        ],
+      },
+      {
+        id: "craft",
+        label: "03 / The craft",
+        title: "The Craft",
+        body: [
+          "The city is generated procedurally in Blender by a build script and rendered with React Three Fiber, in an architectural model-making style: matte white buildings, soft shadows, blue glass water. Labels name places the way people do, Homes and Hospital, not feeder-7.",
+          "The plain-words rule runs all the way down. The Right Now card reduces the grid to one bar and three gauges: clean power, pollution, cost. Megawatts exist, but only behind the number button for those who want them.",
+        ],
+        figures: [
+          { src: img("riverton", "solar"), caption: "Solar on every roof: the gas plant switches off at lunch", alt: "Solar panel scenario with rooftop panels on every house, gas plant off, pollution none and spare power being sold to neighbours" },
+          { src: img("riverton", "phone"), caption: "Riverton on a phone", alt: "Riverton city overview on a phone", device: "phone" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "Riverton is the clearest statement of how I think about explaining systems: simulate honestly, narrate plainly, and let people break things safely.",
+        ],
+        bullets: [
+          "Twelve scenario walkthroughs with live before and now comparisons and one-idea summaries",
+          "Priority-based load shedding, substation overloads, battery cycling and import limits, all modelled client-side",
+          "A procedurally generated 3D city with no backend, no accounts and no API keys",
+          "Every number is a labelled teaching value, not a real-world claim",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "infinity-chronicles",
+    title: "Infinity Chronicles",
+    tagline:
+      "A non-commercial Demon Slayer fan game: a 3D anime action game in the browser with a hand-built engine on raw Three.js, 18,762 lines of TypeScript, and every note of music and sound synthesised in real time, no audio files shipped.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "In Progress",
+    timeline: "Nov 2026",
+    role: "Engine, combat, audio and content",
+    team: "Solo",
+    featured: false,
+    stack: ["Three.js", "TypeScript", "Vite", "Web Audio", "Blender (procedural)", "n8ao"],
+    domains: ["Game development", "Real-time 3D"],
+    metrics: [
+      { label: "TypeScript across 96 modules", value: "18,762 lines" },
+      { label: "Runtime dependencies", value: "2" },
+      { label: "Audio files shipped", value: "0 · synthesised live" },
+    ],
+    links: {},
+    cover: img("infinity-chronicles", "title"),
+    thumbs: thumbs("infinity-chronicles", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Infinity Chronicles is a fan-made 3D action game following the opening arc of Demon Slayer, built from scratch for the browser. The title screen says what matters up front: a non-commercial fan game inspired by Koyoharu Gotouge's manga, with original art, and music and sound synthesised in real time.",
+          "It is the deepest engineering project on this page. There is no game engine underneath: just Three.js, one post-processing library, and 18,762 lines of TypeScript across 96 modules covering combat, character rigs and animation, demon AI, navigation, collision, VFX, missions, story, progression and saves.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "title"), caption: "The title screen, disclaimer included", alt: "Infinity Chronicles title screen with a water dragon swirling around a swordsman, the subtitle in Japanese and a non-commercial fan game disclaimer in the footer" },
+        ],
+      },
+      {
+        id: "combat",
+        label: "01 / Combat",
+        title: "Combat",
+        body: [
+          "Combat is the character-action kind: light and heavy strings, dodges with perfect-dodge windows, parries, guard breaks, lock-on, and breathing forms that spend a focus meter. Input maps to actions rather than raw keys, so a controller is just another mapping.",
+          "A training ground makes the system inspectable: spawn demons one at a time, set them aggressive, and work through challenges like landing a full four-hit combo, parrying three attacks or breaking a demon's guard. Difficulty changes telegraph timing, enemy tracking, aggression and how many demons attack at once, and the menu says exactly that.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "training"), caption: "Training ground: a spawned demon, lock-on and the challenge list", alt: "Training ground with Tanjiro locked onto a straw dummy, a spawned starving demon approaching and a panel of spawn buttons and challenges" },
+          { src: img("infinity-chronicles", "characters"), caption: "The roster unlocks as the story arcs are built", alt: "Character select with demon slayers, hashira and Muzan, most locked, showing Tanjiro's techniques and mastery tree" },
+        ],
+      },
+      {
+        id: "audio",
+        label: "02 / Synthesised everything",
+        title: "Synthesised Everything",
+        body: [
+          "The public folder ships art and 3D models, and nothing else: there are no audio files in the build. Fifteen audio modules synthesise the score, ambience, instruments and combat effects live in the Web Audio API, from the menu theme to sword clashes and demon snarls.",
+          "The 3D side follows the same philosophy: environments are built procedurally in Blender by script, characters are rigged and animated in code, and the anime look comes from the renderer, not from licensed assets.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "mission"), caption: "On the trail home, dawn after snowfall", alt: "In-mission gameplay on a snowy mountain trail with the objective climb the trail home and a waypoint reading Home 72 metres" },
+        ],
+      },
+      {
+        id: "scope",
+        label: "03 / Honest scope",
+        title: "Honest Scope",
+        body: [
+          "The campaign map shows seven story arcs, and only the first says PLAYABLE: the rest are labelled PLANNED, on screen, in the shipped build. Characters join the roster as their arcs are built, and the mission list locks until you finish the one before.",
+          "Each mission opens with a briefing: objectives, optional challenges, and three difficulties with a one-line design statement of intent. The scope is ambitious, and the game never pretends to be further along than it is.",
+        ],
+        figures: [
+          { src: img("infinity-chronicles", "campaign"), caption: "Arc one playable, the rest honestly marked planned", alt: "Campaign screen with seven arcs from Final Selection to Swordsmith Village, the first marked playable and the rest planned" },
+          { src: img("infinity-chronicles", "briefing"), caption: "Mission briefing: objectives, optionals and intent", alt: "Snow on Mount Kumotori briefing with objectives, optional challenges and three difficulty options over a snowy mountain hut" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "A fan game is where you build the things no client would ever ask for: a combat system, a procedural orchestra, a save system, an animation rig. This one is a love letter with an engine inside, and it stays clearly labelled as the tribute it is.",
+        ],
+        bullets: [
+          "A complete action-game engine on raw Three.js: 96 modules, 18,762 lines, 2 runtime dependencies",
+          "Zero audio files shipped: music, ambience and combat sound synthesised live in Web Audio",
+          "Combat with parries, perfect dodges, guard breaks, lock-on, breathing forms and a mastery tree",
+          "Scope stated on screen: one arc playable, six marked planned, roster unlocking as arcs are built",
+        ],
+      },
+    ],
+  },
+  {
     slug: "voice-receptionist",
     title: "Clinic Voice Receptionist",
     tagline:
@@ -315,6 +583,298 @@ export const projects: Project[] = [
         bullets: [
           "Status: in progress, running locally; not yet connected to a phone line",
           "Screenshots use the app's tagged demo bookings on a stand-in calendar, not patient data",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "plainsight",
+    title: "Plainsight",
+    tagline:
+      "A legal and medical information assistant that answers in plain language and cites an official source for every claim: hybrid retrieval over 127 government documents, Claude Haiku answers measured at $0.0007 each, and a hands-free voice mode on Gemini Live.",
+    category: "AI / ML",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, retrieval pipeline and front end",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "TypeScript", "Claude Haiku 5.5", "Gemini embeddings", "Gemini Live", "Tailwind CSS 4"],
+    domains: ["Legal information", "Consumer rights", "Voice interfaces"],
+    metrics: [
+      { label: "Official documents indexed", value: "127" },
+      { label: "Searchable passages", value: "3,738" },
+      { label: "Measured cost per answer", value: "$0.0007" },
+    ],
+    links: { github: "https://github.com/poojaverma-me/Plainsight" },
+    cover: img("plainsight", "home"),
+    thumbs: thumbs("plainsight", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Plainsight answers everyday legal and medical-legal questions: rent increases, eviction notices, traffic tickets, consent to care. It covers four regions (British Columbia, Ontario, California, New York), and every answer is drawn from statutes, government guides and regulators, with a numbered citation on each claim.",
+          "The rule that shapes the whole app: the model is never allowed to answer from its own memory. Retrieval finds official passages first, Claude Haiku explains only what those passages say, and every answer carries a triage level that points to the right professional. It presents itself as general information, not legal or medical advice.",
+        ],
+        figures: [
+          { src: img("plainsight", "home"), caption: "Home: four topics, one region, grounded in 37 BC sources", alt: "Plainsight home page with the headline 'Know where you stand, in plain language', four topic filters and suggested questions" },
+        ],
+      },
+      {
+        id: "honesty",
+        label: "01 / The honesty test",
+        title: "The Honesty Test",
+        body: [
+          "The question 'How much can my landlord raise the rent this year?' is the trap every legal chatbot falls into: the yearly percentage changes, and a language model will happily invent one. Plainsight's corpus intentionally holds the rules but not the current figure, and the answer says exactly that: the sources do not give this year's percentage, here is how the limit works, here is the official calculator.",
+          "Everything else in the answer is cited: the no-rounding rule, the 12-month wait, the 3 months' written notice on the approved form. The sources rail shows which passages were retrieved, each with its cosine score and keyword rank, so the grounding is inspectable rather than claimed.",
+        ],
+        figures: [
+          { src: img("plainsight", "answer"), caption: "A cited answer that refuses to invent the one number it does not have", alt: "Plainsight answer about rent increases with a triage chip, British Columbia badge, numbered citations and a sources rail showing 5 cited of 8 retrieved" },
+        ],
+      },
+      {
+        id: "retrieval",
+        label: "02 / Retrieval",
+        title: "Retrieval",
+        body: [
+          "The library holds **127 documents** from governments, tribunals, regulators, Crown insurers and legal-aid organisations, plus statute text. Heading-aware chunking turns them into **3,738 passages**; Gemini embeddings (768-d, L2-normalised) live in an 11.5 MB binary file, so there is no vector database service to run.",
+          "Search is hybrid: BM25 rewards exact legal terms like 'security deposit', semantic search catches 'kicked out' meaning eviction. The two rankings merge with reciprocal-rank fusion, the chosen topic gets a gentle boost, each document contributes at most 2 passages, and the top 8 go to the model. The app's own How It Works page traces a real query live: for BC that is 1,195 candidate passages, 376 ms to embed, 3 ms to search.",
+        ],
+        figures: [
+          { src: img("plainsight", "how-it-works"), caption: "The pipeline explaining itself on a real query", alt: "How Plainsight answers page showing corpus stats and a live trace with BM25 and cosine top hits for the rent question" },
+          { src: img("plainsight", "library"), caption: "Source library: every document the answers can draw from", alt: "Source library page showing 37 BC documents and 1,195 searchable passages with filters by type and topic" },
+        ],
+      },
+      {
+        id: "answering",
+        label: "03 / Answering",
+        title: "Answering",
+        body: [
+          "Claude Haiku 5.5 writes the answer behind a byte-stable cached system prompt, with three rules: cite every claim, never invent figures or deadlines, and say so when the library does not cover something. Answers stream as NDJSON with a fixed structure: what the rules say, your options, next steps, when to get professional help.",
+          "Measured on repeated runs: **0.9 to 1.0 s** to the first word, under 4.2 s for the full answer, about 3,900 tokens, **$0.0007** per answer. Failure modes are designed in: if Claude is unavailable the app shows the top official passages instead, and if embeddings fail, search falls back to keywords and says so.",
+        ],
+        figures: [
+          { src: img("plainsight", "answer-sources"), caption: "Options, next steps, and the measured footer: 3.8 s and $0.0007", alt: "Lower half of a Plainsight answer with next steps, professional help section and a footer reading haiku-5-5, 0.9s first word, 3.8s, 3,878 tokens, $0.0007" },
+        ],
+      },
+      {
+        id: "voice-safety",
+        label: "04 / Voice and safety",
+        title: "Voice and Safety",
+        body: [
+          "A voice mode runs on the Gemini Live API: you talk naturally, Gemini transcribes and calls the same retrieval pipeline through a lookup_answer tool, and the cited answer appears on screen while it speaks. The grounding rules do not change because the modality did.",
+          "Safety is handled before search, not after: emergency phrases surface a call-911 / 9-8-8 banner immediately, every answer carries a triage level, and the disclaimer that Plainsight is not a lawyer or a doctor sits on every screen.",
+        ],
+        figures: [
+          { src: img("plainsight", "phone-home"), caption: "Home on a phone", alt: "Plainsight home page on a phone", device: "phone" },
+          { src: img("plainsight", "phone-answer"), caption: "A cited answer on a phone", alt: "Plainsight rent increase answer on a phone with triage chip and citations", device: "phone" },
+        ],
+      },
+      {
+        id: "results",
+        label: "05 / Results",
+        title: "Results",
+        body: [
+          "Plainsight is the answer-engine pattern I now reach for when correctness matters more than fluency: retrieve first, cite everything, measure the cost, and make refusing to guess a feature.",
+        ],
+        bullets: [
+          "127 official documents, 3,738 passages, 4 regions, one 11.5 MB embedding file, no vector database service",
+          "Hybrid BM25 + semantic retrieval fused by reciprocal rank, at most 2 passages per document, top 8 to the model",
+          "Measured answers: first word in about 1 s, $0.0007 each, with citations on every claim",
+          "Asked for this year's rent cap, it says the number is not in its sources instead of inventing one",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "quanta",
+    title: "Quanta",
+    tagline:
+      "An AI data analyst that runs in the browser: drop a CSV and DuckDB-WASM turns it into a typed SQL database that never leaves the tab, Claude profiles and charts it, an autonomous Opus agent investigates it, and you can ask follow-ups out loud.",
+    category: "Data",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, data pipeline and agent loops",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "DuckDB-WASM", "Highcharts", "Claude Opus 5.5", "Claude Haiku 5.5", "Gemini Live"],
+    domains: ["Data analytics", "Business intelligence"],
+    metrics: [
+      { label: "Live deep dive, measured", value: "88 s · $0.25" },
+      { label: "SQL queries the agent ran", value: "8" },
+      { label: "Measured cost to profile a CSV", value: "$0.001" },
+    ],
+    links: { github: "https://github.com/poojaverma-me/Quanta" },
+    cover: img("quanta", "overview"),
+    thumbs: thumbs("quanta", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Most 'chat with your data' tools upload the file to a server. Quanta inverts that: the CSV is staged into **DuckDB-WASM inside the browser tab**, and the raw rows never leave it. The models see the schema, column statistics and the results of the SQL they ask for, nothing more.",
+          "The browser owns every agent loop. API routes only forward model calls; each model-written query passes a read-only guard (single SELECT or WITH statements, no file or URL readers) and runs locally. The result is an analyst you can hand sensitive data to without a data-processing conversation.",
+        ],
+        figures: [
+          { src: img("quanta", "landing"), caption: "Landing: drop a CSV, or try a synthetic dataset", alt: "Quanta landing page with the headline 'Your spreadsheets, as an analyst you can talk to', a CSV dropzone and three sample datasets" },
+        ],
+      },
+      {
+        id: "ingestion",
+        label: "01 / Typed ingestion",
+        title: "Typed Ingestion",
+        body: [
+          "A CSV lands as an all-VARCHAR table, then Claude Haiku reads 20 sample rows and writes the typed schema: column types, roles, date formats and an executive summary. Each column is converted with TRY_CAST, and any column where more than 20% of values fail falls back to text rather than corrupting rows.",
+          "I verified the live path with a 388-row cafe-sales CSV generated for the test: Haiku named it 'Cafe Sales Transactions', classified it as food and beverage retail, typed the dates, and the whole profile cost **$0.001**.",
+        ],
+        figures: [
+          { src: img("quanta", "live-overview"), caption: "A 388-row test CSV, profiled live for $0.001", alt: "Quanta overview of a live-uploaded cafe sales CSV, named and sector-classified by Claude Haiku, with charts and a live token meter in the header" },
+        ],
+      },
+      {
+        id: "dashboard",
+        label: "02 / Dashboard",
+        title: "Dashboard",
+        body: [
+          "The Overview tab renders a dashboard generated from the profile: KPI cards with glowing pill columns and rolling averages, a neon barcode of daily records with the busiest fortnight lit, ranked category rows, and a set of 3D and radar cards, all Highcharts on black, styled after Setproduct's Hyper Charts kit.",
+          "Every card is honest about its provenance: each one has a table toggle and a SQL toggle, so the query behind any number is one click away.",
+        ],
+        figures: [
+          { src: img("quanta", "overview"), caption: "Overview: KPI cards and the daily-records barcode", alt: "Quanta overview dashboard for the IT support tickets sample with a green barcode chart, weekly KPI cards and category rows" },
+          { src: img("quanta", "overview-cards"), caption: "The 3D report cards further down the page", alt: "Category landscape, peak days and daily rhythm 3D chart cards on the Quanta overview" },
+        ],
+      },
+      {
+        id: "deep-dive",
+        label: "03 / The deep dive agent",
+        title: "The Deep Dive Agent",
+        body: [
+          "Deep Dive hands the dataset to an autonomous Claude Opus agent with two tools: run_sql and submit_report. It plans, queries, reasons about what it finds and queries again, streaming every step to a live agent log, then delivers an executive report with KPI cards, validated charts, findings and recommendations.",
+          "The three sample datasets ship as recorded real sessions that replay instantly, labelled Demo in the header, so the public demo costs nothing. I verified the live loop on my test CSV, which had a deliberate planted pattern: the agent ran **7 steps and 8 queries in 88 seconds for $0.25**, and its report led with exactly the planted fact, the University store's revenue run-rate down 71% since mid-September, then went further and tied the drop to falling loyalty-member visits.",
+        ],
+        figures: [
+          { src: img("quanta", "deepdive-run"), caption: "Mid-run: the agent log streams reasoning and SQL", alt: "Deep dive in progress with an agent log showing reasoning steps, SQL queries with row counts and a skeleton report" },
+          { src: img("quanta", "deepdive-report"), caption: "The delivered report on the sample dataset", alt: "Executive report titled 'Department Bottlenecks: Security Engineering Is Structural, Data Platform Is New' with four KPI cards" },
+          { src: img("quanta", "live-deepdive"), caption: "Live run on the test CSV: 7 steps, 8 queries, $0.25, planted decline found", alt: "Live deep dive report on cafe sales data finding the University store decline, with a cost card showing $0.25" },
+        ],
+      },
+      {
+        id: "ask",
+        label: "04 / Ask, in text or out loud",
+        title: "Ask, in Text or Out Loud",
+        body: [
+          "The Ask tab answers one-off questions: the model writes SQL, the browser runs it, and the answer arrives with an 'Inspect SQL and results' toggle so nothing is a black box.",
+          "Voice runs on the Gemini Live API: a real-time, interruptible conversation where Gemini calls a run_sql tool mid-sentence, the query executes on the in-browser DuckDB, and both the SQL and the rows appear in the transcript alongside the spoken answer.",
+        ],
+        figures: [
+          { src: img("quanta", "ask"), caption: "Ask: a cited, inspectable answer next to the voice panel", alt: "Ask tab answering an SLA question with Inspect SQL toggle, a Gemini Live voice panel and suggested questions" },
+          { src: img("quanta", "phone-overview"), caption: "The dashboard on a phone", alt: "Quanta overview dashboard on a phone", device: "phone" },
+        ],
+      },
+      {
+        id: "results",
+        label: "05 / Results",
+        title: "Results",
+        body: [
+          "Quanta is my argument that agentic analytics and privacy are not in tension: put the database in the browser, give the model tools instead of data, and show the SQL behind every number.",
+        ],
+        bullets: [
+          "Raw data never leaves the tab: DuckDB-WASM locally, models see schema, statistics and query results only",
+          "Every model-written query passes a read-only guard: single SELECT or WITH, no file or URL readers",
+          "Live verification: a planted revenue decline found autonomously in 88 s for $0.25, 7 steps, 8 queries",
+          "Recorded demo replays make the public samples free to explore, honestly labelled Demo in the header",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "bastion",
+    title: "Bastion",
+    tagline:
+      "An event-driven portfolio risk platform for fund managers, built capital-preservation-first: every incoming headline is read by an LLM, scored by Jev for every exposed holding, run through a transparent risk calculus and pushed to the manager's phone, with the full reasoning chain one click away.",
+    category: "AI / ML",
+    year: "2026",
+    status: "Prototype",
+    timeline: "Oct 2026",
+    role: "Design, risk pipeline and front end",
+    team: "Solo",
+    featured: false,
+    stack: ["Next.js 16", "TypeScript", "Claude Haiku 5.5", "Jev (TypeSafe)", "Tailwind CSS 4"],
+    domains: ["Fintech", "Portfolio risk", "Decision support"],
+    metrics: [
+      { label: "Ingest to phone push, measured", value: "8.9 s" },
+      { label: "Jev scoring per event, measured", value: "202 ms" },
+      { label: "Breaking-news stress presets", value: "22" },
+    ],
+    links: {},
+    cover: img("bastion", "command"),
+    thumbs: thumbs("bastion", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "Bastion asks what a risk desk would look like if capital preservation, not alpha, were the organising principle. It watches 18 intelligence feeds for a simulated $1.78B fund, and every headline that lands is checked against the book: who is exposed, how bad could it get, and does the manager need to know right now.",
+          "Everything in the prototype is honestly simulated, and says so on screen: the news posts, the prices, the hedge orders. What is real is the pipeline: live Claude extraction, live Jev scoring, a deterministic risk calculus and a push console, all traceable end to end.",
+        ],
+        figures: [
+          { src: img("bastion", "command"), caption: "Command: a stress event scored against the book, alert on the phone dock", alt: "Bastion command dashboard with NAV, Event VaR and posture KPIs, a tariff stress event with downside probability gauge, an at-risk holdings table and a simulated phone showing critical alerts" },
+        ],
+      },
+      {
+        id: "pipeline",
+        label: "01 / Pipeline",
+        title: "The Pipeline",
+        body: [
+          "Each event runs a six-stage pipeline: ingest, LLM extraction, exposure screen, Jev scoring, risk calculus, push. Claude Haiku reads the headline against the book and returns entities, sentiment, auditable analysis steps and impact vectors in the platform's tag vocabulary. The screen matches vectors to holdings deterministically, so a vector targeting fabless semiconductors also catches a holding added next week.",
+          "Jev, TypeSafe's decision model, then answers typed questions for every exposed holding in **one batched request**: exposure, direction, and a magnitude distribution over move buckets, plus two portfolio-level questions. Measured on screen: extraction 8.2 s, exposure screen 1 ms, Jev scoring **202 ms**, and ingest to phone push in **8.9 to 10.5 s** against a 60 s SLA.",
+        ],
+        figures: [
+          { src: img("bastion", "trace"), caption: "The traceability console: raw payload to push, with real model timings", alt: "AI reasoning and traceability view showing the live claude-haiku-5-5 extraction with token counts, step-by-step analysis, entities and sectoral dependency chains" },
+        ],
+      },
+      {
+        id: "calculus",
+        label: "02 / Risk calculus",
+        title: "Risk Calculus",
+        body: [
+          "The probabilities become numbers through a pure, inspectable function rather than another model call: exposure weights blend Jev's direct, indirect and peripheral probabilities, an event factor folds in source reliability and follow-through, and expected loss multiplies position size, expected move and probability. Confidence bars show the P10 to P90 of Jev's magnitude distribution, not a point estimate.",
+          "Event VaR sums each holding's worst live residual loss, with live events decaying over 20 minutes as they get priced in. The fund's preservation posture maps VaR against a 1.5% drawdown budget, so one number tells the manager how close the book is to its limit.",
+        ],
+        figures: [
+          { src: img("bastion", "method"), caption: "How Jev decides: a real decision replayed one step at a time", alt: "Method page with the six-stage integration map and a step-by-step walkthrough of the Taiwan tariff decision for TSMC" },
+        ],
+      },
+      {
+        id: "stress",
+        label: "03 / Stress lab",
+        title: "Stress Lab",
+        body: [
+          "The Stress Lab fires synthetic breaking news through the full pipeline against the current book: 22 presets across tariffs, export controls, FDA decisions, rate shocks and defense budgets, plus a composer for custom headlines. Stress tests never touch the live book, and a league table ranks scenarios by expected loss.",
+          "The portfolio page closes the loop: add any of a 40-name universe or define a custom security, and Jev classifies its industry domain live while open events are re-scored for the new name.",
+        ],
+        figures: [
+          { src: img("bastion", "stress"), caption: "22 breaking-news presets, each a full pipeline run", alt: "Stress Lab page with preset scenario cards from tariff threats to FDA rejections and a run-all button" },
+          { src: img("bastion", "portfolio"), caption: "The book: sector exposure, JEV classification, treemap by open threat", alt: "Portfolio page with sector exposure bars, market-cap tiers, a book treemap coloured by threat and an add-holding search" },
+        ],
+      },
+      {
+        id: "results",
+        label: "04 / Results",
+        title: "Results",
+        body: [
+          "Bastion is the most complete systems-design piece in this archive: two model APIs, a deterministic core you can audit, honest simulation labels everywhere, and latency measured against an SLA rather than asserted.",
+        ],
+        bullets: [
+          "Six-stage pipeline with every stage timed on screen: 8 ms ingest, 8.2 s extraction, 1 ms screen, 202 ms Jev scoring",
+          "One batched Jev request scores every exposed holding, with P10 to P90 ranges instead of point estimates",
+          "Ingest to phone push measured at 8.9 to 10.5 s against a 60 s SLA",
+          "Fallbacks at every model boundary, and a trace console that shows which mode actually ran",
         ],
       },
     ],
@@ -788,6 +1348,82 @@ export const projects: Project[] = [
         title: "Measured Results",
         body: [
           "Across 17 fresh searches, Jev answered all 79 questions in a median **251 ms** (123 to 352 ms) using about **10,350 input tokens**, about **$0.00044** per search. \"Light vegetarian dinner\" returned dal tadka, bhindi masala and khichdi; \"something sweet for Diwali\" returned gulab jamun, gajar ka halwa and kheer; and \"pizza\" sensibly came back as closest options only.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "capstone-kanban",
+    title: "Capstone Team Board",
+    tagline:
+      "A real-time Kanban board for my capstone team, shipped as one HTML file: no build step, Supabase for live sync, tasks with any number of assignees, and an operating manual that lets an AI agent work the board through a restricted database role.",
+    category: "Full-Stack",
+    year: "2026",
+    status: "Shipped",
+    timeline: "Oct 2026",
+    role: "Design and build",
+    team: "Solo build, used by a team of 5",
+    featured: false,
+    stack: ["HTML + CSS + JS", "Supabase", "PostgreSQL", "Realtime"],
+    domains: ["Team tooling", "Project management"],
+    metrics: [
+      { label: "Build step, bundler, framework", value: "None" },
+      { label: "Lines in index.html", value: "1,017" },
+      { label: "Setup time for the team", value: "About 5 min" },
+    ],
+    links: { github: "https://github.com/poojaverma-me/Capstone-Kanban" },
+    cover: img("capstone-kanban", "board"),
+    thumbs: thumbs("capstone-kanban", ["a", "b"]),
+    sections: [
+      {
+        id: "overview",
+        label: "00 / Overview",
+        title: "Overview",
+        body: [
+          "My capstone team needed a shared board without another account to create, another subscription, or a deploy pipeline for a tool we would use for one semester. So the whole app is one **index.html**: open it anywhere and the team's live board is there. Data lives in Supabase, and changes appear on everyone's screen within a second.",
+          "Constraints were the design brief: no build step, no framework, no server of mine. The single file holds the Apple-style UI, drag and drop, search, filters and the Supabase client, in 1,017 lines. A 'Try without Supabase' mode runs the same board with sample data in the browser, which is also what these screenshots show.",
+        ],
+        figures: [
+          { src: img("capstone-kanban", "board"), caption: "The board in demo mode: three columns, priorities, due dates, overdue flags", alt: "Capstone Board Kanban with Not Started, In Progress and Done columns, multi-assignee avatars and an overdue task" },
+        ],
+      },
+      {
+        id: "build",
+        label: "01 / Design and data model",
+        title: "Design and Data Model",
+        body: [
+          "Tasks take **any number of assignees**, which most lightweight boards refuse to do; the schema is three tables (members, tasks, task_assignees) with row-level-security policies and realtime publication, created by pasting one schema.sql into Supabase. That paste is the entire setup: teammates just open the same file, and there is nothing to configure on their side.",
+          "The details carry the polish: cards drag between and within columns, a column choice replaces dragging on phones, avatars in the top bar filter by person, the slash key jumps to search, N creates a task, and option plus arrow keys move a focused card between columns.",
+        ],
+        figures: [
+          { src: img("capstone-kanban", "task"), caption: "A task with two assignees, status, priority and notes", alt: "Edit task modal with five teammates as toggleable assignees, status and priority segmented controls and a due date" },
+          { src: img("capstone-kanban", "phone-board"), caption: "The board on a phone", alt: "Capstone Board on a phone showing task cards with assignees", device: "phone" },
+        ],
+      },
+      {
+        id: "agent",
+        label: "02 / The board agent",
+        title: "The Board Agent",
+        body: [
+          "The part I find most interesting is agent.html: an **operating manual addressed to an AI agent** that controls a browser. Paste meeting notes, an email or a request, tell your agent to process the page, and it extracts the tasks, works out owners, checks for duplicates, writes and runs the SQL, verifies the result and reports back, asking a person only when something essential is ambiguous.",
+          "The agent never touches the team's real credentials. A one-time agent-setup.sql creates a restricted board_agent role, a token-gated SQL function and a run log, so the agent operates through its own audited, least-privilege path rather than the service key.",
+        ],
+        figures: [
+          { src: img("capstone-kanban", "agent"), caption: "agent.html: the manual and tool panels an AI agent follows", alt: "Board Agent operating manual page with connection, input and context panels and a how-to-use section" },
+        ],
+      },
+      {
+        id: "results",
+        label: "03 / Results",
+        title: "Results",
+        body: [
+          "The team ran the semester on this board. It is the smallest project on this page and the one with the highest usage-to-code ratio, which is its own lesson: the right tool for a five-person team was a file, not a platform.",
+        ],
+        bullets: [
+          "One HTML file, no build step; live team sync through Supabase realtime in about a second",
+          "Any number of assignees per task via a junction table, with row-level security on all three tables",
+          "An AI agent can run the board through a token-gated, least-privilege SQL path with a run log",
+          "Setup for the whole team was one SQL paste and a shared file, about 5 minutes",
         ],
       },
     ],
@@ -1268,6 +1904,6 @@ export function featuredProjects(): Project[] {
 
 /** The number of projects as a word, for copy ("Thirteen builds"). */
 export function projectCountWord(): string {
-  const words = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
+  const words = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty", "Twenty-one", "Twenty-two", "Twenty-three", "Twenty-four", "Twenty-five"];
   return words[projects.length] ?? String(projects.length);
 }
