@@ -20,14 +20,14 @@ export const SITE_TITLE = `${profile.name} · AI Developer in Kamloops, BC, Cana
 
 /** Under 160 characters, so it survives as a search snippet and a link preview. */
 export const SITE_DESCRIPTION =
-  `Award-winning AI developer in Kamloops, BC: RAG assistants, LLM products, ML models and AI automation, with a Best Paper Award and ${projects.length} case studies.`;
+  "Pooja Verma is an AI developer in Kamloops, BC. Explore her machine learning case studies and get in touch about custom AI software or grant-funded research.";
 
 /**
  * The longer, factual summary that structured data and AI assistants use.
- * Every claim here is on the page and in Pooja's resume.
+ * Summarizes the public biography and case studies.
  */
 export const SITE_SUMMARY =
-  `Pooja Verma is an AI developer and machine learning researcher based in Kamloops, British Columbia, Canada, completing a Bachelor of Computing Science at Thompson Rivers University (December 2026). She builds retrieval-augmented generation (RAG) assistants, LLM-powered products, machine learning models and the full-stack software around them. She is first author of a peer-reviewed deep learning paper on diabetic retinopathy detection (98.2% accuracy on APTOS 2019) that won a Best Paper Award, holds a UREAP Research Award and a TRU Student Sustainability Research Grant, and was a Mitacs-funded research intern at PataBid. Since 2024 she has trained frontier large language models at Outlier (Scale AI), designing coding benchmarks, RLHF and fine-tuning data. She explains AI launches on her YouTube channel, Beyond Prompt, and in the Benchmarked newsletter. Her systems have served 3,000+ students and 4,000+ retailers, and her portfolio documents ${projects.length} projects with measured results. She works with teams in Kamloops, across British Columbia and across Canada, in person or remotely, is open to relocation, and is available for full-time roles and AI projects.`;
+  `Pooja Verma is an AI developer and machine learning researcher based in Kamloops, British Columbia, Canada, completing a Bachelor of Computing Science at Thompson Rivers University (December 2026). Over four years at TRU she received at least $30,000 in combined project funding, grants and scholarships. She builds retrieval-augmented generation (RAG) assistants, LLM-powered products, machine learning models and the full-stack software around them. She is first author of a peer-reviewed deep learning paper on diabetic retinopathy detection (98.2% accuracy on APTOS 2019) that won a Best Paper Award, holds a UREAP Research Award and a TRU Student Sustainability Research Grant, and was a Mitacs-funded research intern at PataBid. Since 2024 she has trained frontier large language models at Outlier (Scale AI), designing coding benchmarks, RLHF and fine-tuning data. She explains AI launches on her YouTube channel, Beyond Prompt, and in the Benchmarked newsletter. Her systems have served 3,000+ students and 4,000+ retailers, and her portfolio documents ${projects.length} projects with measured results. She works with teams in Kamloops, across British Columbia and across Canada, in person or remotely, is open to relocation, and welcomes full-time roles, commercial AI projects and grant-funded collaborations.`;
 
 /**
  * What the site is about, for the assistants that still read the keywords tag
@@ -171,7 +171,8 @@ export function personSchema() {
           },
         ],
         award: [
-          "Best Paper Award, for \"Optimized Deep Learning Framework for Diabetic Retinopathy Detection and Classification Using Fundus Imaging\" (2026)",
+          "AI Hackathon winner, TRUSU AI Club (November 2026)",
+          "ICICET 2025 Best Paper Award for research on diabetic retinopathy detection",
           "Mitacs Business Strategy Internship (2026), research internship at PataBid",
           "UREAP Research Award, Thompson Rivers University ($6,000), for automated diabetic retinopathy detection, published in the Inspire Health Journal (2026)",
           "TRU Student Sustainability Research Grant ($2,500), for AI-driven post-wildfire ecosystem recovery research",
@@ -191,7 +192,8 @@ export function personSchema() {
             "@type": "Service",
             name: "AI development and applied machine learning",
             description:
-              "RAG systems, LLM evaluation, machine learning models and full-stack AI products, for projects, research and grants in British Columbia and across Canada.",
+              "Project scoping, technical collaboration and end-to-end builds for commercial AI projects and grant-funded research in Kamloops and across Canada.",
+            url: `${SITE_URL}/work-with-me`,
             areaServed: [
               { "@type": "City", name: "Kamloops" },
               { "@type": "AdministrativeArea", name: "British Columbia" },

@@ -5,9 +5,9 @@ import Reveal from "@/components/Reveal";
 import { profile } from "@/lib/profile";
 import { SITE_URL, breadcrumbs } from "@/lib/site";
 
-const title = "Hire an AI Developer in British Columbia, Canada";
+const title = "Hire an AI Developer in Kamloops, BC";
 const description =
-  "Hire Pooja Verma, an AI developer in British Columbia, Canada, for RAG assistants, LLM products, machine learning models, LLM evaluation and full-stack apps, with measured results.";
+  "Work with Pooja Verma in Kamloops on custom AI software, workflow automation or grant-funded machine learning research. Get help scoping, testing or building your project.";
 
 export const metadata: Metadata = {
   title,
@@ -97,7 +97,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "Can she help with research or grant-funded work?",
-    "Yes. She has led funded research (a $6,000 UREAP Research Award and a TRU Student Sustainability Research Grant), completed a Mitacs-funded research internship, and published as first author in the Inspire Health Journal, a paper that won a Best Paper Award.",
+    "Yes. If you are preparing a grant proposal, Pooja can help define a technical question and a way to test it. If funding is in place, she can build and evaluate the model or prototype. Her funded work includes a wildfire recovery atlas, a retinal imaging study and a Mitacs research internship at PataBid.",
   ],
   [
     "How does she show that an AI feature works?",
@@ -112,6 +112,7 @@ const FAQ: [string, string][] = [
 export default function WorkWithMePage() {
   const person = { "@id": `${SITE_URL}/#person` };
   const areas = [
+    { "@type": "City", name: "Kamloops" },
     { "@type": "AdministrativeArea", name: "British Columbia" },
     { "@type": "Country", name: "Canada" },
   ];
@@ -159,13 +160,13 @@ export default function WorkWithMePage() {
       <Reveal>
         <p className="eyebrow">Work with me</p>
         <h1 className="section-title mt-2 max-w-4xl">
-          AI development for teams <span className="text-label-2">in British Columbia and across Canada.</span>
+          Custom AI development <span className="text-label-2">in Kamloops, BC.</span>
         </h1>
         <p className="lead mt-6 max-w-3xl">
-          I design and build AI systems end to end, from the data and the model to the product people
-          use, and I measure them before calling them done. I&apos;m based in Kamloops, BC, available
-          to teams anywhere in British Columbia (from the Okanagan to Vancouver and Victoria) and
-          across Canada, in person or remotely, and open to full-time roles as well as projects.
+          Bring me a business process you want to improve, a product idea or a research question.
+          I can help scope a pilot, contribute to your existing team or build and hand over a
+          working product. I take on commercial and grant-funded AI projects in Kamloops,
+          across British Columbia and remotely throughout Canada.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href={`mailto:${profile.email}`} className="btn-primary">
@@ -180,7 +181,7 @@ export default function WorkWithMePage() {
       <section className="mt-20" aria-labelledby="services">
         <Reveal>
           <h2 id="services" className="headline !text-[1.5rem]">
-            What I build
+            AI development services
           </h2>
         </Reveal>
         <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -230,7 +231,7 @@ export default function WorkWithMePage() {
       <section className="mt-20 max-w-4xl" aria-labelledby="faq">
         <Reveal>
           <h2 id="faq" className="headline !text-[1.5rem]">
-            Questions
+            Questions about working together
           </h2>
           <div className="mt-4 divide-y divide-[var(--color-separator)] border-y hairline">
             {FAQ.map(([q, a]) => (

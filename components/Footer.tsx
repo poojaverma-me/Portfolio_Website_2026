@@ -58,12 +58,12 @@ export default function Footer() {
           <div className="relative">
             <p className="eyebrow">Get in touch</p>
             <h2 className="section-title mt-2">
-              Let&apos;s build <span className="text-accent">something real.</span>
+              Tell me about <span className="text-accent">your AI project.</span>
             </h2>
             <p className="lead mt-4 max-w-xl">
-              Open to full-time roles and projects across AI development, machine learning
-              research, LLM systems and full-stack engineering. Remote, hybrid or on-site, and
-              happy to relocate.
+              What would you like to build, and who would use it? I work with businesses and
+              grant-funded research teams in Kamloops and across Canada. I&apos;m also open to
+              full-time roles and relocation.
             </p>
             <div className="mt-9">
               <a href={`mailto:${profile.email}`} className="btn-primary">

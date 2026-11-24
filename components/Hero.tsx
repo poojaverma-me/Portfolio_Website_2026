@@ -116,9 +116,9 @@ export default function Hero() {
             <Link href="/#experience" className="btn-glass">
               Experience
             </Link>
-            <a href="#contact" className="link-accent ml-2 text-[1.0625rem]">
-              Get in touch <ChevronRight size={17} strokeWidth={2.25} />
-            </a>
+            <Link href="/work-with-me" className="link-accent ml-2 text-[1.0625rem]">
+              Discuss an AI project <ChevronRight size={17} strokeWidth={2.25} />
+            </Link>
           </motion.div>
 
         </motion.div>

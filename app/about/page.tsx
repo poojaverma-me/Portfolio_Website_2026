@@ -4,14 +4,14 @@ import { ArrowRight, ArrowUpRight, Award, Mail } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { profile } from "@/lib/profile";
 import { projects } from "@/lib/projects";
-import { SITE_SUMMARY, SITE_URL, breadcrumbs } from "@/lib/site";
+import { SITE_URL, breadcrumbs } from "@/lib/site";
 import { socials } from "@/lib/socials";
 import { CHANNELS } from "@/lib/videos";
 import { issues } from "@/lib/newsletter";
 
 const title = "About Pooja Verma · AI Developer in Kamloops, BC, Canada";
 const description =
-  "Award-winning AI developer in Kamloops, BC: a Best Paper Award, UREAP and Mitacs funding, frontier LLM training at Outlier and AI used by thousands of people.";
+  "Meet Pooja Verma, a Kamloops AI developer. Explore her award-winning research and funded projects, or get in touch about a commercial build or collaboration.";
 
 export const metadata: Metadata = {
   // absolute: the name is already in it, so skip the layout's " · Pooja Verma"
@@ -24,13 +24,17 @@ export const metadata: Metadata = {
 
 const PAPER = "https://doi.org/10.65718/inspireHealth.2026.2005";
 
-/** Awards and competitive funding, most recent recognition first. */
+/** Selected awards and funded work. */
 const RECOGNITION: { name: string; detail: string; href?: string }[] = [
   {
-    name: "Best Paper Award",
+    name: "AI Hackathon winner",
+    detail: "In November 2026, I won the AI Hackathon hosted by the TRUSU AI Club.",
+  },
+  {
+    name: "ICICET 2025 Best Paper Award",
     detail:
-      "For my first-author paper on detecting diabetic retinopathy in retinal photographs, which reached 98.2% accuracy and was published in the Inspire Health Journal (2026).",
-    href: PAPER,
+      "I presented my work on detecting diabetic retinopathy from retinal photographs at ICICET in 2025 and won Best Paper. The journal paper followed in 2026.",
+    href: "https://poojaverma.trubox.ca/sample-page/",
   },
   {
     name: "Mitacs Business Strategy Internship",
@@ -40,7 +44,8 @@ const RECOGNITION: { name: string; detail: string; href?: string }[] = [
   {
     name: "UREAP Research Award, $6,000",
     detail:
-      "Thompson Rivers University's Undergraduate Research Experience Award (2025), which funded the retinopathy research behind the paper.",
+      "Thompson Rivers University's Undergraduate Research Experience Award supported my retinal imaging study in 2025, from comparing models to presenting the findings.",
+    href: "https://airl.ca/people/",
   },
   {
     name: "TRU Student Sustainability Research Grant, $2,500",
@@ -53,7 +58,7 @@ const RECOGNITION: { name: string; detail: string; href?: string }[] = [
 const FACTS: [string, React.ReactNode][] = [
   ["Based in", "Kamloops, British Columbia, Canada. Works across BC and Canada, in person or remotely, and open to relocation"],
   ["Focus", "AI products, retrieval-augmented generation (RAG), LLM evaluation and fine-tuning data, machine learning models, AI workflow automation"],
-  ["Recognition", "Best Paper Award · UREAP Research Award ($6,000) · Mitacs Business Strategy Internship · TRU Student Sustainability Research Grant ($2,500)"],
+  ["Recognition", "TRUSU AI Club AI Hackathon winner (November 2026) · ICICET 2025 Best Paper Award · UREAP Research Award ($6,000) · Mitacs Business Strategy Internship · TRU Student Sustainability Research Grant ($2,500)"],
   [
     "Publication",
     <>
@@ -80,7 +85,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "What awards and funding has Pooja Verma received?",
-    "A Best Paper Award for her diabetic retinopathy detection paper, a $6,000 UREAP Research Award from Thompson Rivers University, a Mitacs-funded Business Strategy Internship, and a $2,500 TRU Student Sustainability Research Grant.",
+    "Pooja won the TRUSU AI Club’s November 2026 AI Hackathon and the ICICET 2025 Best Paper Award for her retinal imaging research. Her funded work includes a $6,000 UREAP Research Award, a Mitacs Business Strategy Internship and a $2,500 TRU Student Sustainability Research Grant.",
   ],
   [
     "Is there an AI developer in Kamloops, BC who builds custom AI solutions?",
@@ -93,7 +98,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "How do I hire Pooja Verma for an AI project?",
-    `Email ${profile.email} with the problem, the data you have and your timeline. She is open to full-time roles and to AI projects.`,
+    `Email ${profile.email} with the problem you want to solve. Pooja can help scope an idea, join an existing team or build the product end to end. She takes on commercial AI projects and grant-funded research collaborations.`,
   ],
 ];
 
@@ -108,7 +113,7 @@ export default function AboutPage() {
         "@id": `${SITE_URL}/about#page`,
         url: `${SITE_URL}/about`,
         name: title,
-        description: SITE_SUMMARY,
+        description,
         inLanguage: "en-CA",
         dateModified: new Date().toISOString(),
         mainEntity: { "@id": `${SITE_URL}/#person` },
@@ -136,18 +141,47 @@ export default function AboutPage() {
       <Reveal>
         <p className="eyebrow">About</p>
         <h1 className="section-title mt-2 max-w-3xl">
-          Award-winning AI developer <span className="text-label-2">in Kamloops, British Columbia.</span>
+          Pooja Verma, AI developer <span className="text-label-2">in Kamloops, British Columbia.</span>
         </h1>
         <p className="lead mt-6 max-w-3xl">
-          I&apos;m Pooja Verma. I build AI that people actually use: products in production every day,
-          research that has won a Best Paper Award, and the training data behind frontier language
-          models. I don&apos;t build demos for their own sake. I build systems that change how people
-          work, and I get teams from an idea to a working product fast.
+          I like sitting down with the people who know a problem firsthand. At Thompson Rivers
+          University, that meant helping students find answers in their course material. At PataBid,
+          it meant helping construction estimators work with the drawings they use to prepare a bid.
         </p>
       </Reveal>
 
       <Reveal delay={0.05}>
-        <h2 className="headline mt-14 !text-[1.375rem]">Recognition</h2>
+        <h2 className="headline mt-14 !text-[1.375rem]">Have an AI project in mind?</h2>
+        <p className="mt-4 max-w-[66ch] text-base leading-relaxed text-label-2">
+          I work with businesses and research teams in Kamloops and across Canada. If you&apos;re
+          exploring an idea, I can help you decide what&apos;s worth testing. If you already have
+          a team, I can take on a specific piece, like evaluating a model on your data. I also
+          build custom AI products from the first prototype through launch.
+        </p>
+        <p className="mt-4 max-w-[66ch] text-base leading-relaxed text-label-2">
+          Commercial projects and grant-funded collaborations are both welcome. Tell me who the
+          work is for and what you&apos;d like them to be able to do. A few lines are enough
+          to start a conversation.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a href={`mailto:${profile.email}`} className="btn-primary">
+            <Mail size={16} aria-hidden /> Email me about your project
+          </a>
+          <Link href="/work-with-me" className="btn-glass">Explore my AI development services</Link>
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <h2 id="funding-and-awards" className="headline mt-14 scroll-mt-24 !text-[1.375rem]">
+          Research funding, scholarships and competition results
+        </h2>
+        <p className="mt-4 max-w-[66ch] text-base leading-relaxed text-label-2">
+          Over four years of my Bachelor of Computing Science at Thompson Rivers University,
+          I received <strong className="text-label">at least $30,000</strong> in combined project funding, grants and
+          scholarships. I&apos;ve also entered competitions, been shortlisted and won awards.
+          My wildfire recovery atlas and retinal imaging paper show what came out of two of
+          those research grants.
+        </p>
         <ul className="mt-5 grid gap-4 sm:grid-cols-2">
           {RECOGNITION.map((r) => (
             <li key={r.name} className="glass-card flex gap-4 p-5">
@@ -173,7 +207,7 @@ export default function AboutPage() {
 
       <Reveal delay={0.05}>
         <div className="docs-prose mt-16 space-y-5">
-          <h2 className="headline !text-[1.375rem] text-label">AI that ships, and gets used every day</h2>
+          <h2 className="headline !text-[1.375rem] text-label">AI and software for universities and businesses</h2>
           <p>
             Most of what I build is in daily use. At Thompson Rivers University I built a
             retrieval-augmented generation (RAG) study assistant grounded in course material: it serves
@@ -211,7 +245,7 @@ export default function AboutPage() {
             that books clinic appointments through function calling.
           </p>
 
-          <h2 className="headline !text-[1.375rem] pt-6 text-label">I know LLMs from the inside</h2>
+          <h2 className="headline !text-[1.375rem] pt-6 text-label">Training and evaluating large language models</h2>
           <p>
             Since November 2024 I&apos;ve trained frontier large language models at Outlier, Scale
             AI&apos;s platform for AI training data. I design coding benchmarks and multi-turn reasoning
@@ -226,26 +260,31 @@ export default function AboutPage() {
             request.
           </p>
 
-          <h2 className="headline !text-[1.375rem] pt-6 text-label">Award-winning research</h2>
+          <h2 className="headline !text-[1.375rem] pt-6 text-label">Grant-funded machine learning research</h2>
+          <h3 className="headline !text-[1.125rem] text-label">Detecting diabetic retinopathy in retinal images</h3>
           <p>
-            My first-author paper detects diabetic retinopathy, a leading cause of preventable
-            blindness, from a single retinal photograph. It fuses features from a convolutional network
-            (AlexNet) and a vision transformer (Swin), reaches 98.2% accuracy on the public APTOS 2019
-            dataset, and won a <strong>Best Paper Award</strong>. The research was funded by a $6,000
+            For my first-author paper, I combined features from a convolutional network
+            (AlexNet) and a vision transformer (Swin) to detect diabetic retinopathy in retinal
+            photographs. The model reached 98.2% accuracy on the public APTOS 2019
+            dataset. The research was funded by a $6,000
             UREAP Research Award and{" "}
             <a className="link-accent" href={PAPER} target="_blank" rel="noreferrer">
               published in the Inspire Health Journal
             </a>{" "}
             (2026).
           </p>
+          <h3 className="headline !text-[1.125rem] text-label">Predicting vegetation recovery after wildfire in BC</h3>
           <p>
-            With a TRU Student Sustainability Research Grant I&apos;m studying which burned land in
-            BC&apos;s Thompson-Okanagan recovers on its own after wildfire. The models became{" "}
+            Which burned sites recover on their own, and where might replanting help? I combined
+            six open datasets covering 2,600 burned sites and compared five models of vegetation
+            recovery three years after a fire. Burn severity was the strongest predictor overall.
+            In the Thompson-Okanagan, moisture deficit was the next most important. I built{" "}
             <Link className="link-accent" href="/projects/after-fire">
               After Fire
             </Link>
-            , a public atlas, recovery simulator and native-species planting guide, presented at the
-            TRU Sustainability Conference.
+            {" "}so people can explore those results by site, see which native species might suit
+            the conditions and check where the models struggle. I presented the work at the TRU
+            Sustainability Conference.
           </p>
 
           <h2 className="headline !text-[1.375rem] pt-6 text-label">Teaching AI in public</h2>

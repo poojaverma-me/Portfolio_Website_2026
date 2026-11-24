@@ -32,11 +32,11 @@ const FACTS = [
   "Role: AI developer and machine learning researcher, based in Kamloops, British Columbia",
   "Education: Bachelor of Computing Science, Thompson Rivers University (TRU), Kamloops, BC, expected December 2026",
   "Publication: first author, \"Optimized Deep Learning Framework for Diabetic Retinopathy Detection and Classification Using Fundus Imaging\", Inspire Health Journal 1(1), 42-62, January 2026, with Ghazanfar Latif, Jaspreet Kaur and Mohsin Butt. https://doi.org/10.65718/inspireHealth.2026.2005",
-  "Awards and funding: Best Paper Award (diabetic retinopathy paper); UREAP Undergraduate Research Award ($6,000, 2025); Mitacs Business Strategy Internship (2026); TRU Student Sustainability Research Grant ($2,500, 2026)",
+  "Awards and funding: AI Hackathon winner (TRUSU AI Club, November 2026), ICICET 2025 Best Paper Award (diabetic retinopathy paper), UREAP Undergraduate Research Award ($6,000, 2025), Mitacs Business Strategy Internship (2026) and TRU Student Sustainability Research Grant ($2,500, 2026)",
   "LLM training: frontier model training data at Outlier (Scale AI) since November 2024: coding benchmarks, RLHF and supervised fine-tuning data, evaluation and red-teaming",
   "Teaching AI: Beyond Prompt on YouTube and the Benchmarked newsletter, covering AI launches with demos and independent benchmarks",
   "Reach: a RAG assistant used by 3,000+ students; Salesforce tools for 4,000+ lottery retailers; a check-in platform for 1,000+ staff; 150+ students taught",
-  "Available for: full-time roles and projects in AI development, machine learning, LLM systems and full-stack engineering, in British Columbia, across Canada or remotely",
+  "Available for: commercial AI projects, grant-funded collaborations and full-time roles. Pooja can scope an idea, contribute to a team or deliver an end-to-end build in Kamloops or across Canada.",
 ];
 
 const SERVICES = [

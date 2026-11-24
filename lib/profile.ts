@@ -13,7 +13,7 @@ export const profile = {
   // the hero line: lead-in, the part set in the accent colour, then the rest
   headline: ["Delivering", "scalable, agentic AI solutions", "that plug into real workflows and drive measurable results."],
   intro:
-    "AI developer and researcher building LLM systems, machine learning models and full-stack products, from wildfire-recovery research to tools used by 3,000+ students and 4,000+ retailers.",
+    "I’m an AI developer in Kamloops, BC. I build custom software for businesses and research teams, from a study assistant used by 3,000+ students to an atlas of wildfire recovery in BC.",
   skills: [
     "RAG Systems",
     "RLHF",

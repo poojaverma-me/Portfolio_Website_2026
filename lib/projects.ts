@@ -61,7 +61,7 @@ export const projects: Project[] = [
     category: "AI / ML",
     year: "2026",
     status: "Research",
-    timeline: "2026, alongside the research grant",
+    timeline: "2026, supported by a $2,500 TRU Student Sustainability Research Grant",
     role: "Research, modelling and front end",
     team: "Solo, supervised by Dr. Ghazanfar Latif",
     featured: true,
