@@ -50,7 +50,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
     // the plain-text versions for AI assistants (llmstxt.org)
-    types: { "text/plain": [{ url: "/llms.txt", title: "Pooja Verma for AI assistants" }] },
+    types: {
+      "text/plain": [
+        { url: "/llms.txt", title: "Pooja Verma for AI assistants" },
+        { url: "/llms-full.txt", title: "Pooja Verma’s complete portfolio in plain text" },
+      ],
+    },
   },
   openGraph: {
     type: "website",

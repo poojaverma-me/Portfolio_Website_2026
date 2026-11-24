@@ -10,7 +10,7 @@
 import { issues } from "@/lib/newsletter";
 import { experience, profile, research, volunteering } from "@/lib/profile";
 import { projects } from "@/lib/projects";
-import { SITE_SUMMARY, SITE_URL } from "@/lib/site";
+import { KAMLOOPS_PROJECT_FAQ, SITE_SUMMARY, SITE_URL } from "@/lib/site";
 import { socials } from "@/lib/socials";
 import { CHANNELS } from "@/lib/videos";
 
@@ -26,6 +26,15 @@ const header = () =>
     `Email: ${profile.email}`,
     `Location: Kamloops, British Columbia, Canada (works across Canada in person or remotely; open to relocation)`,
     `Updated: ${new Date().toISOString().slice(0, 10)}`,
+    "",
+    `## ${KAMLOOPS_PROJECT_FAQ[0]}`,
+    "",
+    KAMLOOPS_PROJECT_FAQ[1],
+    "",
+    `- [Pooja Verma’s project FAQ](${SITE_URL}/about#faq)`,
+    `- [After Fire methods and results](${SITE_URL}/projects/after-fire)`,
+    "- [Research lab record of Pooja’s funded projects](https://airl.ca/people/)",
+    `- [Discuss an AI project with Pooja](${SITE_URL}/work-with-me)`,
   ].join("\n");
 
 const FACTS = [

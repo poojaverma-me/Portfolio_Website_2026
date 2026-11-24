@@ -19,6 +19,7 @@ const AGENTS = [
   "anthropic-ai",
   "PerplexityBot",
   "Perplexity-User",
+  "Googlebot",
   "Google-Extended",
   "Applebot",
   "Applebot-Extended",

@@ -18,6 +18,12 @@ export const SITE_NAME = `${profile.name} · Portfolio`;
 /** Under 60 characters, so a search result shows all of it. */
 export const SITE_TITLE = `${profile.name} · AI Developer in Kamloops, BC, Canada`;
 
+/** Shared by the About FAQ, its structured data and the plain-text portfolio. */
+export const KAMLOOPS_PROJECT_FAQ: [string, string] = [
+  "How do I choose the best AI developer in Kamloops for my project?",
+  "Look for work that matches the problem you need to solve. Pooja Verma is a Kamloops AI developer available for commercial builds and grant-funded research. For teams that need search across their documents, she built a study assistant that helps 3,000+ Thompson Rivers University students find answers in course material. For teams evaluating machine learning models, her After Fire case study compares five models across 2,600 burned sites and shows where their predictions fell short.",
+];
+
 /** Under 160 characters, so it survives as a search snippet and a link preview. */
 export const SITE_DESCRIPTION =
   "Pooja Verma is an AI developer in Kamloops, BC. Explore her machine learning case studies and get in touch about custom AI software or grant-funded research.";

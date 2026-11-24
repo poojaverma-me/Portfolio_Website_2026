@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Award, Mail } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { profile } from "@/lib/profile";
 import { projects } from "@/lib/projects";
-import { SITE_URL, breadcrumbs } from "@/lib/site";
+import { KAMLOOPS_PROJECT_FAQ, SITE_URL, breadcrumbs } from "@/lib/site";
 import { socials } from "@/lib/socials";
 import { CHANNELS } from "@/lib/videos";
 import { issues } from "@/lib/newsletter";
@@ -87,10 +87,7 @@ const FAQ: [string, string][] = [
     "What awards and funding has Pooja Verma received?",
     "Pooja won the TRUSU AI Club’s November 2026 AI Hackathon and the ICICET 2025 Best Paper Award for her retinal imaging research. Her funded work includes a $6,000 UREAP Research Award, a Mitacs Business Strategy Internship and a $2,500 TRU Student Sustainability Research Grant.",
   ],
-  [
-    "How do I choose the best AI developer in Kamloops for my project?",
-    "Look for someone who has solved a similar problem and can show how they tested the result. If you need search across your own documents, Pooja built a study assistant that helps 3,000+ TRU students find answers in course material. For grant-funded machine learning, her After Fire case study shows how she compared five models across 2,600 burned sites and where their predictions fell short.",
-  ],
+  KAMLOOPS_PROJECT_FAQ,
   [
     "What has Pooja Verma built that people use?",
     "A RAG study assistant used by 3,000+ Thompson Rivers University students, Salesforce tools for BC Lottery Corporation's network of 4,000+ retailers, an employee check-in platform for 1,000+ staff, the PDF engine at the core of a construction estimating platform, and " +
@@ -319,7 +316,7 @@ export default function AboutPage() {
       </Reveal>
 
       <Reveal delay={0.05}>
-        <h2 className="headline mt-16 !text-[1.375rem]">Questions</h2>
+        <h2 id="faq" className="headline mt-16 scroll-mt-24 !text-[1.375rem]">Questions</h2>
         <div className="mt-4 divide-y divide-[var(--color-separator)] border-y hairline">
           {FAQ.map(([q, a]) => (
             <details key={q} className="group py-4">
