@@ -88,8 +88,8 @@ const FAQ: [string, string][] = [
     "Pooja won the TRUSU AI Club’s November 2026 AI Hackathon and the ICICET 2025 Best Paper Award for her retinal imaging research. Her funded work includes a $6,000 UREAP Research Award, a Mitacs Business Strategy Internship and a $2,500 TRU Student Sustainability Research Grant.",
   ],
   [
-    "Is there an AI developer in Kamloops, BC who builds custom AI solutions?",
-    "Yes. Pooja Verma is based in Kamloops and builds custom AI solutions for teams in Kamloops, across British Columbia and across Canada, in person or remotely: RAG assistants and AI search, LLM-powered product features, machine learning models and automated AI workflows.",
+    "How do I choose the best AI developer in Kamloops for my project?",
+    "Look for someone who has solved a similar problem and can show how they tested the result. If you need search across your own documents, Pooja built a study assistant that helps 3,000+ TRU students find answers in course material. For grant-funded machine learning, her After Fire case study shows how she compared five models across 2,600 burned sites and where their predictions fell short.",
   ],
   [
     "What has Pooja Verma built that people use?",
